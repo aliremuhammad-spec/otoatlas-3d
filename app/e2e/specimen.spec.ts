@@ -1,0 +1,78 @@
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { expect, test, type Page } from '@playwright/test';
+
+/**
+ * A content package built by the real pipeline from synthetic labels: an ellipsoid
+ * mapped to "Malleus" (radii 1.5, 1, 1 mm at the origin) and a 1 mm sphere mapped to
+ * "Scala Tympani" 5 mm away. The true gap between them is 2.50 mm.
+ */
+const FIXTURES = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'content');
+
+async function serveFixtureContent(page: Page): Promise<void> {
+  await page.route('**/content/**', async (route) => {
+    const relative = new URL(route.request().url()).pathname.split('/content/')[1] ?? '';
+    try {
+      const body = await readFile(path.join(FIXTURES, relative));
+      const contentType = relative.endsWith('.json') ? 'application/json' : 'model/gltf-binary';
+      await route.fulfill({ body, contentType });
+    } catch {
+      await route.fulfill({ status: 404, body: 'not found' });
+    }
+  });
+}
+
+test.describe('specimen package', () => {
+  test.use({ locale: 'en-US' });
+
+  test('loads an installed package and measures on it', async ({ page }, testInfo) => {
+    await serveFixtureContent(page);
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Open the viewer' }).click({ timeout: 8000 });
+
+    await expect(page.getByTestId('specimen-select')).toHaveValue('TEST-SYNTHETIC-01');
+    await expect(page.locator('[data-structure="malleus"]')).toContainText('Malleus');
+    await expect(page.locator('[data-structure="scala_tympani"]')).toContainText('Scala tympani');
+    await expect(page.getByText('Draft: not yet reviewed by an expert')).toBeVisible();
+    await expect(page.getByTestId('specimen-attribution')).toContainText('10.5281/zenodo.1473724');
+
+    await page.getByRole('button', { name: 'Closest surfaces' }).click();
+    const result = page.getByTestId('measurement-result');
+    // Voxelised at 0.125 mm and smoothed within 0.05 mm of the label surface.
+    await expect(result).toContainText(/2\.(4[5-9]|5\d) mm/);
+    await expect(result).toContainText('TEST-SYNTHETIC-01');
+    await expect(result).toContainText('Source voxel size: 0.125 mm');
+    await page.screenshot({ path: testInfo.outputPath('specimen-en.png') });
+  });
+
+  test('falls back to the phantom when the package is broken', async ({ page }) => {
+    await page.route('**/content/index.json', (route) =>
+      route.fulfill({
+        contentType: 'application/json',
+        body: JSON.stringify({ specimens: [{ id: 'BROKEN', path: 'BROKEN' }] }),
+      }),
+    );
+    await page.route('**/content/BROKEN/**', (route) => route.fulfill({ status: 404, body: '' }));
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Open the viewer' }).click({ timeout: 8000 });
+    await expect(page.getByText('This specimen could not be loaded.')).toBeVisible();
+    await page.getByTestId('specimen-select').selectOption('phantom');
+    await expect(page.getByText('Synthetic test phantom, not anatomy')).toBeVisible();
+  });
+});
+
+test.describe('specimen package in Arabic', () => {
+  test.use({ locale: 'ar-SY' });
+
+  test('shows Arabic names with the Latin term beneath', async ({ page }, testInfo) => {
+    await serveFixtureContent(page);
+    await page.goto('/');
+    await page.getByRole('button', { name: 'افتح العارض' }).click({ timeout: 8000 });
+    const malleus = page.locator('[data-structure="malleus"]');
+    await expect(malleus).toContainText('المطرقة');
+    await expect(malleus).toContainText('Malleus');
+    await expect(page.getByText('مسودة: لم يراجعها خبير بعد')).toBeVisible();
+    await page.screenshot({ path: testInfo.outputPath('specimen-ar.png') });
+  });
+});

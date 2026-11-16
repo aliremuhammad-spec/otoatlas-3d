@@ -27,7 +27,18 @@ export default defineConfig({
         theme_color: '#0e1418',
         icons: [{ src: 'icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' }],
       },
-      workbox: { globPatterns: ['**/*.{js,css,html,svg,woff2}'] },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,svg,woff2}'],
+        // Specimen packages are installed beside the app after the build; keep the
+        // ones the user has opened so they work without a network.
+        runtimeCaching: [
+          {
+            urlPattern: /\/content\//,
+            handler: 'StaleWhileRevalidate',
+            options: { cacheName: 'specimen-content' },
+          },
+        ],
+      },
     }),
   ],
   test: {

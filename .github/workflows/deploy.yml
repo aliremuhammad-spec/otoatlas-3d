@@ -1,0 +1,69 @@
+name: deploy
+# Builds specimen content from Zenodo, builds the web app, and publishes both to GitHub Pages.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  content:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      # Content is rebuilt only when the pipeline or the ontology changes.
+      - id: cache
+        uses: actions/cache@v4
+        with:
+          path: content-out
+          key: content-v1-${{ hashFiles('DATA_PIPELINE/**', 'ontology/**') }}
+      - if: steps.cache.outputs.cache-hit != 'true'
+        working-directory: DATA_PIPELINE
+        run: |
+          pip install -e .
+          python build_content.py openear ZETA ../content-out/OPENEAR-ZETA | tee -a "$GITHUB_STEP_SUMMARY"
+          python build_content.py bern F01 ../content-out/BERN-F01 | tee -a "$GITHUB_STEP_SUMMARY"
+          python build_content.py index ../content-out
+      - run: du -sh content-out/* && cat content-out/index.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: content
+          path: content-out
+          if-no-files-found: error
+  site:
+    needs: content
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - working-directory: app
+        run: |
+          npm ci
+          npm run build:pwa
+      - uses: actions/download-artifact@v4
+        with:
+          name: content
+          path: app/dist/content
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: app/dist
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -13,8 +13,10 @@ Phase 1, in progress. What exists and is tested:
 
 - `app/`: installable web app (PWA). Arabic and English with right-to-left layout, the supervision
   credit on the splash, home and About screens, a 3D viewer, and point-to-point and
-  surface-to-surface distance tools. The viewer shows a **synthetic phantom** until specimen
-  content is built; nothing anatomical is bundled yet.
+  surface-to-surface distance tools. The viewer opens the first installed specimen package and
+  falls back to a **synthetic phantom** when none is installed.
+- Live build: https://aliremuhammad-spec.github.io/otoatlas-3d/ (published by the `deploy` workflow).
+  All specimen content is **draft** until the named reviewer signs it off.
 - `DATA_PIPELINE/`: label volume to surface mesh with the geometric error measured against the
   label surface, plus scripts that describe the open datasets on Zenodo.
 - `ontology/`: the structure list, with English, Terminologia Anatomica and Arabic names and a
@@ -39,7 +41,8 @@ python -m pytest -q
 
 ## Data
 
-Specimen data is never committed. The pipeline downloads it from Zenodo:
+Specimen data is never committed. The `deploy` workflow downloads what it needs from Zenodo,
+builds measured meshes (`DATA_PIPELINE/build_content.py`) and publishes them beside the app:
 
 - OpenEar, doi:10.5281/zenodo.1473724, CC BY 4.0 (Sieber et al., Scientific Data 2019).
 - Human Bony Labyrinth, doi:10.5281/zenodo.3355272, CC BY 4.0 (Wimmer et al., Data in Brief 2019).

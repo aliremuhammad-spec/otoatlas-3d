@@ -1,5 +1,6 @@
 import {
   AmbientLight,
+  Box3,
   BufferGeometry,
   Color,
   DirectionalLight,
@@ -21,7 +22,7 @@ import {
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { acceleratedRaycast, computeBoundsTree, disposeBoundsTree } from 'three-mesh-bvh';
 import type { Vec3 } from '../measure/geometry';
-import type { SceneContent } from './phantom';
+import type { SceneContent } from './content';
 
 BufferGeometry.prototype.computeBoundsTree = computeBoundsTree;
 BufferGeometry.prototype.disposeBoundsTree = disposeBoundsTree;
@@ -53,6 +54,7 @@ export class ViewerCore {
   private pointerDown: { x: number; y: number } | null = null;
   private frame = 0;
   private needsRender = true;
+  private markerRadius = 0.12;
 
   constructor(
     private readonly container: HTMLElement,
@@ -80,10 +82,9 @@ export class ViewerCore {
       this.scene.add(mesh);
     }
 
-    this.camera.position.set(0, -26, 16);
     this.camera.up.set(0, 0, 1);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.target.set(3, 0, 0);
+    this.frameContent();
     this.controls.enableDamping = true;
     this.controls.addEventListener('change', this.requestRender);
 
@@ -132,7 +133,7 @@ export class ViewerCore {
     }
     const markerMaterial = new MeshBasicMaterial({ color: 0xffffff, depthTest: false });
     for (const p of points) {
-      const marker = new Mesh(new SphereGeometry(0.12, 16, 12), markerMaterial);
+      const marker = new Mesh(new SphereGeometry(this.markerRadius, 16, 12), markerMaterial);
       marker.position.set(...p);
       marker.renderOrder = 10;
       this.overlay.add(marker);
@@ -144,6 +145,22 @@ export class ViewerCore {
       this.overlay.add(line);
     }
     this.requestRender();
+  }
+
+  /** Points the camera at the whole specimen and sizes markers to it. */
+  private frameContent(): void {
+    const box = new Box3();
+    for (const mesh of this.meshes.values()) box.expandByObject(mesh);
+    if (box.isEmpty()) return;
+    const centre = box.getCenter(new Vector3());
+    const radius = Math.max(box.getSize(new Vector3()).length() / 2, 1e-3);
+    const distance = (radius / Math.sin((this.camera.fov * Math.PI) / 360)) * 1.15;
+    this.camera.position.copy(centre).add(new Vector3(0.25, -0.85, 0.45).normalize().multiplyScalar(distance));
+    this.camera.near = distance / 200;
+    this.camera.far = distance * 20;
+    this.camera.updateProjectionMatrix();
+    this.controls.target.copy(centre);
+    this.markerRadius = radius / 90;
   }
 
   dispose(): void {

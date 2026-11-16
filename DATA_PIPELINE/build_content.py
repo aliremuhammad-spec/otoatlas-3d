@@ -2,6 +2,7 @@
 
     python build_content.py openear ZETA  out/OPENEAR-ZETA
     python build_content.py bern    F01   out/BERN-F01
+    python build_content.py index   out
 
 Downloads what it needs from Zenodo (a few megabytes for the Phase 1 structures),
 builds measured meshes and writes a package folder. Prints the error table.
@@ -83,7 +84,21 @@ def build_bern(specimen: str, out: Path) -> dict:
     )
 
 
+def write_index(root: Path) -> list[dict]:
+    """Write `index.json` listing every package folder under `root`."""
+    specimens = []
+    for manifest_path in sorted(root.glob("*/manifest.json")):
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        specimens.append({"id": manifest["specimen_id"], "path": manifest_path.parent.name})
+    (root / "index.json").write_text(json.dumps({"specimens": specimens}, indent=2), encoding="utf-8")
+    return specimens
+
+
 def main(argv: list[str]) -> int:
+    if len(argv) == 3 and argv[1] == "index":
+        for entry in write_index(Path(argv[2])):
+            print("indexed", entry["id"])
+        return 0
     if len(argv) != 4 or argv[1] not in ("openear", "bern"):
         print(__doc__)
         return 2

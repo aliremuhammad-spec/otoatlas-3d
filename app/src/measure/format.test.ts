@@ -1,4 +1,4 @@
-import { formatMillimetres } from './format';
+import { formatMillimetres, formatVoxelSize } from './format';
 
 describe('millimetre formatting', () => {
   it('uses two decimals below 5 mm and one decimal from 5 mm', () => {
@@ -16,5 +16,14 @@ describe('millimetre formatting', () => {
 
   it('shows a dash for undefined values', () => {
     expect(formatMillimetres(Number.NaN)).toBe('—');
+  });
+});
+
+describe('voxel size formatting', () => {
+  it('keeps the dataset precision instead of rounding to two decimals', () => {
+    expect(formatVoxelSize(0.125)).toBe('0.125');
+    expect(formatVoxelSize(0.0607)).toBe('0.0607');
+    expect(formatVoxelSize(0.2)).toBe('0.2');
+    expect(formatVoxelSize(0.125, 'eastern')).toBe('٠٫١٢٥');
   });
 });

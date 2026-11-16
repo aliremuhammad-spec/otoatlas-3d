@@ -207,10 +207,43 @@ fieldset {
   grid-area: header;
 }
 
-.specimen-id {
+.specimen-select {
   margin-inline-start: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   color: var(--text-dim);
   font-size: 0.9rem;
+}
+
+.viewer__stage--message {
+  grid-column: 1 / -1;
+  display: grid;
+  place-items: center;
+  color: var(--text-dim);
+}
+
+.badges {
+  position: absolute;
+  inset-block-start: 0.75rem;
+  inset-inline-start: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  pointer-events: none;
+}
+
+.structure-name {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.structure-name__latin {
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  font-style: italic;
 }
 
 .viewer__stage {
@@ -234,9 +267,6 @@ fieldset {
 }
 
 .badge {
-  position: absolute;
-  inset-block-start: 0.75rem;
-  inset-inline-start: 0.75rem;
   padding: 0.25rem 0.75rem;
   border-radius: 999px;
   font-size: 0.85rem;
@@ -246,6 +276,12 @@ fieldset {
 .badge--synthetic {
   background: var(--warn);
   color: #2b1d00;
+}
+
+.badge--draft {
+  background: var(--surface-2);
+  border: 1px dashed var(--warn);
+  color: var(--warn);
 }
 
 .viewer__panel {

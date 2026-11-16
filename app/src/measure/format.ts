@@ -9,3 +9,12 @@ export function formatMillimetres(value: number, numerals: NumeralSystem = 'west
   const decimals = Math.abs(value) < 5 ? 2 : 1;
   return localizeDigits(value.toFixed(decimals), numerals);
 }
+
+/**
+ * Voxel sizes are shown exactly as the dataset states them (for example 0.125 or 0.0607),
+ * never rounded to the two decimals used for measurements.
+ */
+export function formatVoxelSize(value: number, numerals: NumeralSystem = 'western'): string {
+  if (!Number.isFinite(value)) return '\u2014';
+  return localizeDigits(String(Number(value.toFixed(4))), numerals);
+}

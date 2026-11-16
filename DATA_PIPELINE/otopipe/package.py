@@ -51,6 +51,7 @@ def build_package(
     ontology: dict,
     side: str | None = None,
     extra: dict | None = None,
+    synthetic: bool = False,
     keep_fractions: tuple[float, ...] = (1.0, 0.25),
     samples: int = 20000,
 ) -> dict:
@@ -103,7 +104,7 @@ def build_package(
         "specimen_id": specimen_id,
         "dataset": dataset,
         "side": side,
-        "synthetic": False,
+        "synthetic": synthetic,
         "units": "mm",
         "attribution": {"data_doi": info["data_doi"], "paper_doi": info["paper_doi"], "license": info["license"]},
         "generated": {"pipeline_version": PIPELINE_VERSION, "date": date.today().isoformat()},
