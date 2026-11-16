@@ -1,0 +1,23 @@
+name: data-report
+# Describes the open datasets on Zenodo in the run summary. Stores nothing.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/data-report.yml
+permissions:
+  contents: read
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install requests remotezip nibabel pynrrd numpy
+      - run: python DATA_PIPELINE/probe/report_bern.py F01.zip
+      - run: python DATA_PIPELINE/probe/report_bern.py T01.zip
+      - if: always()
+        run: python DATA_PIPELINE/probe/report_openear.py
