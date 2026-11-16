@@ -1,0 +1,23 @@
+[project]
+name = "otopipe"
+version = "0.1.0"
+description = "OtoAtlas 3D data pipeline: open temporal-bone datasets to measured content packages"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy",
+  "scipy",
+  "scikit-image",
+  "trimesh",
+  "rtree",
+  "fast-simplification",
+  "nibabel",
+  "pynrrd",
+  "requests",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "remotezip"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

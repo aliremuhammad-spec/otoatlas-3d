@@ -1,0 +1,325 @@
+{
+  "schema_version": 1,
+  "status": "Version 0. Dataset labels only. OpenEar label names confirmed against Segmentation.seg.nrrd of specimen ZETA on 2026-11-16.",
+  "provenance_tiers": {
+    "specimen-derived": "Geometry from a dataset label or a documented new segmentation of the specimen's own images.",
+    "expert-annotated": "A point, line, region or volume placed on specimen geometry by a named reviewer.",
+    "schematic": "A model not derived from that specimen. Always badged; measurements disabled."
+  },
+  "ar_status_values": [
+    "unverified",
+    "verified"
+  ],
+  "datasets": {
+    "openear": {
+      "data_doi": "10.5281/zenodo.1473724",
+      "paper_doi": "10.1038/sdata.2018.297",
+      "license": "CC BY 4.0"
+    },
+    "bern-labyrinth": {
+      "data_doi": "10.5281/zenodo.3355272",
+      "paper_doi": "10.1016/j.dib.2019.104782",
+      "license": "CC BY 4.0"
+    }
+  },
+  "groups": [
+    {
+      "id": "auditory_ossicles",
+      "name_en": "Auditory ossicles",
+      "name_ta_latin": "Ossicula auditus",
+      "name_ar": "عظيمات السمع",
+      "ar_status": "unverified"
+    },
+    {
+      "id": "cochlea",
+      "name_en": "Cochlea",
+      "name_ta_latin": "Cochlea",
+      "name_ar": "القوقعة",
+      "ar_status": "unverified"
+    }
+  ],
+  "structures": [
+    {
+      "id": "temporal_bone",
+      "name_en": "Temporal bone",
+      "name_ta_latin": "Os temporale",
+      "name_ar": "العظم الصدغي",
+      "ar_status": "unverified",
+      "parent": null,
+      "system": "bone",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Bone"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "color": "#d8c9a3",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "external_acoustic_meatus",
+      "name_en": "External acoustic meatus",
+      "name_ta_latin": "Meatus acusticus externus",
+      "name_ar": "الصماخ السمعي الظاهر",
+      "ar_status": "unverified",
+      "parent": null,
+      "system": "soft_tissue",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "External Auditory Canal"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "color": "#b0a090",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "tympanic_membrane",
+      "name_en": "Tympanic membrane",
+      "name_ta_latin": "Membrana tympanica",
+      "name_ar": "الغشاء الطبلي",
+      "ar_status": "unverified",
+      "parent": null,
+      "system": "soft_tissue",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Tympanic Membrane"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "color": "#c7b8e0",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "malleus",
+      "name_en": "Malleus",
+      "name_ta_latin": "Malleus",
+      "name_ar": "المطرقة",
+      "ar_status": "unverified",
+      "parent": "auditory_ossicles",
+      "system": "ossicles",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Malleus"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "color": "#E69F00",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "incus",
+      "name_en": "Incus",
+      "name_ta_latin": "Incus",
+      "name_ar": "السندان",
+      "ar_status": "unverified",
+      "parent": "auditory_ossicles",
+      "system": "ossicles",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Incus"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "color": "#CC79A7",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "stapes",
+      "name_en": "Stapes",
+      "name_ta_latin": "Stapes",
+      "name_ar": "الركاب",
+      "ar_status": "unverified",
+      "parent": "auditory_ossicles",
+      "system": "ossicles",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Stapes"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "color": "#D55E00",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "facial_nerve",
+      "name_en": "Facial nerve",
+      "name_ta_latin": "Nervus facialis",
+      "name_ar": "العصب الوجهي",
+      "ar_status": "unverified",
+      "parent": null,
+      "system": "nerves",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Facial Nerve"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "color": "#F0E442",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "chorda_tympani",
+      "name_en": "Chorda tympani",
+      "name_ta_latin": "Chorda tympani",
+      "name_ar": "حبل الطبل",
+      "ar_status": "unverified",
+      "parent": "facial_nerve",
+      "system": "nerves",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Chorda Tympani"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "color": "#b5ad2a",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "vestibulocochlear_nerve",
+      "name_en": "Vestibulocochlear nerve",
+      "name_ta_latin": "Nervus vestibulocochlearis",
+      "name_ar": "العصب الدهليزي القوقعي",
+      "ar_status": "unverified",
+      "parent": null,
+      "system": "nerves",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Cochleovestibular nerve"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "color": "#e8e6a0",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "sigmoid_sinus_and_dura",
+      "name_en": "Sigmoid sinus and dura (combined dataset label)",
+      "name_ta_latin": null,
+      "name_ar": null,
+      "ar_status": "unverified",
+      "parent": null,
+      "system": "vessels",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Sinus Dura"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "OpenEar ships the sigmoid sinus and the dura as one label. To be split by expert annotation into sigmoid_sinus (Sinus sigmoideus, الجيب السيني) and dura_mater (Dura mater, الأم الجافية).",
+      "color": "#6a7fb5",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "internal_carotid_artery",
+      "name_en": "Internal carotid artery",
+      "name_ta_latin": "Arteria carotis interna",
+      "name_ar": "الشريان السباتي الباطن",
+      "ar_status": "unverified",
+      "parent": null,
+      "system": "vessels",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Carotis Interna"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "color": "#c0392b",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "scala_tympani",
+      "name_en": "Scala tympani",
+      "name_ta_latin": "Scala tympani",
+      "name_ar": "السقالة الطبلية",
+      "ar_status": "unverified",
+      "parent": "cochlea",
+      "system": "inner_ear_fluid_spaces",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Scala Tympani"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "color": "#0072B2",
+      "mesh_error_limit_mm": 0.05
+    },
+    {
+      "id": "scala_vestibuli",
+      "name_en": "Scala vestibuli",
+      "name_ta_latin": "Scala vestibuli",
+      "name_ar": "السقالة الدهليزية",
+      "ar_status": "unverified",
+      "parent": "cochlea",
+      "system": "inner_ear_fluid_spaces",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Scala Vestibuli"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "In specimen ZETA this label spans about 12 x 14.6 x 15 mm, against about 5.2 x 6.9 x 8.5 mm for scala tympani. That is larger than a cochlea, so the label very probably also contains the vestibule and semicircular canals. To be confirmed by the reviewer on the slices before the label is split.",
+      "color": "#56B4E9",
+      "mesh_error_limit_mm": 0.05
+    },
+    {
+      "id": "bony_labyrinth",
+      "name_en": "Bony labyrinth",
+      "name_ta_latin": "Labyrinthus osseus",
+      "name_ar": "التيه العظمي",
+      "ar_status": "unverified",
+      "parent": null,
+      "system": "bone",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "bern-labyrinth",
+          "label": "bony labyrinth (single label)"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "color": "#9ecae1",
+      "mesh_error_limit_mm": 0.05
+    }
+  ]
+}

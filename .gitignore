@@ -1,0 +1,13 @@
+node_modules/
+dist/
+dev-dist/
+test-results/
+playwright-report/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+# Dataset downloads and generated content are never committed.
+DATA_PIPELINE/data/
+content/packages/
+*.keystore
+*.jks

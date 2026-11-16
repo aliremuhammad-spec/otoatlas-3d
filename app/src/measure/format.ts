@@ -1,0 +1,11 @@
+import { localizeDigits, type NumeralSystem } from '../i18n/numerals';
+
+/**
+ * Display rule from the product brief: two decimals below 5 mm, one decimal otherwise.
+ * The rule is applied to the unrounded value, so 4.996 shows as "5.00".
+ */
+export function formatMillimetres(value: number, numerals: NumeralSystem = 'western'): string {
+  if (!Number.isFinite(value)) return '—';
+  const decimals = Math.abs(value) < 5 ? 2 : 1;
+  return localizeDigits(value.toFixed(decimals), numerals);
+}
