@@ -295,6 +295,11 @@ fieldset {
   gap: 1.5rem;
 }
 
+/* Measuring is the main task: keep that section first, above the long structure list. */
+.viewer__panel > section:nth-of-type(2) {
+  order: -1;
+}
+
 .structures {
   list-style: none;
   margin: 0 0 0.75rem;

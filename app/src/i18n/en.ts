@@ -18,7 +18,7 @@ export const en = {
   'home.intro':
     'Explore temporal-bone anatomy from real specimens, measure it, and rehearse the key steps of ear surgery.',
   'home.openViewer': 'Open the viewer',
-  'home.phaseNote': 'Early build: the viewer shows a synthetic test phantom until specimen content is installed.',
+  'home.phaseNote': 'Early build. Specimen content is a draft and has not yet been reviewed by an expert.',
 
   'disclaimer.title': 'Educational use only',
   'disclaimer.body':

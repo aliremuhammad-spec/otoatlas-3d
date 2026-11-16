@@ -197,6 +197,26 @@ export function SpecimenView({ content }: Props) {
               {t('viewer.measure.surfaceToSurface')}
             </button>
           </div>
+          {result ? (
+            <dl className="result" data-testid="measurement-result">
+              <dt>{t('viewer.measure.distance')}</dt>
+              <dd className="result__value">
+                {formatMillimetres(result.value, numerals)} {t('units.mm')}
+              </dd>
+              <dt>{t('viewer.measure.method')}</dt>
+              <dd>{t(result.methodKey)}</dd>
+              <dd>{t('viewer.specimen', { id: content.specimenId })}</dd>
+              {content.sourceVoxelMm !== null && (
+                <dd>
+                  {t('viewer.measure.sourceVoxel', {
+                    size: formatVoxelSize(content.sourceVoxelMm, numerals),
+                  })}
+                </dd>
+              )}
+            </dl>
+          ) : (
+            <p className="note">{t('viewer.measure.none')}</p>
+          )}
           {mode === 'p2p' ? (
             <p className="note">{t('viewer.measure.hintPoints')}</p>
           ) : (
@@ -217,26 +237,6 @@ export function SpecimenView({ content }: Props) {
                 </select>
               ))}
             </div>
-          )}
-          {result ? (
-            <dl className="result" data-testid="measurement-result">
-              <dt>{t('viewer.measure.distance')}</dt>
-              <dd className="result__value">
-                {formatMillimetres(result.value, numerals)} {t('units.mm')}
-              </dd>
-              <dt>{t('viewer.measure.method')}</dt>
-              <dd>{t(result.methodKey)}</dd>
-              <dd>{t('viewer.specimen', { id: content.specimenId })}</dd>
-              {content.sourceVoxelMm !== null && (
-                <dd>
-                  {t('viewer.measure.sourceVoxel', {
-                    size: formatVoxelSize(content.sourceVoxelMm, numerals),
-                  })}
-                </dd>
-              )}
-            </dl>
-          ) : (
-            <p className="note">{t('viewer.measure.none')}</p>
           )}
           <button type="button" onClick={clear}>
             {t('viewer.measure.clear')}
