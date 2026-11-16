@@ -28,9 +28,11 @@ State at Phase 1. The full rationale is in the Phase 0 plan; this file records w
   run on 32-bit vertex buffers (about 4e-6 mm resolution at 50 mm) with double-precision
   arithmetic. Measurements are taken on full-resolution geometry only.
 - **Mesh error.** Every mesh is measured against its label surface (marching cubes of the binary
-  label). LOD0 is Taubin-smoothed and clamped so no vertex lies further from the label surface than
-  the limit: 0.05 mm inner ear, 0.10 mm middle ear. Coarser LODs are measured and flagged when they
-  exceed the limit.
+  label). LOD0 is Taubin-smoothed with every vertex held within the limit of its own starting
+  position (0.05 mm inner ear, 0.10 mm middle ear), which bounds the error in both directions, and
+  is then measured to confirm it. Coarser LODs are measured and flagged when they exceed the limit.
+  Real segmentations are rough; an earlier version that clamped to the nearest surface point let
+  one-voxel spikes collapse and was caught by this measurement on specimen ZETA.
 - **Provenance.** Scene content declares whether it is synthetic. Synthetic content always shows a badge.
 
 ## Measured so far (synthetic phantoms)

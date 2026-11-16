@@ -54,6 +54,7 @@ class Lod:
 class MeshBuild:
     label_surface: trimesh.Trimesh
     lods: list[Lod] = field(default_factory=list)
+    clamp_mm: float = 0.0
 
 
 def label_surface(
@@ -85,30 +86,34 @@ def _closest_distance(surface: trimesh.Trimesh, points: np.ndarray) -> tuple[np.
     return closest, distance
 
 
-def smooth_within(
-    surface: trimesh.Trimesh,
-    max_deviation_mm: float,
-    iterations: int = 20,
-    lamb: float = 0.5,
-    nu: float = 0.53,
-) -> trimesh.Trimesh:
-    """Taubin-smooth `surface`, then clamp every vertex to within `max_deviation_mm` of it.
+def taubin(surface: trimesh.Trimesh, iterations: int = 20, lamb: float = 0.5, nu: float = 0.53) -> trimesh.Trimesh:
+    """Taubin smoothing: alternating shrink and inflate steps, volume-preserving to first order.
 
-    Taubin smoothing alternates a shrinking and an inflating step, so the enclosed
-    volume is preserved to first order; plain Laplacian smoothing is not used
-    because it shrinks thin structures. The clamp pulls any vertex that drifted
-    further than the limit back along the line to its closest point on the label surface.
+    Plain Laplacian smoothing is not used because it shrinks thin structures.
     """
     smoothed = surface.copy()
     trimesh.smoothing.filter_taubin(smoothed, lamb=lamb, nu=nu, iterations=iterations)
-    closest, distance = _closest_distance(surface, smoothed.vertices)
-    over = distance > max_deviation_mm
-    if over.any():
-        scale = (max_deviation_mm / distance[over])[:, None]
-        verts = smoothed.vertices.copy()
-        verts[over] = closest[over] + (verts[over] - closest[over]) * scale
-        smoothed = trimesh.Trimesh(vertices=verts, faces=smoothed.faces, process=False)
     return smoothed
+
+
+def smooth_within(surface: trimesh.Trimesh, max_deviation_mm: float, iterations: int = 20) -> trimesh.Trimesh:
+    """Taubin-smooth `surface` without letting any vertex travel more than `max_deviation_mm`.
+
+    The bound is on each vertex's displacement from its own starting position, not on
+    its distance to the nearest part of the surface. That distinction matters on real,
+    rough segmentations: a vertex on a one-voxel spike can slide down to the spike's
+    base and still be "close to the surface" while the spike itself has vanished.
+    Bounding the displacement keeps every point of the label surface within
+    `max_deviation_mm` of the mesh and the mesh within `max_deviation_mm` of it,
+    because both share one triangulation and displacement varies linearly on a triangle.
+    """
+    smoothed = taubin(surface, iterations)
+    start = np.asarray(surface.vertices, dtype=np.float64)
+    move = np.asarray(smoothed.vertices, dtype=np.float64) - start
+    length = np.linalg.norm(move, axis=1)
+    over = length > max_deviation_mm
+    move[over] *= (max_deviation_mm / length[over])[:, None]
+    return trimesh.Trimesh(vertices=start + move, faces=surface.faces, process=False)
 
 
 def surface_error(
@@ -159,16 +164,23 @@ def build_lods(
 ) -> MeshBuild:
     """Build the level-of-detail chain for one label and measure every level.
 
-    LOD0 is the smoothed full-resolution mesh and is always within `limit_mm` by
-    construction. Coarser levels are decimated from LOD0; each is measured against
-    the label surface and flagged when it exceeds the limit, so the app can refuse
-    to measure on it.
+    LOD0 is the full-resolution mesh, smoothed with every vertex held within `limit_mm`
+    of its starting position, and then measured to confirm it. Coarser levels are decimated from LOD0; each is
+    measured against the label surface and flagged when it exceeds the limit, so
+    the app can refuse to measure on it.
     """
+    if not keep_fractions or keep_fractions[0] != 1.0:
+        raise ValueError("the first level must keep every triangle")
     reference = label_surface(mask, spacing, origin)
-    lod0 = smooth_within(reference, max_deviation_mm=limit_mm)
-    lods: list[Lod] = []
-    for level, fraction in enumerate(keep_fractions):
+    # A hair under the limit so that floating-point rounding cannot tip the measured value over it.
+    clamp = limit_mm * 0.98
+    lod0 = smooth_within(reference, clamp)
+    lod0_error = surface_error(lod0, reference, samples=samples)
+    if lod0_error.max_mm > limit_mm:
+        raise RuntimeError(f"smoothed mesh is {lod0_error.max_mm:.4f} mm from its label surface, over the {limit_mm} mm limit")
+    lods: list[Lod] = [Lod(0, lod0, lod0_error, True)]
+    for level, fraction in enumerate(keep_fractions[1:], start=1):
         mesh = decimate(lod0, fraction)
         error = surface_error(mesh, reference, samples=samples)
         lods.append(Lod(level, mesh, error, error.max_mm <= limit_mm + 1e-9))
-    return MeshBuild(reference, lods)
+    return MeshBuild(reference, lods, clamp)

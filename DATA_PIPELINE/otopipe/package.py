@@ -92,9 +92,12 @@ def build_package(
                 "system": entry["system"],
                 "color": entry["color"],
                 "mesh_error_limit_mm": limit,
+                "smoothing": {"method": "taubin", "max_vertex_displacement_mm": round(build.clamp_mm, 4)},
+                "closed_surface": bool(lod0.is_watertight),
                 "source_voxel_mm": [round(float(v), 5) for v in label.spacing],
                 "bounds_mm": np.round(lod0.bounds, 4).tolist(),
-                "volume_mm3": round(float(lod0.volume), 4),
+                # Volume is only meaningful for a closed surface.
+                "volume_mm3": round(float(lod0.volume), 4) if lod0.is_watertight else None,
                 "lods": lods,
             }
         )

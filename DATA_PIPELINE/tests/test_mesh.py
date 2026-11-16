@@ -94,3 +94,36 @@ def test_error_measure_detects_a_known_offset():
 def test_empty_label_is_rejected():
     with pytest.raises(ValueError):
         M.label_surface(np.zeros((4, 4, 4), dtype=bool), OPENEAR_SPACING)
+
+
+def rough_sphere():
+    """A sphere whose surface voxels are randomly flipped, like a hand-drawn segmentation."""
+    from scipy import ndimage as ndi
+
+    mask, origin = P.ellipsoid((2.0, 2.0, 2.0), OPENEAR_SPACING)
+    shell = ndi.binary_dilation(mask) & ~ndi.binary_erosion(mask)
+    rough = mask.copy()
+    rough[shell & (np.random.default_rng(0).random(mask.shape) < 0.3)] ^= True
+    labelled, _ = ndi.label(rough)
+    return labelled == np.argmax(np.bincount(labelled.ravel())[1:]) + 1, origin
+
+
+def test_rough_segmentation_stays_within_the_limit_on_both_sides():
+    # Regression: on real OpenEar anatomy, clamping each vertex to its *nearest* point on
+    # the label surface let one-voxel spikes collapse, and the label surface ended up
+    # 0.09 mm from the mesh. Bounding each vertex's own displacement prevents that.
+    mask, origin = rough_sphere()
+    build = M.build_lods(mask, OPENEAR_SPACING, origin, keep_fractions=(1.0,), samples=20000)
+    lod0 = build.lods[0]
+    assert lod0.within_limit
+    assert lod0.error.max_mm <= M.INNER_EAR_LIMIT_MM
+    assert build.clamp_mm <= M.INNER_EAR_LIMIT_MM
+    moved = np.linalg.norm(lod0.mesh.vertices - build.label_surface.vertices, axis=1)
+    assert moved.max() <= M.INNER_EAR_LIMIT_MM
+    assert moved.mean() > 0.01  # it did smooth
+
+
+def test_first_level_must_be_full_resolution():
+    mask, origin = P.ellipsoid((1.0, 1.0, 1.0), OPENEAR_SPACING)
+    with pytest.raises(ValueError):
+        M.build_lods(mask, OPENEAR_SPACING, origin, keep_fractions=(0.5,))

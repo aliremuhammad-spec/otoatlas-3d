@@ -37,3 +37,18 @@ def torus(major: float, minor: float, spacing: tuple[float, float, float], margi
     x, y, z = _grid(shape, spacing, origin)
     mask = (np.sqrt(x**2 + y**2) - major) ** 2 + z**2 <= minor**2
     return mask, origin
+
+
+def disc(radius: float, thickness: float, spacing: tuple[float, float, float], margin_voxels: int = 3):
+    """Binary flat disc in the x-y plane, centred on the origin. Returns (mask, origin).
+
+    A plate only a couple of voxels thick is the hard case for smoothing: it stands
+    in for thin anatomy such as the scala tympani near the hook or the stapes crura.
+    """
+    reach = (radius, radius, thickness / 2)
+    half = [int(np.ceil(reach[i] / spacing[i])) + margin_voxels for i in range(3)]
+    shape = tuple(2 * h + 1 for h in half)
+    origin = tuple(-half[i] * spacing[i] for i in range(3))
+    x, y, z = _grid(shape, spacing, origin)
+    mask = (x**2 + y**2 <= radius**2) & (np.abs(z) <= thickness / 2)
+    return mask, origin
