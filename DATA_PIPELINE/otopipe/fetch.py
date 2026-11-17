@@ -13,8 +13,24 @@ OPENEAR_RECORD = 1473724
 BERN_RECORD = 3355272
 
 
+def _get(url: str, timeout: int, attempts: int = 4) -> requests.Response:
+    """GET with retries: Zenodo answers 5xx now and then, and a deploy should not fail on one blip."""
+    import time
+
+    for attempt in range(attempts):
+        try:
+            r = requests.get(url, timeout=timeout)
+            if r.status_code < 500:
+                return r
+        except (requests.ConnectionError, requests.Timeout):
+            if attempt == attempts - 1:
+                raise
+        time.sleep(10 * (attempt + 1))
+    return r
+
+
 def record_files(record: int) -> dict[str, dict]:
-    r = requests.get(ZENODO_API.format(record=record), timeout=120)
+    r = _get(ZENODO_API.format(record=record), timeout=120)
     r.raise_for_status()
     return {f["key"]: f for f in r.json()["files"]}
 
@@ -40,7 +56,9 @@ def find_member(names: list[str], suffix: str) -> str:
 def fetch_bern_specimen(specimen_id: str, dest: str | Path) -> Path:
     """Download and unpack one Bern specimen archive (20 to 50 MB), checking its checksum."""
     meta = record_files(BERN_RECORD)[f"{specimen_id}.zip"]
-    data = requests.get(meta["links"]["self"], timeout=900).content
+    r = _get(meta["links"]["self"], timeout=900)
+    r.raise_for_status()
+    data = r.content
     verify_md5(data, meta["checksum"])
     dest = Path(dest)
     zipfile.ZipFile(io.BytesIO(data)).extractall(dest)
