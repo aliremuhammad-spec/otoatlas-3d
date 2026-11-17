@@ -250,7 +250,7 @@
       "name_en": "Sigmoid sinus and dura mater",
       "name_ta_latin": "Sinus sigmoideus et dura mater",
       "name_ar": "الجيب السيني والأم الجافية",
-      "ar_status": "unverified",
+      "ar_status": "verified",
       "parent": null,
       "system": "vessels",
       "provenance_tier": "specimen-derived",
@@ -262,10 +262,12 @@
       ],
       "content_status": "draft",
       "reviewed_by": null,
-      "note": "OpenEar ships the sigmoid sinus and the dura as one label. The Arabic name joins the two terms in this note; the joined form awaits the reviewer. To be split by expert annotation into sigmoid_sinus (Sinus sigmoideus, الجيب السيني) and dura_mater (Dura mater, الأم الجافية).",
+      "note": "OpenEar ships the sigmoid sinus and the dura as one label. The joined Arabic name was confirmed by the reviewer on 2026-11-17. To be split by expert annotation into sigmoid_sinus (Sinus sigmoideus, الجيب السيني) and dura_mater (Dura mater, الأم الجافية).",
       "color": "#6a7fb5",
       "mesh_error_limit_mm": 0.1,
-      "default_opacity": 0.3
+      "default_opacity": 0.3,
+      "ar_reviewed_by": "Dr. Ali R. Muhammad",
+      "ar_reviewed_on": "2026-11-17"
     },
     {
       "id": "internal_carotid_artery",

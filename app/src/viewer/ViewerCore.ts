@@ -5,6 +5,7 @@ import {
   Color,
   DirectionalLight,
   Group,
+  LessEqualDepth,
   Line,
   LineBasicMaterial,
   Matrix4,
@@ -34,8 +35,9 @@ export interface PickResult {
   point: Vec3;
 }
 
-/** Pointer travel (CSS pixels) below which a press-and-release counts as a tap, not a drag. */
+/** Structures fainter than this do not take taps, so a see-through bone does not block what is inside it. */
 export const PICK_MIN_OPACITY = 0.5;
+/** Pointer travel (CSS pixels) below which a press-and-release counts as a tap, not a drag. */
 const TAP_SLOP_PX = 6;
 
 /**
@@ -50,6 +52,12 @@ export class ViewerCore {
   private readonly raycaster = new Raycaster();
   private readonly meshes = new Map<string, Mesh<BufferGeometry, MeshStandardMaterial>>();
   private readonly displayOnly = new Set<string>();
+  /**
+   * Depth-only twin of each mesh, drawn just before it while it is see-through. It lets
+   * only the nearest layer of a faded structure show, so the inner walls of the bone
+   * (air cells, canals) do not pile up into noise as the opacity changes.
+   */
+  private readonly depthTwins = new Map<string, Mesh<BufferGeometry, MeshBasicMaterial>>();
   private readonly overlay = new Group();
   private readonly resizeObserver: ResizeObserver;
   private pickHandler: ((pick: PickResult) => void) | null = null;
@@ -84,8 +92,23 @@ export class ViewerCore {
       else this.displayOnly.add(s.id);
       this.meshes.set(s.id, mesh);
       this.scene.add(mesh);
+      const twin = new Mesh(s.geometry, new MeshBasicMaterial({ colorWrite: false, depthWrite: true }));
+      twin.position.copy(mesh.position);
+      twin.visible = false;
+      twin.raycast = () => undefined;
+      this.depthTwins.set(s.id, twin);
+      this.scene.add(twin);
       if (s.defaultOpacity !== undefined && s.defaultOpacity < 1) this.setOpacity(s.id, s.defaultOpacity);
     }
+
+    // See-through structures draw smallest first and enclosing ones (the bone) last,
+    // so a faded outer shell never hides a faded structure inside it.
+    const bySize = [...this.meshes.values()].sort((a, b) => boxVolume(a) - boxVolume(b));
+    bySize.forEach((mesh, i) => {
+      const twin = this.depthTwins.get(mesh.name);
+      if (twin) twin.renderOrder = 2 * i;
+      mesh.renderOrder = 2 * i + 1;
+    });
 
     this.camera.up.set(0, 0, 1);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -109,15 +132,27 @@ export class ViewerCore {
   setVisible(id: string, visible: boolean): void {
     const mesh = this.meshes.get(id);
     if (mesh) mesh.visible = visible;
+    const twin = this.depthTwins.get(id);
+    if (twin && mesh) twin.visible = visible && mesh.material.transparent;
     this.requestRender();
   }
 
   setOpacity(id: string, opacity: number): void {
     const mesh = this.meshes.get(id);
     if (!mesh) return;
+    const faded = opacity < 1;
     mesh.material.opacity = opacity;
-    mesh.material.transparent = opacity < 1;
-    mesh.material.depthWrite = opacity >= 1;
+    mesh.material.transparent = faded;
+    // The twin has already written this mesh's nearest depth; drawing at equal depth keeps only that layer.
+    mesh.material.depthFunc = LessEqualDepth;
+    mesh.material.depthWrite = !faded;
+    mesh.material.needsUpdate = true;
+    const twin = this.depthTwins.get(id);
+    if (twin) {
+      twin.visible = faded && mesh.visible;
+      // In the transparent pass, so it runs after every opaque structure has been drawn.
+      twin.material.transparent = true;
+    }
     this.requestRender();
   }
 
@@ -178,6 +213,7 @@ export class ViewerCore {
       mesh.geometry.disposeBoundsTree();
       mesh.material.dispose();
     }
+    for (const twin of this.depthTwins.values()) twin.material.dispose();
     this.renderer.dispose();
     this.renderer.domElement.remove();
   }
@@ -232,4 +268,11 @@ export class ViewerCore {
       point: [hit.point.x, hit.point.y, hit.point.z],
     });
   };
+}
+
+function boxVolume(mesh: Mesh): number {
+  const geometry = mesh.geometry;
+  if (!geometry.boundingBox) geometry.computeBoundingBox();
+  const size = geometry.boundingBox?.getSize(new Vector3()) ?? new Vector3();
+  return size.x * size.y * size.z;
 }
