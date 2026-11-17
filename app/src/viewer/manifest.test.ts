@@ -81,6 +81,14 @@ describe('content manifest', () => {
     expect(() => parseManifest(withStructure({ display_level: 7 }))).toThrow(/display_level/);
   });
 
+  it('refuses a shown level whose file was not published', () => {
+    const m = validManifest();
+    const s0 = (m.structures as Record<string, unknown>[])[0] as Record<string, unknown>;
+    const lod0 = (s0.lods as Record<string, unknown>[])[0] as Record<string, unknown>;
+    lod0.published = false;
+    expect(() => parseManifest(m)).toThrow(/not published/);
+  });
+
   it('reads whether a structure starts hidden', () => {
     expect(parseManifest(validManifest()).structures[0]?.defaultVisible).toBe(true);
     expect(parseManifest(withStructure({ default_visible: false })).structures[0]?.defaultVisible).toBe(false);

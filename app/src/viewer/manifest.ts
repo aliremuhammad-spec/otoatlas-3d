@@ -8,6 +8,8 @@ export interface ManifestLod {
   triangles: number;
   withinLimit: boolean;
   hausdorffMm: number;
+  /** False when the file was measured but not shipped with the app. */
+  published: boolean;
 }
 
 export interface ManifestStructure {
@@ -87,6 +89,7 @@ function parseLod(value: unknown, what: string): ManifestLod {
     triangles: num(o.triangles, `${what}.triangles`),
     withinLimit: o.within_limit,
     hausdorffMm: num(o.hausdorff_mm, `${what}.hausdorff_mm`),
+    published: o.published === undefined ? true : bool(o.published, `${what}.published`),
   };
 }
 
@@ -114,7 +117,9 @@ function parseStructure(value: unknown, index: number): ManifestStructure {
   if (!lod0) fail(`${what} has no full-resolution level`);
   if (!lod0.withinLimit) fail(`${what} full-resolution mesh exceeds its error limit`);
   const displayLevel = o.display_level === undefined || o.display_level === null ? 0 : num(o.display_level, `${what}.display_level`);
-  if (!lods.some((l) => l.level === displayLevel)) fail(`${what}.display_level names no level`);
+  const shownLod = lods.find((l) => l.level === displayLevel);
+  if (!shownLod) fail(`${what}.display_level names no level`);
+  if (!shownLod.published) fail(`${what}.display_level names a level that was not published`);
   return {
     id: str(o.id, `${what}.id`),
     names: {

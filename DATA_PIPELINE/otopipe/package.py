@@ -68,8 +68,15 @@ def build_package(
     synthetic: bool = False,
     keep_fractions: tuple[float, ...] = (1.0, 0.25, 0.1),
     samples: int = 20000,
+    publish_shown_only: bool = False,
 ) -> dict:
-    """Mesh every label, measure it, write the files, and return the manifest."""
+    """Mesh every label, measure it, write the files, and return the manifest.
+
+    Every level is built and measured. With `publish_shown_only`, only the level the
+    app shows is kept on disk; the others stay in the manifest with their measured
+    error and `"published": false`. That keeps eight OpenEar specimens under the
+    hosting size limit (a full-resolution temporal bone alone is about 130 MB).
+    """
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     structures = []
@@ -94,6 +101,11 @@ def build_package(
             )
         if not lods[0]["within_limit"]:
             raise RuntimeError(f"{entry['id']}: full-resolution mesh exceeds its {limit} mm limit")
+        shown = display_level(lods)
+        for lod in lods:
+            lod["published"] = not publish_shown_only or lod["level"] == shown
+            if not lod["published"]:
+                (out / lod["file"]).unlink()
         lod0 = build.lods[0].mesh
         structures.append(
             {
@@ -115,7 +127,7 @@ def build_package(
                 "bounds_mm": np.round(lod0.bounds, 4).tolist(),
                 # Volume is only meaningful for a closed surface.
                 "volume_mm3": round(float(lod0.volume), 4) if lod0.is_watertight else None,
-                "display_level": display_level(lods),
+                "display_level": shown,
                 "lods": lods,
             }
         )

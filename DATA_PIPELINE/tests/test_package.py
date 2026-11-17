@@ -81,3 +81,16 @@ def test_large_meshes_are_displayed_at_the_finest_level_under_the_budget():
     assert package.display_level(lods) == 2
     assert package.display_level(lods[:2]) == 1  # nothing fits: the coarsest level
     assert package.display_level([{"level": 0, "triangles": 50_000}] + lods[1:]) == 0
+
+
+def test_publish_shown_only_keeps_one_file_per_structure_but_every_measurement(tmp_path):
+    spacing = (0.125, 0.125, 0.125)
+    a, oa = P.ellipsoid((1.5, 1.0, 1.0), spacing, centre=(0.0, 0.0, 0.0))
+    manifest = package.build_package(
+        tmp_path, "TEST-02", "openear", [package.LabelInput("Malleus", a, spacing, oa)], ONTOLOGY,
+        samples=2000, publish_shown_only=True,
+    )
+    lods = manifest["structures"][0]["lods"]
+    assert [l["published"] for l in lods] == [True, False, False]
+    assert sorted(p.name for p in tmp_path.glob("*.glb")) == ["malleus.lod0.glb"]
+    assert all("hausdorff_mm" in l for l in lods)

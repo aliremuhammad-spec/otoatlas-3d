@@ -12,42 +12,73 @@ concurrency:
   group: pages
   cancel-in-progress: true
 jobs:
-  content:
+  # Lists every specimen archive in the two Zenodo records, so new specimens need no edit here.
+  plan:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 10
+    outputs:
+      specimens: ${{ steps.list.outputs.specimens }}
+    steps:
+      - id: list
+        shell: python
+        run: |
+          import json, os, time, urllib.request
+          def keys(record):
+              for attempt in range(5):
+                  try:
+                      with urllib.request.urlopen(f"https://zenodo.org/api/records/{record}", timeout=60) as r:
+                          return [f["key"] for f in json.load(r)["files"]]
+                  except Exception as e:
+                      print("retrying:", e)
+                      time.sleep(15 * (attempt + 1))
+              raise SystemExit(f"could not list record {record}")
+          items = [{"kind": "openear", "id": k[:-4].upper(), "pkg": "OPENEAR-" + k[:-4].upper()}
+                   for k in keys(1473724) if k.lower().endswith(".zip")]
+          items += [{"kind": "bern", "id": k[:-4], "pkg": "BERN-" + k[:-4]}
+                    for k in keys(3355272) if k.lower().endswith(".zip")]
+          print(json.dumps(items, indent=1))
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write("specimens=" + json.dumps(items) + "\n")
+
+  content:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      # One failed specimen must not hold back the others; the site job publishes what was built.
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        specimen: ${{ fromJSON(needs.plan.outputs.specimens) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      # Content is rebuilt only when the pipeline or the ontology changes.
+      # A package is rebuilt only when the pipeline or the ontology changes.
       - id: cache
         uses: actions/cache@v4
         with:
           path: content-out
-          key: content-v1-${{ hashFiles('DATA_PIPELINE/**', 'ontology/**') }}
+          key: content-v2-${{ matrix.specimen.pkg }}-${{ hashFiles('DATA_PIPELINE/**', 'ontology/**') }}
       # `shell: bash` turns on pipefail, so a failed build cannot hide behind `tee`.
       - if: steps.cache.outputs.cache-hit != 'true'
         working-directory: DATA_PIPELINE
         shell: bash
         run: |
           pip install -e .
-          python build_content.py openear ZETA ../content-out/OPENEAR-ZETA | tee -a "$GITHUB_STEP_SUMMARY"
-          for b in F01 F02 T01; do
-            python build_content.py bern $b ../content-out/BERN-$b | tee -a "$GITHUB_STEP_SUMMARY"
-          done
-          python build_content.py index ../content-out
-      - run: |
-          du -sh content-out/* | tee -a "$GITHUB_STEP_SUMMARY"
-          ls -la content-out/OPENEAR-ZETA | tee -a "$GITHUB_STEP_SUMMARY"
-          cat content-out/index.json
+          python build_content.py ${{ matrix.specimen.kind }} ${{ matrix.specimen.id }} ../content-out/${{ matrix.specimen.pkg }} | tee -a "$GITHUB_STEP_SUMMARY"
+      - run: du -sh content-out/* | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with:
-          name: content
+          name: content-${{ matrix.specimen.pkg }}
           path: content-out
           if-no-files-found: error
+
   site:
     needs: content
+    # Publish whatever was built, even when a specimen failed.
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment:
@@ -66,8 +97,24 @@ jobs:
           npm run build:pwa
       - uses: actions/download-artifact@v4
         with:
-          name: content
+          pattern: content-*
           path: app/dist/content
+          merge-multiple: true
+      - name: Write the specimen index
+        shell: python
+        run: |
+          import json, pathlib
+          root = pathlib.Path("app/dist/content")
+          specimens = []
+          # The specimen the reviewer has worked on opens first, then OpenEar, then Bern.
+          order = lambda m: (m.parent.name != "OPENEAR-ZETA", not m.parent.name.startswith("OPENEAR"), m.parent.name)
+          for m in sorted(root.glob("*/manifest.json"), key=order):
+              specimens.append({"id": json.loads(m.read_text(encoding="utf-8"))["specimen_id"], "path": m.parent.name})
+          if not specimens:
+              raise SystemExit("no specimen was built")
+          (root / "index.json").write_text(json.dumps({"specimens": specimens}, indent=2), encoding="utf-8")
+          print(len(specimens), "specimens:", ", ".join(s["id"] for s in specimens))
+      - run: du -sh app/dist/content | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

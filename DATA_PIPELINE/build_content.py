@@ -46,12 +46,15 @@ def build_openear(specimen: str, out: Path) -> dict:
     with tempfile.TemporaryDirectory() as tmp:
         seg_path = fetch.fetch_openear_member(specimen, "06_Segmentation/Segmentation.seg.nrrd", tmp)
         segments = openear.read_segmentation(str(seg_path))
-    missing = set(openear.EXPECTED_SEGMENTS) - set(segments)
-    if missing:
-        raise RuntimeError(f"segments missing from {specimen}: {sorted(missing)}")
+    # A specimen may lack a label; build the rest and record the gap rather than failing.
+    missing = sorted(set(OPENEAR_PHASE1) - set(segments))
+    if "Scala Tympani" in missing and "Scala Vestibuli" not in missing:
+        missing.append("Scala Vestibuli")  # cannot be split without scala tympani
     labels = []
     report = None
     for name in OPENEAR_PHASE1:
+        if name in missing:
+            continue
         seg = segments[name]
         if name != "Scala Vestibuli":
             labels.append(package.LabelInput(name, seg.mask, seg.spacing, seg.origin))
@@ -65,6 +68,9 @@ def build_openear(specimen: str, out: Path) -> dict:
         labels.append(package.LabelInput(name, parts.cochlear.mask, seg.spacing, parts.cochlear.origin, part="cochlear"))
         labels.append(package.LabelInput(name, parts.vestibular.mask, seg.spacing, parts.vestibular.origin, part="vestibular"))
     extra = {"frame": "Dataset frame of the segmentation file (right-anterior-superior), millimetres."}
+    if missing:
+        extra["labels_not_built"] = missing
+        print(f"{specimen}: labels not built: {missing}")
     if report:
         extra["scala_vestibuli_split"] = report
         print("scala vestibuli split:", json.dumps(report))
@@ -73,7 +79,8 @@ def build_openear(specimen: str, out: Path) -> dict:
         side, by, on = OPENEAR_SIDES[specimen.upper()]
         extra["side_determined_by"] = {"reviewer": by, "date": on}
     return package.build_package(
-        out, f"OPENEAR-{specimen.upper()}", "openear", labels, package.load_ontology(ONTOLOGY), side=side, extra=extra
+        out, f"OPENEAR-{specimen.upper()}", "openear", labels, package.load_ontology(ONTOLOGY), side=side, extra=extra,
+        publish_shown_only=True,
     )
 
 
@@ -105,7 +112,8 @@ def build_bern(specimen: str, out: Path) -> dict:
     }
     labels = [package.LabelInput("bony labyrinth (single label)", mask, spacing, origin)]
     return package.build_package(
-        out, f"BERN-{specimen}", "bern-labyrinth", labels, package.load_ontology(ONTOLOGY), side=desc["SIDE"].lower(), extra=extra
+        out, f"BERN-{specimen}", "bern-labyrinth", labels, package.load_ontology(ONTOLOGY), side=desc["SIDE"].lower(), extra=extra,
+        publish_shown_only=True,
     )
 
 
