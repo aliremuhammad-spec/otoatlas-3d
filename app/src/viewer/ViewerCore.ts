@@ -99,6 +99,7 @@ export class ViewerCore {
       this.depthTwins.set(s.id, twin);
       this.scene.add(twin);
       if (s.defaultOpacity !== undefined && s.defaultOpacity < 1) this.setOpacity(s.id, s.defaultOpacity);
+      if (s.defaultVisible === false) this.setVisible(s.id, false);
     }
 
     // See-through structures draw smallest first and enclosing ones (the bone) last,

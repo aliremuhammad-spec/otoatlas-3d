@@ -22,6 +22,8 @@ export interface SceneStructure {
    * the structure is then for orientation only and takes no measurement. Absent means true.
    */
   measurable?: boolean;
+  /** False when the structure starts hidden. Absent means shown. */
+  defaultVisible?: boolean;
   /** Opacity the structure starts at; 1 when not given. */
   defaultOpacity?: number;
 }

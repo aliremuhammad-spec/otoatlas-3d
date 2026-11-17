@@ -34,7 +34,9 @@ export function SpecimenView({ content }: Props) {
     measurable[1]?.id ?? measurable[0]?.id ?? '',
   ]);
   const [surfaceResult, setSurfaceResult] = useState<Measurement | null>(null);
-  const [hidden, setHidden] = useState<ReadonlySet<string>>(new Set());
+  const [hidden, setHidden] = useState<ReadonlySet<string>>(
+    () => new Set(content.structures.filter((s) => s.defaultVisible === false).map((s) => s.id)),
+  );
   const [opacity, setOpacity] = useState<Readonly<Record<string, number>>>({});
 
   useEffect(() => {

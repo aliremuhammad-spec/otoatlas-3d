@@ -38,7 +38,7 @@ def test_manifest_records_names_limits_and_measured_error(built):
         lod0 = s["lods"][0]
         assert lod0["within_limit"] and 0 < lod0["hausdorff_mm"] <= s["mesh_error_limit_mm"]
         assert s["ar_status"] == "verified"  # confirmed by the reviewer on 2026-11-17
-        assert s["default_opacity"] == 1.0
+        assert s["default_opacity"] == 1.0 and s["default_visible"] is True
         assert s["display_level"] == 0  # small meshes are shown at full resolution
 
 

@@ -262,12 +262,13 @@
       ],
       "content_status": "draft",
       "reviewed_by": null,
-      "note": "OpenEar ships the sigmoid sinus and the dura as one label. The joined Arabic name was confirmed by the reviewer on 2026-11-17. To be split by expert annotation into sigmoid_sinus (Sinus sigmoideus, الجيب السيني) and dura_mater (Dura mater, الأم الجافية).",
+      "note": "OpenEar ships the sigmoid sinus and the dura as one label. The joined Arabic name was confirmed by the reviewer on 2026-11-17. To be split by expert annotation into sigmoid_sinus (Sinus sigmoideus, الجيب السيني) and dura_mater (Dura mater, الأم الجافية). In ZETA the label is a large block with flat faces filling the space beyond the bone to the edge of the scan, not a vessel-shaped surface, so it starts hidden.",
       "color": "#6a7fb5",
       "mesh_error_limit_mm": 0.1,
       "default_opacity": 0.3,
       "ar_reviewed_by": "Dr. Ali R. Muhammad",
-      "ar_reviewed_on": "2026-11-17"
+      "ar_reviewed_on": "2026-11-17",
+      "default_visible": false
     },
     {
       "id": "internal_carotid_artery",

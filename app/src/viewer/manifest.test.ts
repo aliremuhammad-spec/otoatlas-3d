@@ -81,6 +81,12 @@ describe('content manifest', () => {
     expect(() => parseManifest(withStructure({ display_level: 7 }))).toThrow(/display_level/);
   });
 
+  it('reads whether a structure starts hidden', () => {
+    expect(parseManifest(validManifest()).structures[0]?.defaultVisible).toBe(true);
+    expect(parseManifest(withStructure({ default_visible: false })).structures[0]?.defaultVisible).toBe(false);
+    expect(() => parseManifest(withStructure({ default_visible: 'no' }))).toThrow(/default_visible/);
+  });
+
   it('accepts a structure with no Arabic or Latin name yet', () => {
     const m = parseManifest(withStructure({ names: { en: 'Sigmoid sinus and dura', ar: null, latin: null } }));
     expect(m.structures[0]?.names.ar).toBeNull();

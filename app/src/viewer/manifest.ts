@@ -22,6 +22,8 @@ export interface ManifestStructure {
   defaultOpacity: number;
   /** Level the app shows. Above level 0 the structure is display-only unless that level is within its limit. */
   displayLevel: number;
+  /** False for structures that start hidden. */
+  defaultVisible: boolean;
   sourceVoxelMm: readonly [number, number, number];
   lods: readonly ManifestLod[];
 }
@@ -88,6 +90,11 @@ function parseLod(value: unknown, what: string): ManifestLod {
   };
 }
 
+function bool(value: unknown, what: string): boolean {
+  if (typeof value !== 'boolean') fail(`${what} is not a boolean`);
+  return value;
+}
+
 function parseOpacity(value: unknown, what: string): number {
   if (value === undefined || value === null) return 1;
   const n = num(value, what);
@@ -126,6 +133,7 @@ function parseStructure(value: unknown, index: number): ManifestStructure {
     meshErrorLimitMm: num(o.mesh_error_limit_mm, `${what}.mesh_error_limit_mm`),
     defaultOpacity: parseOpacity(o.default_opacity, `${what}.default_opacity`),
     displayLevel,
+    defaultVisible: o.default_visible === undefined || o.default_visible === null ? true : bool(o.default_visible, `${what}.default_visible`),
     sourceVoxelMm: [
       num(voxel[0], `${what}.source_voxel_mm[0]`),
       num(voxel[1], `${what}.source_voxel_mm[1]`),

@@ -46,6 +46,7 @@ export function sceneFromManifest(
       geometry,
       position: [0, 0, 0],
       defaultOpacity: s.defaultOpacity,
+      defaultVisible: s.defaultVisible,
       measurable,
       ...(shown && measurable ? { meshErrorMm: shown.hausdorffMm } : {}),
     };
