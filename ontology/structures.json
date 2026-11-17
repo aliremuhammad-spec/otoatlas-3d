@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "Version 0. Dataset labels only. OpenEar label names confirmed against Segmentation.seg.nrrd of specimen ZETA on 2026-11-16.",
+  "status": "Version 0. Dataset labels only. OpenEar label names confirmed against Segmentation.seg.nrrd of specimen ZETA on 2026-11-16. Arabic terms of the first 14 structures confirmed by Dr. Ali R. Muhammad on 2026-11-17; scala vestibuli split from the vestibule and canals on his instruction.",
   "provenance_tiers": {
     "specimen-derived": "Geometry from a dataset label or a documented new segmentation of the specimen's own images.",
     "expert-annotated": "A point, line, region or volume placed on specimen geometry by a named reviewer.",
@@ -44,7 +44,7 @@
       "name_en": "Temporal bone",
       "name_ta_latin": "Os temporale",
       "name_ar": "العظم الصدغي",
-      "ar_status": "unverified",
+      "ar_status": "verified",
       "parent": null,
       "system": "bone",
       "provenance_tier": "specimen-derived",
@@ -57,14 +57,16 @@
       "content_status": "draft",
       "reviewed_by": null,
       "color": "#d8c9a3",
-      "mesh_error_limit_mm": 0.1
+      "mesh_error_limit_mm": 0.1,
+      "ar_reviewed_by": "Dr. Ali R. Muhammad",
+      "ar_reviewed_on": "2026-11-17"
     },
     {
       "id": "external_acoustic_meatus",
       "name_en": "External acoustic meatus",
       "name_ta_latin": "Meatus acusticus externus",
       "name_ar": "الصماخ السمعي الظاهر",
-      "ar_status": "unverified",
+      "ar_status": "verified",
       "parent": null,
       "system": "soft_tissue",
       "provenance_tier": "specimen-derived",
@@ -77,14 +79,16 @@
       "content_status": "draft",
       "reviewed_by": null,
       "color": "#b0a090",
-      "mesh_error_limit_mm": 0.1
+      "mesh_error_limit_mm": 0.1,
+      "ar_reviewed_by": "Dr. Ali R. Muhammad",
+      "ar_reviewed_on": "2026-11-17"
     },
     {
       "id": "tympanic_membrane",
       "name_en": "Tympanic membrane",
       "name_ta_latin": "Membrana tympanica",
       "name_ar": "الغشاء الطبلي",
-      "ar_status": "unverified",
+      "ar_status": "verified",
       "parent": null,
       "system": "soft_tissue",
       "provenance_tier": "specimen-derived",
@@ -97,14 +101,16 @@
       "content_status": "draft",
       "reviewed_by": null,
       "color": "#c7b8e0",
-      "mesh_error_limit_mm": 0.1
+      "mesh_error_limit_mm": 0.1,
+      "ar_reviewed_by": "Dr. Ali R. Muhammad",
+      "ar_reviewed_on": "2026-11-17"
     },
     {
       "id": "malleus",
       "name_en": "Malleus",
       "name_ta_latin": "Malleus",
       "name_ar": "المطرقة",
-      "ar_status": "unverified",
+      "ar_status": "verified",
       "parent": "auditory_ossicles",
       "system": "ossicles",
       "provenance_tier": "specimen-derived",
@@ -117,14 +123,16 @@
       "content_status": "draft",
       "reviewed_by": null,
       "color": "#E69F00",
-      "mesh_error_limit_mm": 0.1
+      "mesh_error_limit_mm": 0.1,
+      "ar_reviewed_by": "Dr. Ali R. Muhammad",
+      "ar_reviewed_on": "2026-11-17"
     },
     {
       "id": "incus",
       "name_en": "Incus",
       "name_ta_latin": "Incus",
       "name_ar": "السندان",
-      "ar_status": "unverified",
+      "ar_status": "verified",
       "parent": "auditory_ossicles",
       "system": "ossicles",
       "provenance_tier": "specimen-derived",
@@ -137,14 +145,16 @@
       "content_status": "draft",
       "reviewed_by": null,
       "color": "#CC79A7",
-      "mesh_error_limit_mm": 0.1
+      "mesh_error_limit_mm": 0.1,
+      "ar_reviewed_by": "Dr. Ali R. Muhammad",
+      "ar_reviewed_on": "2026-11-17"
     },
     {
       "id": "stapes",
       "name_en": "Stapes",
       "name_ta_latin": "Stapes",
       "name_ar": "الركاب",
-      "ar_status": "unverified",
+      "ar_status": "verified",
       "parent": "auditory_ossicles",
       "system": "ossicles",
       "provenance_tier": "specimen-derived",
@@ -157,14 +167,16 @@
       "content_status": "draft",
       "reviewed_by": null,
       "color": "#D55E00",
-      "mesh_error_limit_mm": 0.1
+      "mesh_error_limit_mm": 0.1,
+      "ar_reviewed_by": "Dr. Ali R. Muhammad",
+      "ar_reviewed_on": "2026-11-17"
     },
     {
       "id": "facial_nerve",
       "name_en": "Facial nerve",
       "name_ta_latin": "Nervus facialis",
       "name_ar": "العصب الوجهي",
-      "ar_status": "unverified",
+      "ar_status": "verified",
       "parent": null,
       "system": "nerves",
       "provenance_tier": "specimen-derived",
@@ -177,14 +189,16 @@
       "content_status": "draft",
       "reviewed_by": null,
       "color": "#F0E442",
-      "mesh_error_limit_mm": 0.1
+      "mesh_error_limit_mm": 0.1,
+      "ar_reviewed_by": "Dr. Ali R. Muhammad",
+      "ar_reviewed_on": "2026-11-17"
     },
     {
       "id": "chorda_tympani",
       "name_en": "Chorda tympani",
       "name_ta_latin": "Chorda tympani",
       "name_ar": "حبل الطبل",
-      "ar_status": "unverified",
+      "ar_status": "verified",
       "parent": "facial_nerve",
       "system": "nerves",
       "provenance_tier": "specimen-derived",
@@ -197,14 +211,16 @@
       "content_status": "draft",
       "reviewed_by": null,
       "color": "#b5ad2a",
-      "mesh_error_limit_mm": 0.1
+      "mesh_error_limit_mm": 0.1,
+      "ar_reviewed_by": "Dr. Ali R. Muhammad",
+      "ar_reviewed_on": "2026-11-17"
     },
     {
       "id": "vestibulocochlear_nerve",
       "name_en": "Vestibulocochlear nerve",
       "name_ta_latin": "Nervus vestibulocochlearis",
       "name_ar": "العصب الدهليزي القوقعي",
-      "ar_status": "unverified",
+      "ar_status": "verified",
       "parent": null,
       "system": "nerves",
       "provenance_tier": "specimen-derived",
@@ -217,14 +233,16 @@
       "content_status": "draft",
       "reviewed_by": null,
       "color": "#e8e6a0",
-      "mesh_error_limit_mm": 0.1
+      "mesh_error_limit_mm": 0.1,
+      "ar_reviewed_by": "Dr. Ali R. Muhammad",
+      "ar_reviewed_on": "2026-11-17"
     },
     {
       "id": "sigmoid_sinus_and_dura",
       "name_en": "Sigmoid sinus and dura (combined dataset label)",
       "name_ta_latin": null,
       "name_ar": null,
-      "ar_status": "unverified",
+      "ar_status": "verified",
       "parent": null,
       "system": "vessels",
       "provenance_tier": "specimen-derived",
@@ -238,14 +256,16 @@
       "reviewed_by": null,
       "note": "OpenEar ships the sigmoid sinus and the dura as one label. To be split by expert annotation into sigmoid_sinus (Sinus sigmoideus, الجيب السيني) and dura_mater (Dura mater, الأم الجافية).",
       "color": "#6a7fb5",
-      "mesh_error_limit_mm": 0.1
+      "mesh_error_limit_mm": 0.1,
+      "ar_reviewed_by": "Dr. Ali R. Muhammad",
+      "ar_reviewed_on": "2026-11-17"
     },
     {
       "id": "internal_carotid_artery",
       "name_en": "Internal carotid artery",
       "name_ta_latin": "Arteria carotis interna",
       "name_ar": "الشريان السباتي الباطن",
-      "ar_status": "unverified",
+      "ar_status": "verified",
       "parent": null,
       "system": "vessels",
       "provenance_tier": "specimen-derived",
@@ -258,14 +278,16 @@
       "content_status": "draft",
       "reviewed_by": null,
       "color": "#c0392b",
-      "mesh_error_limit_mm": 0.1
+      "mesh_error_limit_mm": 0.1,
+      "ar_reviewed_by": "Dr. Ali R. Muhammad",
+      "ar_reviewed_on": "2026-11-17"
     },
     {
       "id": "scala_tympani",
       "name_en": "Scala tympani",
       "name_ta_latin": "Scala tympani",
       "name_ar": "السقالة الطبلية",
-      "ar_status": "unverified",
+      "ar_status": "verified",
       "parent": "cochlea",
       "system": "inner_ear_fluid_spaces",
       "provenance_tier": "specimen-derived",
@@ -278,27 +300,54 @@
       "content_status": "draft",
       "reviewed_by": null,
       "color": "#0072B2",
-      "mesh_error_limit_mm": 0.05
+      "mesh_error_limit_mm": 0.05,
+      "ar_reviewed_by": "Dr. Ali R. Muhammad",
+      "ar_reviewed_on": "2026-11-17"
     },
     {
       "id": "scala_vestibuli",
       "name_en": "Scala vestibuli",
       "name_ta_latin": "Scala vestibuli",
       "name_ar": "السقالة الدهليزية",
-      "ar_status": "unverified",
+      "ar_status": "verified",
       "parent": "cochlea",
       "system": "inner_ear_fluid_spaces",
       "provenance_tier": "specimen-derived",
       "sources": [
         {
           "dataset": "openear",
-          "label": "Scala Vestibuli"
+          "label": "Scala Vestibuli",
+          "part": "cochlear"
         }
       ],
       "content_status": "draft",
       "reviewed_by": null,
-      "note": "In specimen ZETA this label spans about 12 x 14.6 x 15 mm, against about 5.2 x 6.9 x 8.5 mm for scala tympani. That is larger than a cochlea, so the label very probably also contains the vestibule and semicircular canals. To be confirmed by the reviewer on the slices before the label is split.",
+      "note": "OpenEar's \"Scala Vestibuli\" label also contains the vestibule and semicircular canals (about 12 x 14.6 x 15 mm in ZETA). The reviewer confirmed on 2026-11-17 that scala vestibuli is confined to the cochlea and the canals are a separate structure. The pipeline keeps the part of the label lying within a set distance of scala tympani; the boundary at the vestibule is a computed first pass awaiting review.",
       "color": "#56B4E9",
+      "mesh_error_limit_mm": 0.05,
+      "ar_reviewed_by": "Dr. Ali R. Muhammad",
+      "ar_reviewed_on": "2026-11-17"
+    },
+    {
+      "id": "vestibule_and_semicircular_canals",
+      "name_en": "Vestibule and semicircular canals",
+      "name_ta_latin": "Vestibulum et canales semicirculares",
+      "name_ar": "الدهليز والقنوات نصف الهلالية",
+      "ar_status": "unverified",
+      "parent": null,
+      "system": "inner_ear_fluid_spaces",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Scala Vestibuli",
+          "part": "vestibular"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "The part of OpenEar's \"Scala Vestibuli\" label outside the cochlea. Split from the cochlear part by a computed first-pass boundary that awaits the reviewer's check. Vestibule and canals are not separated from each other in the source label.",
+      "color": "#7fc4b8",
       "mesh_error_limit_mm": 0.05
     },
     {
@@ -306,7 +355,7 @@
       "name_en": "Bony labyrinth",
       "name_ta_latin": "Labyrinthus osseus",
       "name_ar": "التيه العظمي",
-      "ar_status": "unverified",
+      "ar_status": "verified",
       "parent": null,
       "system": "bone",
       "provenance_tier": "specimen-derived",
@@ -319,7 +368,9 @@
       "content_status": "draft",
       "reviewed_by": null,
       "color": "#9ecae1",
-      "mesh_error_limit_mm": 0.05
+      "mesh_error_limit_mm": 0.05,
+      "ar_reviewed_by": "Dr. Ali R. Muhammad",
+      "ar_reviewed_on": "2026-11-17"
     }
   ]
 }

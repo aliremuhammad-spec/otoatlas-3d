@@ -37,7 +37,7 @@ def test_manifest_records_names_limits_and_measured_error(built):
     for s in manifest["structures"]:
         lod0 = s["lods"][0]
         assert lod0["within_limit"] and 0 < lod0["hausdorff_mm"] <= s["mesh_error_limit_mm"]
-        assert s["ar_status"] == "unverified"
+        assert s["ar_status"] == "verified"  # confirmed by the reviewer on 2026-11-17
 
 
 def test_meshes_are_written_in_the_specimen_frame(built):

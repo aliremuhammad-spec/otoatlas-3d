@@ -28,19 +28,21 @@ class LabelInput:
     mask: np.ndarray
     spacing: tuple[float, float, float]
     origin: tuple[float, float, float]
+    part: str | None = None  # set when one dataset label is split into several structures
 
 
 def load_ontology(path: str | Path) -> dict:
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
-def structure_for(ontology: dict, dataset: str, source_label: str) -> dict:
-    """The ontology entry that a dataset label maps to. Unknown labels are an error, never skipped."""
+def structure_for(ontology: dict, dataset: str, source_label: str, part: str | None = None) -> dict:
+    """The ontology entry that a dataset label (or one part of it) maps to. Unknown labels are an error, never skipped."""
     for s in ontology["structures"]:
         for src in s["sources"]:
-            if src["dataset"] == dataset and src["label"] == source_label:
+            if src["dataset"] == dataset and src["label"] == source_label and src.get("part") == part:
                 return s
-    raise KeyError(f"label {source_label!r} of dataset {dataset!r} is not in the ontology")
+    where = f" (part {part!r})" if part else ""
+    raise KeyError(f"label {source_label!r}{where} of dataset {dataset!r} is not in the ontology")
 
 
 def build_package(
@@ -60,7 +62,7 @@ def build_package(
     out.mkdir(parents=True, exist_ok=True)
     structures = []
     for label in labels:
-        entry = structure_for(ontology, dataset, label.source_label)
+        entry = structure_for(ontology, dataset, label.source_label, label.part)
         limit = float(entry["mesh_error_limit_mm"])
         build = M.build_lods(
             label.mask, label.spacing, label.origin, limit_mm=limit, keep_fractions=keep_fractions, samples=samples
@@ -85,6 +87,7 @@ def build_package(
             {
                 "id": entry["id"],
                 "source_label": label.source_label,
+                **({"source_part": label.part} if label.part else {}),
                 "names": {"en": entry["name_en"], "ar": entry["name_ar"], "latin": entry["name_ta_latin"]},
                 "ar_status": entry["ar_status"],
                 "content_status": entry["content_status"],

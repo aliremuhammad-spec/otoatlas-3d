@@ -17,7 +17,7 @@ from pathlib import Path
 import nibabel as nib
 import numpy as np
 
-from otopipe import fetch, frames, openear, package
+from otopipe import fetch, frames, openear, package, split
 
 ONTOLOGY = Path(__file__).resolve().parent.parent / "ontology" / "structures.json"
 
@@ -35,6 +35,9 @@ OPENEAR_PHASE1 = (
     "Carotis Interna",
 )
 
+# Sides the dataset does not state, as determined by the reviewer.
+OPENEAR_SIDES = {"ZETA": ("right", "Dr. Ali R. Muhammad", "2026-11-17")}
+
 
 def build_openear(specimen: str, out: Path) -> dict:
     with tempfile.TemporaryDirectory() as tmp:
@@ -43,13 +46,32 @@ def build_openear(specimen: str, out: Path) -> dict:
     missing = set(openear.EXPECTED_SEGMENTS) - set(segments)
     if missing:
         raise RuntimeError(f"segments missing from {specimen}: {sorted(missing)}")
-    labels = [
-        package.LabelInput(name, segments[name].mask, segments[name].spacing, segments[name].origin)
-        for name in OPENEAR_PHASE1
-    ]
+    labels = []
+    report = None
+    for name in OPENEAR_PHASE1:
+        seg = segments[name]
+        if name != "Scala Vestibuli":
+            labels.append(package.LabelInput(name, seg.mask, seg.spacing, seg.origin))
+            continue
+        # The label also holds the vestibule and canals; split them off (see otopipe/split.py).
+        st = segments["Scala Tympani"]
+        if not np.allclose(seg.spacing, st.spacing):
+            raise RuntimeError("scala tympani and scala vestibuli are on different grids")
+        parts = split.split_by_reach(seg.mask, seg.origin, st.mask, st.origin, seg.spacing)
+        report = parts.report
+        labels.append(package.LabelInput(name, parts.cochlear.mask, seg.spacing, parts.cochlear.origin, part="cochlear"))
+        labels.append(package.LabelInput(name, parts.vestibular.mask, seg.spacing, parts.vestibular.origin, part="vestibular"))
     extra = {"frame": "Dataset frame of the segmentation file (right-anterior-superior), millimetres."}
-    # Side is not stated by the dataset; it stays null until the reviewer determines it.
-    return package.build_package(out, f"OPENEAR-{specimen.upper()}", "openear", labels, package.load_ontology(ONTOLOGY), extra=extra)
+    if report:
+        extra["scala_vestibuli_split"] = report
+        print("scala vestibuli split:", json.dumps(report))
+    side = None
+    if specimen.upper() in OPENEAR_SIDES:
+        side, by, on = OPENEAR_SIDES[specimen.upper()]
+        extra["side_determined_by"] = {"reviewer": by, "date": on}
+    return package.build_package(
+        out, f"OPENEAR-{specimen.upper()}", "openear", labels, package.load_ontology(ONTOLOGY), side=side, extra=extra
+    )
 
 
 def build_bern(specimen: str, out: Path) -> dict:

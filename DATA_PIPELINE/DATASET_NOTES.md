@@ -30,8 +30,13 @@ Checked on specimen ZETA (3.87 GB archive, read remotely without downloading it 
 - CBCT: 668 x 587 x 625 voxels at 0.125 mm, left-posterior-superior space.
 - Micro-slicing colour volume: 3 channels, 792 x 792 x 346 at 0.05 x 0.05 x 0.15 mm.
 - Bounding boxes in ZETA: scala tympani about 5.2 x 6.9 x 8.5 mm; "Scala Vestibuli" about 12 x 14.6 x 15 mm,
-  so that label probably includes the vestibule and semicircular canals; facial nerve about
-  8.9 x 18.7 x 15.2 mm.
+  so that label includes the vestibule and semicircular canals (three canal loops are visible in the 3D view);
+  facial nerve about 8.9 x 18.7 x 15.2 mm.
+- Reviewer decisions, 2026-11-17 (Dr. Ali R. Muhammad): ZETA is a right ear; scala vestibuli is confined to the
+  cochlea and the semicircular canals are a separate structure. The dataset has no separate canal label, so the
+  pipeline splits the "Scala Vestibuli" label (otopipe/split.py): the part within 1 mm of scala tympani, largest
+  connected piece, is scala vestibuli; the rest is "vestibule and semicircular canals". That boundary is a computed
+  first pass awaiting review.
 
 ## Not usable yet
 
