@@ -28,9 +28,10 @@ export function SpecimenView({ content }: Props) {
   const [failed, setFailed] = useState(false);
   const [mode, setMode] = useState<Mode>('p2p');
   const [points, setPoints] = useState<readonly Vec3[]>([]);
+  const measurable = content.structures.filter((s) => s.measurable !== false);
   const [pair, setPair] = useState<readonly [string, string]>(() => [
-    content.structures[0]?.id ?? '',
-    content.structures[1]?.id ?? content.structures[0]?.id ?? '',
+    measurable[0]?.id ?? '',
+    measurable[1]?.id ?? measurable[0]?.id ?? '',
   ]);
   const [surfaceResult, setSurfaceResult] = useState<Measurement | null>(null);
   const [hidden, setHidden] = useState<ReadonlySet<string>>(new Set());
@@ -163,6 +164,9 @@ export function SpecimenView({ content }: Props) {
                           {latin}
                         </span>
                       )}
+                      {s.measurable === false && (
+                        <span className="structure-name__note">{t('viewer.displayOnly')}</span>
+                      )}
                     </span>
                   </label>
                   <div className="structures__row">
@@ -229,7 +233,7 @@ export function SpecimenView({ content }: Props) {
                   onChange={(e) => changePair(i, e.target.value)}
                   aria-label={t('viewer.structures')}
                 >
-                  {content.structures.map((s) => (
+                  {measurable.map((s) => (
                     <option key={s.id} value={s.id}>
                       {displayName(s.names, locale)}
                     </option>

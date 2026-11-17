@@ -246,6 +246,11 @@ fieldset {
   font-style: italic;
 }
 
+.structure-name__note {
+  color: var(--text-dim);
+  font-size: 0.75rem;
+}
+
 .viewer__stage {
   grid-area: stage;
   position: relative;

@@ -20,6 +20,8 @@ export interface ManifestStructure {
   meshErrorLimitMm: number;
   /** Opacity the structure starts at, 0 to 1. Large enclosing structures start faded. */
   defaultOpacity: number;
+  /** Level the app shows. Above level 0 the structure is display-only unless that level is within its limit. */
+  displayLevel: number;
   sourceVoxelMm: readonly [number, number, number];
   lods: readonly ManifestLod[];
 }
@@ -104,6 +106,8 @@ function parseStructure(value: unknown, index: number): ManifestStructure {
   const lod0 = lods.find((l) => l.level === 0);
   if (!lod0) fail(`${what} has no full-resolution level`);
   if (!lod0.withinLimit) fail(`${what} full-resolution mesh exceeds its error limit`);
+  const displayLevel = o.display_level === undefined || o.display_level === null ? 0 : num(o.display_level, `${what}.display_level`);
+  if (!lods.some((l) => l.level === displayLevel)) fail(`${what}.display_level names no level`);
   return {
     id: str(o.id, `${what}.id`),
     names: {
@@ -121,6 +125,7 @@ function parseStructure(value: unknown, index: number): ManifestStructure {
     color: parseColor(o.color, `${what}.color`),
     meshErrorLimitMm: num(o.mesh_error_limit_mm, `${what}.mesh_error_limit_mm`),
     defaultOpacity: parseOpacity(o.default_opacity, `${what}.default_opacity`),
+    displayLevel,
     sourceVoxelMm: [
       num(voxel[0], `${what}.source_voxel_mm[0]`),
       num(voxel[1], `${what}.source_voxel_mm[1]`),

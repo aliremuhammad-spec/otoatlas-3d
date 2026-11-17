@@ -17,6 +17,11 @@ export interface SceneStructure {
   position: readonly [number, number, number];
   /** Measured distance between this mesh and its label surface, when it comes from a package. */
   meshErrorMm?: number;
+  /**
+   * False when the shown mesh is a simplified display level outside the error limit:
+   * the structure is then for orientation only and takes no measurement. Absent means true.
+   */
+  measurable?: boolean;
   /** Opacity the structure starts at; 1 when not given. */
   defaultOpacity?: number;
 }

@@ -49,6 +49,7 @@ export class ViewerCore {
   private readonly controls: OrbitControls;
   private readonly raycaster = new Raycaster();
   private readonly meshes = new Map<string, Mesh<BufferGeometry, MeshStandardMaterial>>();
+  private readonly displayOnly = new Set<string>();
   private readonly overlay = new Group();
   private readonly resizeObserver: ResizeObserver;
   private pickHandler: ((pick: PickResult) => void) | null = null;
@@ -78,7 +79,9 @@ export class ViewerCore {
       const mesh = new Mesh(s.geometry, material);
       mesh.position.set(...s.position);
       mesh.name = s.id;
-      s.geometry.computeBoundsTree();
+      // Only measurable structures take taps, so only they need a picking tree.
+      if (s.measurable !== false) s.geometry.computeBoundsTree();
+      else this.displayOnly.add(s.id);
       this.meshes.set(s.id, mesh);
       this.scene.add(mesh);
       if (s.defaultOpacity !== undefined && s.defaultOpacity < 1) this.setOpacity(s.id, s.defaultOpacity);
@@ -221,7 +224,7 @@ export class ViewerCore {
     this.raycaster.firstHitOnly = true;
     // Faded structures (opacity below 0.5) do not take taps, so a see-through bone
     // does not block picking the structures inside it.
-    const visible = [...this.meshes.values()].filter((m) => m.visible && m.material.opacity >= PICK_MIN_OPACITY);
+    const visible = [...this.meshes.values()].filter((m) => m.visible && m.material.opacity >= PICK_MIN_OPACITY && !this.displayOnly.has(m.name));
     const hit = this.raycaster.intersectObjects(visible, false)[0];
     if (!hit) return;
     this.pickHandler({

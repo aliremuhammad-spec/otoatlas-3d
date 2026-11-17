@@ -39,6 +39,7 @@ def test_manifest_records_names_limits_and_measured_error(built):
         assert lod0["within_limit"] and 0 < lod0["hausdorff_mm"] <= s["mesh_error_limit_mm"]
         assert s["ar_status"] == "verified"  # confirmed by the reviewer on 2026-11-17
         assert s["default_opacity"] == 1.0
+        assert s["display_level"] == 0  # small meshes are shown at full resolution
 
 
 def test_meshes_are_written_in_the_specimen_frame(built):
@@ -73,3 +74,10 @@ def test_archive_member_lookup_requires_exactly_one_match():
         fetch.find_member(names, ".seg.nrrd")
     with pytest.raises(LookupError):
         fetch.find_member(names, "missing.nrrd")
+
+
+def test_large_meshes_are_displayed_at_the_finest_level_under_the_budget():
+    lods = [{"level": 0, "triangles": 7_000_000}, {"level": 1, "triangles": 1_750_000}, {"level": 2, "triangles": 700_000}]
+    assert package.display_level(lods) == 2
+    assert package.display_level(lods[:2]) == 1  # nothing fits: the coarsest level
+    assert package.display_level([{"level": 0, "triangles": 50_000}] + lods[1:]) == 0

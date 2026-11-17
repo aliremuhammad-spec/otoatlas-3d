@@ -37,7 +37,8 @@ export function sceneFromManifest(
   const structures: SceneStructure[] = manifest.structures.map((s) => {
     const geometry = geometries.get(s.id);
     if (!geometry) throw new Error(`No geometry loaded for ${s.id}`);
-    const lod0 = s.lods.find((l) => l.level === 0);
+    const shown = s.lods.find((l) => l.level === s.displayLevel);
+    const measurable = shown?.withinLimit ?? false;
     return {
       id: s.id,
       names: s.names,
@@ -45,7 +46,8 @@ export function sceneFromManifest(
       geometry,
       position: [0, 0, 0],
       defaultOpacity: s.defaultOpacity,
-      ...(lod0 ? { meshErrorMm: lod0.hausdorffMm } : {}),
+      measurable,
+      ...(shown && measurable ? { meshErrorMm: shown.hausdorffMm } : {}),
     };
   });
   return {
@@ -58,7 +60,10 @@ export function sceneFromManifest(
   };
 }
 
-/** Loads one specimen package: its manifest and the full-resolution mesh of every structure. */
+/**
+ * Loads one specimen package: its manifest and, for every structure, the level the
+ * manifest says to show (full resolution unless the mesh is too large for a tablet).
+ */
 export async function loadPackage(path: string, base = CONTENT_BASE): Promise<SceneContent> {
   const root = `${base}/${path}`;
   const manifest = parseManifest(await fetchJson(`${root}/manifest.json`));
@@ -66,11 +71,11 @@ export async function loadPackage(path: string, base = CONTENT_BASE): Promise<Sc
   const geometries = new Map<string, BufferGeometry>();
   await Promise.all(
     manifest.structures.map(async (s) => {
-      const lod0 = s.lods.find((l) => l.level === 0);
-      if (!lod0) throw new Error(`${s.id} has no full-resolution level`);
-      const gltf = await loader.loadAsync(`${root}/${lod0.file}`);
+      const shown = s.lods.find((l) => l.level === s.displayLevel);
+      if (!shown) throw new Error(`${s.id} has no level ${s.displayLevel}`);
+      const gltf = await loader.loadAsync(`${root}/${shown.file}`);
       const geometry = firstGeometry(gltf.scene);
-      if (!geometry) throw new Error(`${lod0.file} contains no mesh`);
+      if (!geometry) throw new Error(`${shown.file} contains no mesh`);
       // Smooth shading; the pipeline stores positions only.
       geometry.computeVertexNormals();
       geometries.set(s.id, geometry);

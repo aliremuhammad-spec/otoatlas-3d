@@ -51,6 +51,7 @@ export const en = {
   'viewer.opacity': 'Opacity',
   'viewer.isolate': 'Isolate',
   'viewer.showAll': 'Show all',
+  'viewer.displayOnly': 'Simplified for display; not measured',
   'viewer.measure.title': 'Measure',
   'viewer.measure.pointToPoint': 'Point to point',
   'viewer.measure.surfaceToSurface': 'Closest surfaces',

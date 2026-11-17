@@ -52,6 +52,7 @@ export const ar: Record<MessageKey, string> = {
   'viewer.show': 'إظهار',
   'viewer.opacity': 'الشفافية',
   'viewer.isolate': 'عزل',
+  'viewer.displayOnly': 'مبسّط للعرض؛ لا يُقاس عليه',
   'viewer.showAll': 'إظهار الكل',
   'viewer.measure.title': 'القياس',
   'viewer.measure.pointToPoint': 'من نقطة إلى نقطة',

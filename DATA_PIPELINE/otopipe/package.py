@@ -18,6 +18,18 @@ from . import mesh as M
 
 PIPELINE_VERSION = "0.1.0"
 MANIFEST_SCHEMA = 1
+# The app shows the full-resolution mesh when it has at most this many triangles;
+# larger structures (the temporal bone, the sinus-and-dura label) are shown at the
+# finest level under the budget, and are not measured on unless that level is within its limit.
+DISPLAY_TRIANGLE_BUDGET = 1_000_000
+
+
+def display_level(lods: list[dict]) -> int:
+    """The finest level whose triangle count fits the display budget (the coarsest level if none does)."""
+    for lod in lods:
+        if lod["triangles"] <= DISPLAY_TRIANGLE_BUDGET:
+            return int(lod["level"])
+    return int(lods[-1]["level"])
 
 
 @dataclass(frozen=True)
@@ -54,7 +66,7 @@ def build_package(
     side: str | None = None,
     extra: dict | None = None,
     synthetic: bool = False,
-    keep_fractions: tuple[float, ...] = (1.0, 0.25),
+    keep_fractions: tuple[float, ...] = (1.0, 0.25, 0.1),
     samples: int = 20000,
 ) -> dict:
     """Mesh every label, measure it, write the files, and return the manifest."""
@@ -102,6 +114,7 @@ def build_package(
                 "bounds_mm": np.round(lod0.bounds, 4).tolist(),
                 # Volume is only meaningful for a closed surface.
                 "volume_mm3": round(float(lod0.volume), 4) if lod0.is_watertight else None,
+                "display_level": display_level(lods),
                 "lods": lods,
             }
         )
