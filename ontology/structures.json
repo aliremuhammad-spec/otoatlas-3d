@@ -265,7 +265,7 @@
       "note": "OpenEar ships the sigmoid sinus and the dura as one label. The Arabic name joins the two terms in this note; the joined form awaits the reviewer. To be split by expert annotation into sigmoid_sinus (Sinus sigmoideus, الجيب السيني) and dura_mater (Dura mater, الأم الجافية).",
       "color": "#6a7fb5",
       "mesh_error_limit_mm": 0.1,
-      "default_opacity": 0.6
+      "default_opacity": 0.3
     },
     {
       "id": "internal_carotid_artery",
