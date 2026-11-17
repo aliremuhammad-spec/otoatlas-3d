@@ -21,7 +21,7 @@ from otopipe import fetch, frames, openear, package, split
 
 ONTOLOGY = Path(__file__).resolve().parent.parent / "ontology" / "structures.json"
 
-# Phase 1 scope. Bone and the combined sinus-and-dura label are large and arrive with the atlas phase.
+# Every OpenEar label is built.
 OPENEAR_PHASE1 = (
     "Scala Tympani",
     "Scala Vestibuli",
@@ -33,6 +33,9 @@ OPENEAR_PHASE1 = (
     "Cochleovestibular nerve",
     "Tympanic Membrane",
     "Carotis Interna",
+    "Bone",
+    "External Auditory Canal",
+    "Sinus Dura",
 )
 
 # Sides the dataset does not state, as determined by the reviewer.

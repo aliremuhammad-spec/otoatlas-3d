@@ -14,7 +14,7 @@ concurrency:
 jobs:
   content:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -33,9 +33,14 @@ jobs:
         run: |
           pip install -e .
           python build_content.py openear ZETA ../content-out/OPENEAR-ZETA | tee -a "$GITHUB_STEP_SUMMARY"
-          python build_content.py bern F01 ../content-out/BERN-F01 | tee -a "$GITHUB_STEP_SUMMARY"
+          for b in F01 F02 T01; do
+            python build_content.py bern $b ../content-out/BERN-$b | tee -a "$GITHUB_STEP_SUMMARY"
+          done
           python build_content.py index ../content-out
-      - run: du -sh content-out/* && cat content-out/index.json
+      - run: |
+          du -sh content-out/* | tee -a "$GITHUB_STEP_SUMMARY"
+          ls -la content-out/OPENEAR-ZETA | tee -a "$GITHUB_STEP_SUMMARY"
+          cat content-out/index.json
       - uses: actions/upload-artifact@v4
         with:
           name: content

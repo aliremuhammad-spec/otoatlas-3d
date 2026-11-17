@@ -36,7 +36,8 @@ Checked on specimen ZETA (3.87 GB archive, read remotely without downloading it 
   cochlea and the semicircular canals are a separate structure. The dataset has no separate canal label, so the
   pipeline splits the "Scala Vestibuli" label (otopipe/split.py): the part within 1 mm of scala tympani, largest
   connected piece, is scala vestibuli; the rest is "vestibule and semicircular canals". That boundary is a computed
-  first pass awaiting review.
+  first pass, accepted by the reviewer the same day.
+- Facial nerve label: covers the labyrinthine and tympanic segments (reviewer, 2026-11-17).
 
 ## Not usable yet
 

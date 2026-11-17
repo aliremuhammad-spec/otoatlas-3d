@@ -17,6 +17,8 @@ export interface SceneStructure {
   position: readonly [number, number, number];
   /** Measured distance between this mesh and its label surface, when it comes from a package. */
   meshErrorMm?: number;
+  /** Opacity the structure starts at; 1 when not given. */
+  defaultOpacity?: number;
 }
 
 export interface SceneContent {

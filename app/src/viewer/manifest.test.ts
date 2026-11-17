@@ -70,6 +70,12 @@ describe('content manifest', () => {
     expect(() => parseManifest(withStructure({ color: 'orange' }))).toThrow(/colour/);
   });
 
+  it('reads the starting opacity, defaulting to opaque and refusing values outside 0 to 1', () => {
+    expect(parseManifest(validManifest()).structures[0]?.defaultOpacity).toBe(1);
+    expect(parseManifest(withStructure({ default_opacity: 0.25 })).structures[0]?.defaultOpacity).toBe(0.25);
+    expect(() => parseManifest(withStructure({ default_opacity: 1.5 }))).toThrow(/default_opacity/);
+  });
+
   it('accepts a structure with no Arabic or Latin name yet', () => {
     const m = parseManifest(withStructure({ names: { en: 'Sigmoid sinus and dura', ar: null, latin: null } }));
     expect(m.structures[0]?.names.ar).toBeNull();

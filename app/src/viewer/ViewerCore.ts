@@ -35,6 +35,7 @@ export interface PickResult {
 }
 
 /** Pointer travel (CSS pixels) below which a press-and-release counts as a tap, not a drag. */
+export const PICK_MIN_OPACITY = 0.5;
 const TAP_SLOP_PX = 6;
 
 /**
@@ -80,6 +81,7 @@ export class ViewerCore {
       s.geometry.computeBoundsTree();
       this.meshes.set(s.id, mesh);
       this.scene.add(mesh);
+      if (s.defaultOpacity !== undefined && s.defaultOpacity < 1) this.setOpacity(s.id, s.defaultOpacity);
     }
 
     this.camera.up.set(0, 0, 1);
@@ -217,7 +219,9 @@ export class ViewerCore {
     );
     this.raycaster.setFromCamera(ndc, this.camera);
     this.raycaster.firstHitOnly = true;
-    const visible = [...this.meshes.values()].filter((m) => m.visible);
+    // Faded structures (opacity below 0.5) do not take taps, so a see-through bone
+    // does not block picking the structures inside it.
+    const visible = [...this.meshes.values()].filter((m) => m.visible && m.material.opacity >= PICK_MIN_OPACITY);
     const hit = this.raycaster.intersectObjects(visible, false)[0];
     if (!hit) return;
     this.pickHandler({

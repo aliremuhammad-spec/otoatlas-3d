@@ -59,7 +59,9 @@
       "color": "#d8c9a3",
       "mesh_error_limit_mm": 0.1,
       "ar_reviewed_by": "Dr. Ali R. Muhammad",
-      "ar_reviewed_on": "2026-11-17"
+      "ar_reviewed_on": "2026-11-17",
+      "default_opacity": 0.25,
+      "note": "Starts faded so the structures inside stay visible; faded structures do not take taps until made opaque."
     },
     {
       "id": "external_acoustic_meatus",
@@ -81,7 +83,8 @@
       "color": "#b0a090",
       "mesh_error_limit_mm": 0.1,
       "ar_reviewed_by": "Dr. Ali R. Muhammad",
-      "ar_reviewed_on": "2026-11-17"
+      "ar_reviewed_on": "2026-11-17",
+      "default_opacity": 0.6
     },
     {
       "id": "tympanic_membrane",
@@ -191,7 +194,12 @@
       "color": "#F0E442",
       "mesh_error_limit_mm": 0.1,
       "ar_reviewed_by": "Dr. Ali R. Muhammad",
-      "ar_reviewed_on": "2026-11-17"
+      "ar_reviewed_on": "2026-11-17",
+      "note": "Reviewer (Dr. Ali R. Muhammad, 2026-11-17): in OpenEar the label covers the labyrinthine and tympanic segments.",
+      "segments_covered": [
+        "labyrinthine",
+        "tympanic"
+      ]
     },
     {
       "id": "chorda_tympani",
@@ -239,10 +247,10 @@
     },
     {
       "id": "sigmoid_sinus_and_dura",
-      "name_en": "Sigmoid sinus and dura (combined dataset label)",
-      "name_ta_latin": null,
-      "name_ar": null,
-      "ar_status": "verified",
+      "name_en": "Sigmoid sinus and dura mater",
+      "name_ta_latin": "Sinus sigmoideus et dura mater",
+      "name_ar": "الجيب السيني والأم الجافية",
+      "ar_status": "unverified",
       "parent": null,
       "system": "vessels",
       "provenance_tier": "specimen-derived",
@@ -254,11 +262,10 @@
       ],
       "content_status": "draft",
       "reviewed_by": null,
-      "note": "OpenEar ships the sigmoid sinus and the dura as one label. To be split by expert annotation into sigmoid_sinus (Sinus sigmoideus, الجيب السيني) and dura_mater (Dura mater, الأم الجافية).",
+      "note": "OpenEar ships the sigmoid sinus and the dura as one label. The Arabic name joins the two terms in this note; the joined form awaits the reviewer. To be split by expert annotation into sigmoid_sinus (Sinus sigmoideus, الجيب السيني) and dura_mater (Dura mater, الأم الجافية).",
       "color": "#6a7fb5",
       "mesh_error_limit_mm": 0.1,
-      "ar_reviewed_by": "Dr. Ali R. Muhammad",
-      "ar_reviewed_on": "2026-11-17"
+      "default_opacity": 0.6
     },
     {
       "id": "internal_carotid_artery",
@@ -322,7 +329,7 @@
       ],
       "content_status": "draft",
       "reviewed_by": null,
-      "note": "OpenEar's \"Scala Vestibuli\" label also contains the vestibule and semicircular canals (about 12 x 14.6 x 15 mm in ZETA). The reviewer confirmed on 2026-11-17 that scala vestibuli is confined to the cochlea and the canals are a separate structure. The pipeline keeps the part of the label lying within a set distance of scala tympani; the boundary at the vestibule is a computed first pass awaiting review.",
+      "note": "OpenEar's \"Scala Vestibuli\" label also contains the vestibule and semicircular canals (about 12 x 14.6 x 15 mm in ZETA). The reviewer confirmed on 2026-11-17 that scala vestibuli is confined to the cochlea and the canals are a separate structure. The pipeline keeps the part of the label lying within a set distance of scala tympani; the boundary at the vestibule is a computed first pass; the reviewer accepted this first pass on 2026-11-17.",
       "color": "#56B4E9",
       "mesh_error_limit_mm": 0.05,
       "ar_reviewed_by": "Dr. Ali R. Muhammad",
@@ -333,7 +340,7 @@
       "name_en": "Vestibule and semicircular canals",
       "name_ta_latin": "Vestibulum et canales semicirculares",
       "name_ar": "الدهليز والقنوات نصف الهلالية",
-      "ar_status": "unverified",
+      "ar_status": "verified",
       "parent": null,
       "system": "inner_ear_fluid_spaces",
       "provenance_tier": "specimen-derived",
@@ -346,9 +353,11 @@
       ],
       "content_status": "draft",
       "reviewed_by": null,
-      "note": "The part of OpenEar's \"Scala Vestibuli\" label outside the cochlea. Split from the cochlear part by a computed first-pass boundary that awaits the reviewer's check. Vestibule and canals are not separated from each other in the source label.",
+      "note": "The part of OpenEar's \"Scala Vestibuli\" label outside the cochlea. Split from the cochlear part by a computed boundary that the reviewer accepted as a first pass on 2026-11-17. Vestibule and canals are not separated from each other in the source label.",
       "color": "#7fc4b8",
-      "mesh_error_limit_mm": 0.05
+      "mesh_error_limit_mm": 0.05,
+      "ar_reviewed_by": "Dr. Ali R. Muhammad",
+      "ar_reviewed_on": "2026-11-17"
     },
     {
       "id": "bony_labyrinth",

@@ -44,6 +44,7 @@ export function sceneFromManifest(
       color: s.color,
       geometry,
       position: [0, 0, 0],
+      defaultOpacity: s.defaultOpacity,
       ...(lod0 ? { meshErrorMm: lod0.hausdorffMm } : {}),
     };
   });

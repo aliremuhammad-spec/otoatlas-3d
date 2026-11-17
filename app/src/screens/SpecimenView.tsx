@@ -171,7 +171,7 @@ export function SpecimenView({ content }: Props) {
                       min={0.1}
                       max={1}
                       step={0.05}
-                      value={opacity[s.id] ?? 1}
+                      value={opacity[s.id] ?? s.defaultOpacity ?? 1}
                       onChange={(e) => changeOpacity(s.id, Number(e.target.value))}
                       aria-label={`${t('viewer.opacity')}: ${name}`}
                     />

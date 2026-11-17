@@ -35,3 +35,8 @@ def test_nothing_is_marked_verified_without_a_named_reviewer():
             assert s.get("ar_reviewed_by") and s.get("ar_reviewed_on"), s["id"]
         if s["content_status"] == "expert-reviewed":
             assert s["reviewed_by"], s["id"]
+
+
+def test_default_opacity_when_given_is_between_zero_and_one():
+    for s in ONTOLOGY["structures"]:
+        assert 0.0 <= s.get("default_opacity", 1.0) <= 1.0, s["id"]

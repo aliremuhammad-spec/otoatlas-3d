@@ -18,6 +18,8 @@ export interface ManifestStructure {
   provenanceTier: 'specimen-derived' | 'expert-annotated' | 'schematic';
   color: number;
   meshErrorLimitMm: number;
+  /** Opacity the structure starts at, 0 to 1. Large enclosing structures start faded. */
+  defaultOpacity: number;
   sourceVoxelMm: readonly [number, number, number];
   lods: readonly ManifestLod[];
 }
@@ -84,6 +86,13 @@ function parseLod(value: unknown, what: string): ManifestLod {
   };
 }
 
+function parseOpacity(value: unknown, what: string): number {
+  if (value === undefined || value === null) return 1;
+  const n = num(value, what);
+  if (n < 0 || n > 1) fail(`${what} is outside 0 to 1`);
+  return n;
+}
+
 function parseStructure(value: unknown, index: number): ManifestStructure {
   const what = `structures[${index}]`;
   const o = obj(value, what);
@@ -111,6 +120,7 @@ function parseStructure(value: unknown, index: number): ManifestStructure {
     ),
     color: parseColor(o.color, `${what}.color`),
     meshErrorLimitMm: num(o.mesh_error_limit_mm, `${what}.mesh_error_limit_mm`),
+    defaultOpacity: parseOpacity(o.default_opacity, `${what}.default_opacity`),
     sourceVoxelMm: [
       num(voxel[0], `${what}.source_voxel_mm[0]`),
       num(voxel[1], `${what}.source_voxel_mm[1]`),

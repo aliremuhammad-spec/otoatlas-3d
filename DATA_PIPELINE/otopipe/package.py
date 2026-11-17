@@ -95,6 +95,7 @@ def build_package(
                 "system": entry["system"],
                 "color": entry["color"],
                 "mesh_error_limit_mm": limit,
+                "default_opacity": float(entry.get("default_opacity", 1.0)),
                 "smoothing": {"method": "taubin", "max_vertex_displacement_mm": round(build.clamp_mm, 4)},
                 "closed_surface": bool(lod0.is_watertight),
                 "source_voxel_mm": [round(float(v), 5) for v in label.spacing],
