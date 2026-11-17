@@ -82,8 +82,19 @@ def label_surface(
 
 
 def _closest_distance(surface: trimesh.Trimesh, points: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-    closest, distance, _ = trimesh.proximity.closest_point(surface, points)
-    return closest, distance
+    """Exact distance from each point to the nearest triangle of `surface`, and that nearest point.
+
+    libigl's AABB tree does this in C++; trimesh's own query takes about 0.2 ms a point,
+    which is half an hour for a temporal bone with millions of vertices.
+    """
+    import igl
+
+    squared, _, closest = igl.point_mesh_squared_distance(
+        np.ascontiguousarray(points, dtype=np.float64),
+        np.ascontiguousarray(surface.vertices, dtype=np.float64),
+        np.ascontiguousarray(surface.faces, dtype=np.int64),
+    )
+    return closest, np.sqrt(squared)
 
 
 def taubin(surface: trimesh.Trimesh, iterations: int = 20, lamb: float = 0.5, nu: float = 0.53) -> trimesh.Trimesh:
