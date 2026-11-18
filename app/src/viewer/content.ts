@@ -56,4 +56,12 @@ export interface SceneContent {
   /** Dataset credit shown with the specimen. Null for synthetic content. */
   attribution: { dataDoi: string; license: string } | null;
   structures: readonly SceneStructure[];
+  /** The specimen's scan for the slice view, or null when there is none. */
+  scan: {
+    url: string;
+    shape: readonly [number, number, number];
+    spacingMm: readonly [number, number, number];
+    originMm: readonly [number, number, number];
+    modality: string;
+  } | null;
 }

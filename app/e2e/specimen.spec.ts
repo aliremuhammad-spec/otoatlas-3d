@@ -15,7 +15,11 @@ async function serveFixtureContent(page: Page): Promise<void> {
     const relative = new URL(route.request().url()).pathname.split('/content/')[1] ?? '';
     try {
       const body = await readFile(path.join(FIXTURES, relative));
-      const contentType = relative.endsWith('.json') ? 'application/json' : 'model/gltf-binary';
+      const contentType = relative.endsWith('.json')
+        ? 'application/json'
+        : relative.endsWith('.gz')
+          ? 'application/octet-stream'
+          : 'model/gltf-binary';
       await route.fulfill({ body, contentType });
     } catch {
       await route.fulfill({ status: 404, body: 'not found' });
@@ -63,6 +67,30 @@ test.describe('specimen package', () => {
     await expect(card).toHaveCount(0);
     await page.getByRole('checkbox', { name: 'Labels' }).uncheck();
     await expect(page.locator('.labels')).toBeHidden();
+  });
+
+  test('opens the scan slices with structure outlines', async ({ page }, testInfo) => {
+    await serveFixtureContent(page);
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Open the viewer' }).click({ timeout: 8000 });
+    await page.getByRole('button', { name: 'Show scan slices' }).click();
+    const pane = page.getByTestId('slice-pane');
+    await expect(pane).toBeVisible();
+    await expect(pane.getByRole('status')).toHaveCount(0, { timeout: 8000 });
+    await expect(pane).toContainText(/z = -?\d+\.\d+ mm · synthetic, voxel 0\.25 mm/);
+    // Some outline colour (malleus orange) must be drawn on the slice.
+    const coloured = await pane.locator('canvas').evaluate((c: HTMLCanvasElement) => {
+      const ctx = c.getContext('2d');
+      if (!ctx) return 0;
+      const d = ctx.getImageData(0, 0, c.width, c.height).data;
+      let n = 0;
+      for (let i = 0; i < d.length; i += 4) if ((d[i] ?? 0) > 150 && (d[i + 2] ?? 0) < 80) n += 1;
+      return n;
+    });
+    expect(coloured).toBeGreaterThan(20);
+    await pane.getByRole('button', { name: 'YZ plane' }).click();
+    await expect(pane).toContainText(/x = /);
+    await page.screenshot({ path: testInfo.outputPath('slices-en.png') });
   });
 
   test('falls back to the phantom when the package is broken', async ({ page }) => {

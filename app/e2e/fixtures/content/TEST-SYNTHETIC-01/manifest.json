@@ -20,7 +20,7 @@
       "source_label": "Malleus",
       "names": {
         "en": "Malleus",
-        "ar": "المطرقة",
+        "ar": "\u0627\u0644\u0645\u0637\u0631\u0642\u0629",
         "latin": "Malleus"
       },
       "ar_status": "unverified",
@@ -65,7 +65,7 @@
       "source_label": "Scala Tympani",
       "names": {
         "en": "Scala tympani",
-        "ar": "السقالة الطبلية",
+        "ar": "\u0627\u0644\u0633\u0642\u0627\u0644\u0629 \u0627\u0644\u0637\u0628\u0644\u064a\u0629",
         "latin": "Scala tympani"
       },
       "ar_status": "unverified",
@@ -105,5 +105,31 @@
         }
       ]
     }
-  ]
+  ],
+  "scan": {
+    "file": "scan.u8.gz",
+    "format": "uint8, gzip, x fastest",
+    "shape": [
+      40,
+      18,
+      18
+    ],
+    "spacing_mm": [
+      0.25,
+      0.25,
+      0.25
+    ],
+    "origin_mm": [
+      -2.513152,
+      -2.013969,
+      -2.013969
+    ],
+    "modality": "synthetic",
+    "source": "test fixture",
+    "window": {
+      "low": 20.0,
+      "high": 200.0,
+      "rule": "0.5th to 99.8th percentile of the crop"
+    }
+  }
 }

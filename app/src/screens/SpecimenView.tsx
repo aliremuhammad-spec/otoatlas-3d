@@ -9,6 +9,7 @@ import type { SceneContent } from '../viewer/content';
 import { LabelLayer } from '../viewer/labels';
 import { displayName, latinLine } from '../viewer/names';
 import { ViewerCore } from '../viewer/ViewerCore';
+import { SlicePane } from './SlicePane';
 import { StructureCard } from './StructureCard';
 
 type Mode = 'explore' | 'p2p' | 's2s';
@@ -34,6 +35,9 @@ export function SpecimenView({ content }: Props) {
   const modeRef = useRef<Mode>('explore');
   const [selected, setSelected] = useState<string | null>(null);
   const [labelsOn, setLabelsOn] = useState(true);
+  const viewRef = useRef<HTMLDivElement>(null);
+  const [core, setCore] = useState<ViewerCore | null>(null);
+  const [slicesOpen, setSlicesOpen] = useState(false);
   const [points, setPoints] = useState<readonly Vec3[]>([]);
   const measurable = content.structures.filter((s) => s.measurable !== false);
   const [pair, setPair] = useState<readonly [string, string]>(() => [
@@ -57,12 +61,13 @@ export function SpecimenView({ content }: Props) {
       return undefined;
     }
     coreRef.current = core;
+    setCore(core);
     core.onPick((pick) => {
       if (modeRef.current === 'explore') select(pick.structureId);
       else if (modeRef.current === 'p2p') setPoints((prev) => (prev.length >= 2 ? [pick.point] : [...prev, pick.point]));
     });
-    const stage = stageRef.current;
-    const layer = stage ? new LabelLayer(stage, core) : null;
+    const view = viewRef.current;
+    const layer = view ? new LabelLayer(view, core) : null;
     labelsRef.current = layer;
     const unsubscribe = layer ? core.onRender(() => layer.update()) : () => undefined;
     return () => {
@@ -71,6 +76,7 @@ export function SpecimenView({ content }: Props) {
       labelsRef.current = null;
       core.dispose();
       coreRef.current = null;
+      setCore(null);
     };
   }, [content]);
 
@@ -172,8 +178,11 @@ export function SpecimenView({ content }: Props) {
 
   return (
     <>
-      <div className="viewer__stage" ref={stageRef}>
-        <div ref={hostRef} className="viewer__canvas" />
+      <div className={`viewer__stage${slicesOpen ? ' viewer__stage--split' : ''}`} ref={stageRef}>
+        <div ref={viewRef} className="viewer__view">
+          <div ref={hostRef} className="viewer__canvas" />
+        </div>
+        {slicesOpen && <SlicePane content={content} core={core} hidden={hidden} onClose={() => setSlicesOpen(false)} />}
         <div className="badges">
           {content.synthetic && <div className="badge badge--synthetic">{t('viewer.phantomBadge')}</div>}
           {content.draft && <div className="badge badge--draft">{t('viewer.draftBadge')}</div>}
@@ -250,6 +259,16 @@ export function SpecimenView({ content }: Props) {
           {!selectedStructure && <p className="note">{t('viewer.card.hint')}</p>}
         </section>
         <section>
+          <h2>{t('viewer.slices.title')}</h2>
+          {content.scan ? (
+            <button type="button" aria-pressed={slicesOpen} onClick={() => setSlicesOpen(!slicesOpen)}>
+              {t('viewer.slices.open')}
+            </button>
+          ) : (
+            <p className="note">{t('viewer.slices.none')}</p>
+          )}
+        </section>
+        <section className="panel__tools">
           <h2>{t('viewer.tools')}</h2>
           <div className="segmented" role="group" aria-label={t('viewer.tools')}>
             <button type="button" aria-pressed={mode === 'explore'} onClick={() => changeMode('explore')}>

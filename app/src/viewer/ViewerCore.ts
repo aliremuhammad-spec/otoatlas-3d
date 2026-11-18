@@ -3,6 +3,10 @@ import {
   Box3,
   BufferGeometry,
   Color,
+  DoubleSide,
+  EdgesGeometry,
+  LineSegments,
+  PlaneGeometry,
   DirectionalLight,
   Group,
   LessEqualDepth,
@@ -63,6 +67,7 @@ export class ViewerCore {
   private pickHandler: ((pick: PickResult) => void) | null = null;
   private readonly renderListeners = new Set<() => void>();
   private highlighted: string | null = null;
+  private slicePlane: Group | null = null;
   private pointerDown: { x: number; y: number } | null = null;
   private frame = 0;
   private needsRender = true;
@@ -191,6 +196,50 @@ export class ViewerCore {
     mesh.updateMatrixWorld();
     const v = new Vector3(position.getX(best), position.getY(best), position.getZ(best)).applyMatrix4(mesh.matrixWorld);
     return [v.x, v.y, v.z];
+  }
+
+  /**
+   * Shows where the slice view cuts: a faint rectangle across the scan's extent at
+   * `position` mm along `axis`. Pass null to remove it.
+   */
+  setSlicePlane(
+    plane: { axis: 'x' | 'y' | 'z'; position: number; min: readonly [number, number, number]; max: readonly [number, number, number] } | null,
+  ): void {
+    if (this.slicePlane) {
+      this.scene.remove(this.slicePlane);
+      for (const child of this.slicePlane.children) {
+        const m = child as Mesh | LineSegments;
+        m.geometry.dispose();
+        (m.material as MeshBasicMaterial | LineBasicMaterial).dispose();
+      }
+      this.slicePlane = null;
+    }
+    if (plane) {
+      const { axis, position, min, max } = plane;
+      const size = [max[0] - min[0], max[1] - min[1], max[2] - min[2]] as const;
+      const centre = new Vector3((min[0] + max[0]) / 2, (min[1] + max[1]) / 2, (min[2] + max[2]) / 2);
+      const [w, h] = axis === 'z' ? [size[0], size[1]] : axis === 'y' ? [size[0], size[2]] : [size[1], size[2]];
+      const geometry = new PlaneGeometry(w, h);
+      const group = new Group();
+      const fill = new Mesh(
+        geometry,
+        new MeshBasicMaterial({ color: 0x5fd0c5, transparent: true, opacity: 0.12, side: DoubleSide, depthWrite: false }),
+      );
+      const rim = new LineSegments(new EdgesGeometry(geometry), new LineBasicMaterial({ color: 0x5fd0c5 }));
+      fill.raycast = () => undefined;
+      rim.raycast = () => undefined;
+      group.add(fill, rim);
+      if (axis === 'y') group.rotation.x = Math.PI / 2;
+      if (axis === 'x') group.rotation.set(Math.PI / 2, Math.PI / 2, 0);
+      group.position.copy(centre);
+      if (axis === 'x') group.position.x = position;
+      else if (axis === 'y') group.position.y = position;
+      else group.position.z = position;
+      group.renderOrder = 10_000;
+      this.slicePlane = group;
+      this.scene.add(group);
+    }
+    this.requestRender();
   }
 
   /** Marks one structure as selected (a soft glow), or none. */

@@ -33,6 +33,7 @@ function firstGeometry(root: Object3D): BufferGeometry | null {
 export function sceneFromManifest(
   manifest: Manifest,
   geometries: ReadonlyMap<string, BufferGeometry>,
+  root = '',
 ): SceneContent {
   const structures: SceneStructure[] = manifest.structures.map((s) => {
     const geometry = geometries.get(s.id);
@@ -68,7 +69,26 @@ export function sceneFromManifest(
     sourceVoxelMm: Math.max(...manifest.structures.flatMap((s) => [...s.sourceVoxelMm])),
     attribution: { dataDoi: manifest.attribution.dataDoi, license: manifest.attribution.license },
     structures,
+    scan: manifest.scan
+      ? {
+          url: `${root}/${manifest.scan.file}`,
+          shape: manifest.scan.shape,
+          spacingMm: manifest.scan.spacingMm,
+          originMm: manifest.scan.originMm,
+          modality: manifest.scan.modality,
+        }
+      : null,
   };
+}
+
+/** Downloads and unpacks a scan (gzip, 8-bit). Needs DecompressionStream (Safari 16.4 and later). */
+export async function loadScan(url: string, shape: readonly [number, number, number]): Promise<Uint8Array> {
+  const response = await fetch(url);
+  if (!response.ok || !response.body) throw new Error(`${url}: HTTP ${response.status}`);
+  const stream = response.body.pipeThrough(new DecompressionStream('gzip'));
+  const bytes = new Uint8Array(await new Response(stream).arrayBuffer());
+  if (bytes.length !== shape[0] * shape[1] * shape[2]) throw new Error(`${url}: size does not match its shape`);
+  return bytes;
 }
 
 /**
@@ -92,5 +112,5 @@ export async function loadPackage(path: string, base = CONTENT_BASE): Promise<Sc
       geometries.set(s.id, geometry);
     }),
   );
-  return sceneFromManifest(manifest, geometries);
+  return sceneFromManifest(manifest, geometries, root);
 }

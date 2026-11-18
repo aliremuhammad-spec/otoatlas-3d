@@ -37,7 +37,17 @@ export interface ManifestStructure {
   lods: readonly ManifestLod[];
 }
 
+export interface ManifestScan {
+  file: string;
+  shape: readonly [number, number, number];
+  spacingMm: readonly [number, number, number];
+  originMm: readonly [number, number, number];
+  modality: string;
+}
+
 export interface Manifest {
+  /** The specimen's own scan for the slice view, when the package has one. */
+  scan: ManifestScan | null;
   specimenId: string;
   dataset: string;
   side: 'left' | 'right' | null;
@@ -185,6 +195,31 @@ export function parseManifest(value: unknown): Manifest {
       license: str(attribution.license, 'attribution.license'),
     },
     structures: o.structures.map(parseStructure),
+    scan: parseScan(o.scan),
+  };
+}
+
+function triple(value: unknown, what: string, positive: boolean): readonly [number, number, number] {
+  if (!Array.isArray(value) || value.length !== 3) fail(`${what} is not three numbers`);
+  const [a, b, c] = value.map((v, i) => num(v, `${what}[${i}]`)) as [number, number, number];
+  if (positive && !(a > 0 && b > 0 && c > 0)) fail(`${what} must be positive`);
+  return [a, b, c];
+}
+
+function parseScan(value: unknown): ManifestScan | null {
+  if (value === undefined || value === null) return null;
+  const o = obj(value, 'scan');
+  const file = str(o.file, 'scan.file');
+  if (!/^[A-Za-z0-9._-]+\.gz$/.test(file)) fail('scan.file is not a plain .gz file name');
+  if (o.format !== 'uint8, gzip, x fastest') fail('scan.format is not supported');
+  const shape = triple(o.shape, 'scan.shape', true);
+  if (!shape.every(Number.isInteger)) fail('scan.shape must be whole numbers');
+  return {
+    file,
+    shape,
+    spacingMm: triple(o.spacing_mm, 'scan.spacing_mm', true),
+    originMm: triple(o.origin_mm, 'scan.origin_mm', false),
+    modality: str(o.modality, 'scan.modality'),
   };
 }
 

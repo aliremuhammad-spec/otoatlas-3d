@@ -359,9 +359,68 @@ fieldset {
   min-block-size: 0;
 }
 
+.viewer__view {
+  position: absolute;
+  inset: 0;
+}
+
 .viewer__canvas {
   position: absolute;
   inset: 0;
+}
+
+/* With the slice pane open, the 3D view keeps the start half and the slices take the end half. */
+.viewer__stage--split .viewer__view {
+  inset-inline-end: 50%;
+}
+
+.slices {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  inline-size: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.6rem;
+  border-inline-start: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.slices__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.slices__view {
+  position: relative;
+  flex: 1;
+  min-block-size: 0;
+}
+
+.slices__canvas {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.slices__message {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--text-dim);
+}
+
+.slices input[type='range'] {
+  inline-size: 100%;
+}
+
+.slices .note {
+  margin: 0;
 }
 
 .viewer__error {
@@ -402,8 +461,8 @@ fieldset {
   gap: 1.5rem;
 }
 
-/* Measuring is the main task: keep that section first, above the long structure list. */
-.viewer__panel > section:nth-of-type(2) {
+/* The tools are the main controls: keep them first, above the long structure list. */
+.viewer__panel > .panel__tools {
   order: -1;
 }
 
