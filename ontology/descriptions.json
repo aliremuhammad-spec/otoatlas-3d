@@ -1,0 +1,69 @@
+{
+  "status": "Drafts written by Claude on 2026-11-19 at the reviewer's request. Not yet reviewed: every description ships marked as a draft until the reviewer approves it.",
+  "descriptions": {
+    "temporal_bone": {
+      "en": "Paired bone of the skull base and lateral skull wall that houses the middle and inner ear. Its squamous, mastoid, petrous and tympanic parts, with the styloid process, surround the external acoustic meatus, the tympanic cavity, the labyrinth, the facial canal and the carotid canal. Here it is shown as the specimen's segmented block, cut at the edge of the scan.",
+      "ar": "عظم مزدوج من قاعدة الجمجمة وجدارها الجانبي، يضم الأذن الوسطى والداخلية. تحيط أجزاؤه الحرشفية والخشائية والصخرية والطبلية، مع الناتئ الإبري، بالصماخ السمعي الظاهر والجوف الطبلي والتيه والقناة الوجهية والقناة السباتية. يظهر هنا كتلةً مقطوعة عند حدود التصوير."
+    },
+    "external_acoustic_meatus": {
+      "en": "Canal from the concha to the tympanic membrane, about 2.5 cm long in adults: its lateral third is cartilaginous and its medial two-thirds bony. It follows an S-shaped course, and a bulging anterior wall or floor can hide the front of the tympanic membrane. It is the route of transcanal surgery.",
+      "ar": "قناة تمتد من الصدفة إلى الغشاء الطبلي، طولها نحو 2.5 سم عند البالغ: ثلثها الوحشي غضروفي وثلثاها الإنسيان عظميان. مسارها على شكل حرف S، وقد يحجب بروز جدارها الأمامي أو أرضيتها الجزء الأمامي من الغشاء الطبلي. وهي طريق الجراحة عبر القناة."
+    },
+    "tympanic_membrane": {
+      "en": "Thin, cone-shaped membrane between the external acoustic meatus and the tympanic cavity, about 8 to 10 mm across and set obliquely, at an acute angle to the canal floor. The handle of the malleus is embedded in it and ends at the umbo. The pars tensa forms most of it; the small pars flaccida lies above the lateral process of the malleus. In this dataset it is one label without these parts.",
+      "ar": "غشاء رقيق مخروطي الشكل بين الصماخ السمعي الظاهر والجوف الطبلي، قطره نحو 8 إلى 10 مم، ويقع مائلاً بزاوية حادة مع أرضية القناة. تنغرس فيه قبضة المطرقة وتنتهي عند السُّرّة. يشكّل الجزء المشدود معظمه، ويقع الجزء الرخو الصغير فوق الناتئ الوحشي للمطرقة. وهو في هذه البيانات تسمية واحدة دون تمييز أجزائه."
+    },
+    "malleus": {
+      "en": "The largest and most lateral auditory ossicle, about 8 to 9 mm long. Its handle and lateral process are attached to the tympanic membrane; its head lies in the epitympanum and articulates with the body of the incus. The tendon of tensor tympani inserts on the upper part of the handle.",
+      "ar": "أكبر العظيمات السمعية وأكثرها وحشيةً، طولها نحو 8 إلى 9 مم. تتصل قبضتها وناتئها الوحشي بالغشاء الطبلي، ويقع رأسها في العلّية الطبلية ويتمفصل مع جسم السندان. يرتكز وتر العضلة الموترة للطبلة على الجزء العلوي من القبضة."
+    },
+    "incus": {
+      "en": "The middle auditory ossicle. Its body articulates with the head of the malleus in the epitympanum. The short process rests in the fossa incudis; the long process descends parallel to the handle of the malleus and ends in the lenticular process, which articulates with the head of the stapes. The long process has a slender blood supply and is the part most often eroded in chronic ear disease.",
+      "ar": "العظيمة السمعية الوسطى. يتمفصل جسمه مع رأس المطرقة في العلّية الطبلية. يستند ناتئه القصير في الحفيرة السندانية، وينزل ناتئه الطويل موازياً لقبضة المطرقة وينتهي بالناتئ العدسي الذي يتمفصل مع رأس الركاب. تروية الناتئ الطويل ضعيفة، وهو أكثر الأجزاء تعرّضاً للتآكل في أمراض الأذن المزمنة."
+    },
+    "stapes": {
+      "en": "The smallest bone in the body, about 3 mm high: head, neck, anterior and posterior crura, and a footplate held in the oval window by the annular ligament. The stapedius tendon inserts on the back of the neck. At the voxel size of these scans the crura are only a few voxels thick, so the label shows their general shape only.",
+      "ar": "أصغر عظم في الجسم، ارتفاعه نحو 3 مم: رأس وعنق وساقان أمامية وخلفية وصفيحة قاعدية يثبتها الرباط الحلقي في النافذة البيضية. يرتكز وتر العضلة الركابية على الجهة الخلفية للعنق. سماكة الساقين بضعة فوكسلات فقط بدقة هذه الصور، لذلك تُظهر التسمية شكلهما العام فقط."
+    },
+    "facial_nerve": {
+      "en": "Seventh cranial nerve. In the temporal bone it passes through the internal acoustic meatus, then the labyrinthine segment to the geniculate ganglion, the tympanic segment along the medial wall of the tympanic cavity above the oval window, and the mastoid segment down to the stylomastoid foramen. It is the key structure to protect in middle-ear and mastoid surgery.",
+      "ar": "العصب القحفي السابع. يمر في العظم الصدغي عبر الصماخ السمعي الباطن، ثم القطعة التيهية حتى العقدة الركبية، ثم القطعة الطبلية على الجدار الإنسي للجوف الطبلي فوق النافذة البيضية، ثم القطعة الخشائية نزولاً حتى الثقبة الإبرية الخشائية. وهو أهم بنية يجب حمايتها في جراحة الأذن الوسطى والخشاء."
+    },
+    "chorda_tympani": {
+      "en": "Branch of the facial nerve, usually leaving its mastoid segment. It enters the tympanic cavity through the posterior wall, crosses it medial to the tympanic membrane between the long process of the incus and the handle of the malleus, and leaves through the petrotympanic fissure. It carries taste from the anterior two-thirds of the tongue and forms the lateral boundary of the facial recess, so it is at risk in posterior tympanotomy and stapes surgery.",
+      "ar": "فرع من العصب الوجهي يخرج عادةً من قطعته الخشائية. يدخل الجوف الطبلي عبر جداره الخلفي ويعبره إنسيَّ الغشاء الطبلي بين الناتئ الطويل للسندان وقبضة المطرقة، ثم يغادره عبر الشق الصخري الطبلي. ينقل حس التذوق من الثلثين الأماميين للسان، ويشكّل الحد الوحشي للردب الوجهي، لذلك يتعرض للأذى في فتح الطبلة الخلفي وجراحة الركاب."
+    },
+    "vestibulocochlear_nerve": {
+      "en": "Eighth cranial nerve. In the internal acoustic meatus it lies with the facial nerve: the cochlear nerve antero-inferiorly, the superior and inferior vestibular nerves posteriorly. It carries hearing from the cochlea and balance from the vestibular organs; a cochlear nerve of normal size matters when assessing a cochlear implant candidate.",
+      "ar": "العصب القحفي الثامن. يجاور العصب الوجهي في الصماخ السمعي الباطن: العصب القوقعي في الجزء الأمامي السفلي، والعصبان الدهليزيان العلوي والسفلي في الجزء الخلفي. ينقل السمع من القوقعة والتوازن من أعضاء الدهليز، ووجود عصب قوقعي طبيعي الحجم مهم عند تقييم المرشح لزراعة القوقعة."
+    },
+    "sigmoid_sinus_and_dura": {
+      "en": "The sigmoid sinus is a dural venous sinus that curves down in a groove on the inner surface of the mastoid, from the transverse sinus to the jugular bulb. The dura of the middle and posterior cranial fossae covers the tegmen and the posterior surface of the petrous bone. Together they bound the mastoid cavity; OpenEar marks them as one label.",
+      "ar": "الجيب السيني جيب وريدي جافوي ينحدر في ميزاب على السطح الباطن للخشاء، من الجيب المستعرض حتى البصلة الوداجية. وتغطي الأم الجافية للحفرتين القحفيتين الوسطى والخلفية السقيفةَ والسطحَ الخلفي للعظم الصخري. ويحدّان معاً جوف الخشاء، ويعلّمهما OpenEar تسميةً واحدة."
+    },
+    "internal_carotid_artery": {
+      "en": "Enters the skull through the carotid canal in the petrous bone, first ascending, then turning forwards and medially. The canal lies anterior and medial to the cochlea and forms part of the anterior wall of the tympanic cavity, where its bony cover may be thin or absent.",
+      "ar": "يدخل الجمجمة عبر القناة السباتية في العظم الصخري، صاعداً أولاً ثم منعطفاً إلى الأمام والإنسي. تقع القناة أمام القوقعة وإنسيّها، وتشكّل جزءاً من الجدار الأمامي للجوف الطبلي، وقد يكون غطاؤها العظمي رقيقاً أو غائباً هناك."
+    },
+    "scala_tympani": {
+      "en": "The lower of the two perilymph-filled channels of the cochlea, below the basilar membrane and osseous spiral lamina. It starts at the round window and winds about two and a half turns to the helicotrema, where it joins the scala vestibuli. Cochlear implant electrodes are placed in it, usually through the round window or a cochleostomy beside it.",
+      "ar": "القناة السفلى من القناتين المملوءتين باللمف المحيطي في القوقعة، تحت الغشاء القاعدي والصفيحة اللولبية العظمية. تبدأ عند النافذة المستديرة وتلتف نحو دورتين ونصف حتى الثقب القمّي (الهليكوتريما) حيث تتصل بالسقالة الدهليزية. توضع فيها أقطاب زراعة القوقعة، عادةً عبر النافذة المستديرة أو عبر فتح قوقعي بجانبها."
+    },
+    "scala_vestibuli": {
+      "en": "The upper perilymph-filled channel of the cochlea, above Reissner's membrane. It opens from the vestibule near the oval window and runs to the helicotrema. The scala media between the two scalae cannot be seen at this resolution. Here it is the cochlear part of OpenEar's label, separated from the vestibule by a computed boundary.",
+      "ar": "القناة العليا المملوءة باللمف المحيطي في القوقعة، فوق غشاء رايسنر. تنفتح من الدهليز قرب النافذة البيضية وتمتد حتى الهليكوتريما. لا تظهر السقالة الوسطى بين السقالتين بهذه الدقة. وهي هنا الجزء القوقعي من تسمية OpenEar، مفصولاً عن الدهليز بحدّ محسوب."
+    },
+    "vestibule_and_semicircular_canals": {
+      "en": "The vestibule is the central chamber of the bony labyrinth, with the oval window in its lateral wall. The lateral, superior and posterior semicircular canals open into it by five openings, as the superior and posterior canals share the common crus. The prominence of the lateral canal in the mastoid antrum is a key surgical landmark.",
+      "ar": "الدهليز هو الحجرة المركزية للتيه العظمي، وفي جداره الوحشي النافذة البيضية. تنفتح فيه القنوات نصف الهلالية الوحشية والعلوية والخلفية بخمس فتحات، إذ تشترك القناتان العلوية والخلفية في الساق المشتركة. وبروز القناة الوحشية في الغار الخشائي معلَم جراحي أساسي."
+    },
+    "round_window": {
+      "en": "Opening in the medial wall of the tympanic cavity, below and behind the oval window, closed by the secondary tympanic membrane at the start of the scala tympani. It lies in a niche whose overhanging lip often hides it, and it is the usual entry for cochlear implant electrodes.",
+      "ar": "فتحة في الجدار الإنسي للجوف الطبلي، أسفل النافذة البيضية وخلفها، يغلقها الغشاء الطبلي الثانوي عند بداية السقالة الطبلية. تقع في كوّة كثيراً ما تحجبها حافتها البارزة، وهي المدخل المعتاد لأقطاب زراعة القوقعة."
+    },
+    "bony_labyrinth": {
+      "en": "The bony capsule of the inner ear in the petrous bone: cochlea, vestibule and three semicircular canals, filled with perilymph around the membranous labyrinth. The Bern specimens show it as one micro-CT label, which suits comparing its shape between people.",
+      "ar": "المحفظة العظمية للأذن الداخلية في العظم الصخري: القوقعة والدهليز والقنوات نصف الهلالية الثلاث، مملوءة باللمف المحيطي حول التيه الغشائي. تظهره عيّنات Bern تسميةً واحدة بالتصوير المقطعي المجهري، وهذا مناسب لمقارنة شكله بين الأفراد."
+    }
+  }
+}

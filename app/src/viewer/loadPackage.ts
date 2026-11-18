@@ -55,6 +55,7 @@ export function sceneFromManifest(
         sourceVoxelMm: s.sourceVoxelMm,
         meshErrorLimitMm: s.meshErrorLimitMm,
         shownErrorMm: shown?.hausdorffMm ?? Number.NaN,
+        description: s.description,
       },
     };
   });

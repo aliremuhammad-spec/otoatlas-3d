@@ -16,6 +16,7 @@ export interface StructureInfo {
   meshErrorLimitMm: number;
   /** Measured distance of the shown mesh from its label surface. */
   shownErrorMm: number;
+  description: { en: string; ar: string; status: 'draft' | 'reviewed' } | null;
 }
 
 /** One selectable object in the scene. */

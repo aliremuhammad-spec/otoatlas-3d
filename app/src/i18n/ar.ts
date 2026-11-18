@@ -70,6 +70,7 @@ export const ar: Record<MessageKey, string> = {
   'viewer.card.hint': 'انقر على بنية، أو على اسمها في القائمة، لعرض تفاصيلها.',
   'viewer.card.close': 'إغلاق',
   'viewer.card.origin': 'المصدر',
+  'viewer.card.descriptionDraft': 'مسودة وصف كتبها Claude، لم تُراجَع بعد.',
   'viewer.card.tier.specimen-derived': 'مأخوذة من العيّنة: مبنية من تقسيم هذه العيّنة نفسها',
   'viewer.card.tier.expert-annotated': 'موسومة من خبير على هذه العيّنة',
   'viewer.card.tier.schematic': 'تخطيطية: غير مأخوذة من هذه العيّنة',

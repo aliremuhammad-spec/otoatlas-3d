@@ -40,3 +40,11 @@ def test_nothing_is_marked_verified_without_a_named_reviewer():
 def test_default_opacity_when_given_is_between_zero_and_one():
     for s in ONTOLOGY["structures"]:
         assert 0.0 <= s.get("default_opacity", 1.0) <= 1.0, s["id"]
+
+
+def test_every_structure_has_a_description_in_both_languages():
+    texts = json.loads((Path(__file__).parents[2] / "ontology" / "descriptions.json").read_text(encoding="utf-8"))["descriptions"]
+    ids = {s["id"] for s in ONTOLOGY["structures"]}
+    assert set(texts) == ids
+    for sid, t in texts.items():
+        assert t["en"].strip() and t["ar"].strip(), sid

@@ -487,3 +487,15 @@ fieldset {
     border-block-start: 1px solid var(--line);
   }
 }
+
+.card__description p {
+  margin: 0.6rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.card__description .card__draft {
+  margin-block-start: 0.3rem;
+  color: var(--warn);
+  font-size: 0.75rem;
+}

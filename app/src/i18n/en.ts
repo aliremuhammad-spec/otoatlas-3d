@@ -58,6 +58,7 @@ export const en = {
   'viewer.card.hint': 'Tap a structure, or its name in the list, to see its details.',
   'viewer.card.close': 'Close',
   'viewer.card.origin': 'Origin',
+  'viewer.card.descriptionDraft': 'Draft description written by Claude; not yet reviewed.',
   'viewer.card.tier.specimen-derived': 'Specimen-derived: built from this specimen\'s own segmentation',
   'viewer.card.tier.expert-annotated': 'Expert-annotated on this specimen',
   'viewer.card.tier.schematic': 'Schematic: not derived from this specimen',

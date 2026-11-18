@@ -44,7 +44,17 @@ class LabelInput:
 
 
 def load_ontology(path: str | Path) -> dict:
-    return json.loads(Path(path).read_text(encoding="utf-8"))
+    """The ontology, with the descriptions from `descriptions.json` beside it attached to each structure."""
+    path = Path(path)
+    ontology = json.loads(path.read_text(encoding="utf-8"))
+    extra = path.with_name("descriptions.json")
+    if extra.exists():
+        texts = json.loads(extra.read_text(encoding="utf-8"))["descriptions"]
+        for s in ontology["structures"]:
+            if s["id"] in texts:
+                # Every description is a draft until the reviewer approves it in that file.
+                s["description"] = {"status": "draft", **texts[s["id"]]}
+    return ontology
 
 
 def structure_for(ontology: dict, dataset: str, source_label: str, part: str | None = None) -> dict:
@@ -121,6 +131,7 @@ def build_package(
                 "mesh_error_limit_mm": limit,
                 "default_opacity": float(entry.get("default_opacity", 1.0)),
                 "default_visible": bool(entry.get("default_visible", True)),
+                **({"description": entry["description"]} if "description" in entry else {}),
                 "smoothing": {"method": "taubin", "max_vertex_displacement_mm": round(build.clamp_mm, 4)},
                 "closed_surface": bool(lod0.is_watertight),
                 "source_voxel_mm": [round(float(v), 5) for v in label.spacing],

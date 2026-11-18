@@ -12,6 +12,12 @@ export interface ManifestLod {
   published: boolean;
 }
 
+export interface StructureDescription {
+  en: string;
+  ar: string;
+  status: 'draft' | 'reviewed';
+}
+
 export interface ManifestStructure {
   id: string;
   names: { en: string; ar: string | null; latin: string | null };
@@ -26,6 +32,7 @@ export interface ManifestStructure {
   displayLevel: number;
   /** False for structures that start hidden. */
   defaultVisible: boolean;
+  description: StructureDescription | null;
   sourceVoxelMm: readonly [number, number, number];
   lods: readonly ManifestLod[];
 }
@@ -98,6 +105,16 @@ function bool(value: unknown, what: string): boolean {
   return value;
 }
 
+function parseDescription(value: unknown, what: string): StructureDescription | null {
+  if (value === undefined || value === null) return null;
+  const o = obj(value, what);
+  return {
+    en: str(o.en, `${what}.en`),
+    ar: str(o.ar, `${what}.ar`),
+    status: oneOf(o.status, ['draft', 'reviewed'] as const, `${what}.status`),
+  };
+}
+
 function parseOpacity(value: unknown, what: string): number {
   if (value === undefined || value === null) return 1;
   const n = num(value, what);
@@ -138,6 +155,7 @@ function parseStructure(value: unknown, index: number): ManifestStructure {
     meshErrorLimitMm: num(o.mesh_error_limit_mm, `${what}.mesh_error_limit_mm`),
     defaultOpacity: parseOpacity(o.default_opacity, `${what}.default_opacity`),
     displayLevel,
+    description: parseDescription(o.description, `${what}.description`),
     defaultVisible: o.default_visible === undefined || o.default_visible === null ? true : bool(o.default_visible, `${what}.default_visible`),
     sourceVoxelMm: [
       num(voxel[0], `${what}.source_voxel_mm[0]`),

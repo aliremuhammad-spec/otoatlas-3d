@@ -39,6 +39,12 @@ export function StructureCard({ structure, content, onClose }: Props) {
           ×
         </button>
       </header>
+      {info?.description && (
+        <div className="card__description">
+          <p>{locale === 'ar' ? info.description.ar : info.description.en}</p>
+          {info.description.status === 'draft' && <p className="card__draft">{t('viewer.card.descriptionDraft')}</p>}
+        </div>
+      )}
       {info ? (
         <dl className="card__facts">
           <dt>{t('viewer.card.origin')}</dt>
