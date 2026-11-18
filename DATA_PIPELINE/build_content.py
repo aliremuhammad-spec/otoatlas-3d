@@ -46,18 +46,19 @@ COARSEN_BELOW_MM = 0.1
 COARSEN_TO_MM = 0.125
 
 
-def coarsen(mask: np.ndarray, spacing, origin, factor: int):
-    """Resample a binary label by an integer factor: a block is inside when most of its voxels are."""
-    if factor == 1:
-        return mask, tuple(spacing), tuple(origin)
-    shape = [s // factor * factor for s in mask.shape]
+def coarsen(mask: np.ndarray, spacing, origin, factor):
+    """Resample a binary label by an integer factor per axis: a block is inside when most of its voxels are."""
+    f = (factor,) * 3 if isinstance(factor, int) else tuple(int(v) for v in factor)
+    if f == (1, 1, 1):
+        return mask, tuple(float(s) for s in spacing), tuple(float(o) for o in origin)
+    shape = [s // k * k for s, k in zip(mask.shape, f)]
     m = mask[: shape[0], : shape[1], : shape[2]].reshape(
-        shape[0] // factor, factor, shape[1] // factor, factor, shape[2] // factor, factor
+        shape[0] // f[0], f[0], shape[1] // f[1], f[1], shape[2] // f[2], f[2]
     )
     out = m.mean(axis=(1, 3, 5)) >= 0.5
-    sp = tuple(float(s) * factor for s in spacing)
-    # Block centres sit (factor - 1) / 2 voxels in from the first voxel centre.
-    org = tuple(float(o) + (factor - 1) / 2 * float(s) for o, s in zip(origin, spacing))
+    sp = tuple(float(s) * k for s, k in zip(spacing, f))
+    # Block centres sit (k - 1) / 2 voxels in from the first voxel centre.
+    org = tuple(float(o) + (k - 1) / 2 * float(s) for o, s, k in zip(origin, spacing, f))
     return out, sp, org
 
 
@@ -87,9 +88,14 @@ def build_openear(specimen: str, out: Path) -> dict:
             continue
         seg = segments[name]
         if name in COARSEN and min(seg.spacing) < COARSEN_BELOW_MM:
-            factor = max(1, round(COARSEN_TO_MM / min(seg.spacing)))
+            # Per axis: BETA is 0.05 x 0.05 x 0.15 mm, so only its first two axes are merged.
+            factor = tuple(max(1, round(COARSEN_TO_MM / float(s))) for s in seg.spacing)
             mask, spacing, origin = coarsen(seg.mask, seg.spacing, seg.origin, factor)
-            resampled[name] = {"from_mm": list(seg.spacing), "to_mm": list(spacing), "rule": "majority of each block"}
+            resampled[name] = {
+                "from_mm": [round(float(s), 5) for s in seg.spacing],
+                "to_mm": [round(float(s), 5) for s in spacing],
+                "rule": "majority of each block",
+            }
             labels.append(package.LabelInput(name, mask, spacing, origin))
             continue
         if name != "Scala Vestibuli":
