@@ -43,7 +43,7 @@ jobs:
   content:
     needs: plan
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 75
     strategy:
       # One failed specimen must not hold back the others; the site job publishes what was built.
       fail-fast: false

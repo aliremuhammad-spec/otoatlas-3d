@@ -81,6 +81,9 @@ def fetch_openear_member(specimen: str, suffix: str, dest: str | Path) -> Path:
         try:
             with RemoteZip(meta["links"]["self"], timeout=180) as rz:
                 member = find_member(rz.namelist(), suffix)
+                info = rz.getinfo(member)
+                print(f"{specimen}: extracting {member}: {info.compress_size / 1e6:.1f} MB compressed, "
+                      f"{info.file_size / 1e6:.1f} MB", flush=True)
                 return Path(rz.extract(member, str(dest)))
         except Exception as e:  # remotezip wraps every transport error in its own types
             if attempt == 3:

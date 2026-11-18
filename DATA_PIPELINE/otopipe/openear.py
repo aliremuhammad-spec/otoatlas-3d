@@ -95,6 +95,7 @@ def read_segmentation(path: str) -> dict[str, Segment]:
     if int(header.get("line skip", 0)) or int(header.get("byte skip", 0)):
         raise ValueError("NRRD line or byte skips are not supported")
     sizes = [int(v) for v in header["sizes"]]
+    print(f"segmentation: sizes {sizes}, type {header.get('type')}, encoding {header.get('encoding')}", flush=True)
     if len(sizes) not in (3, 4):
         raise ValueError("expected a 3D or 4D segmentation")
     layered = len(sizes) == 4
