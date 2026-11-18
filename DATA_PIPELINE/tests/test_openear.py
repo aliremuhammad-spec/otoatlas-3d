@@ -162,6 +162,11 @@ def test_streamed_reading_matches_across_chunks_raw_and_label_value_layouts(tmp_
     assert segs["Malleus"].mask.sum() == (labels == 1).sum()
     assert segs["Incus"].mask.sum() == (labels == 2).sum()
 
-    # Per-axis factors leave a coarse axis alone.
+
+def test_coarsen_per_axis_leaves_a_coarse_axis_alone():
+    import importlib.util, pathlib
+    spec = importlib.util.spec_from_file_location("build_content", pathlib.Path(__file__).parents[1] / "build_content.py")
+    bc = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(bc)
     out, sp, org = bc.coarsen(np.ones((4, 4, 3), bool), (0.05, 0.05, 0.15), (0.0, 0.0, 0.0), (2, 2, 1))
     assert out.shape == (2, 2, 3) and sp == pytest.approx((0.1, 0.1, 0.15)) and org == pytest.approx((0.025, 0.025, 0.0))
