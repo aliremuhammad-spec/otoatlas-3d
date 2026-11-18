@@ -46,10 +46,20 @@ def verify_md5(data: bytes, checksum: str) -> None:
 
 
 def find_member(names: list[str], suffix: str) -> str:
-    """The single archive member whose path ends with `suffix`. Zero or several is an error."""
-    matches = [n for n in names if n.replace("\\", "/").endswith(suffix)]
+    """The single archive member whose path ends with `suffix`. Zero or several is an error.
+
+    A suffix starting with "re:" is a case-insensitive regular expression searched in each path.
+    """
+    import re
+
+    if suffix.startswith("re:"):
+        rx = re.compile(suffix[3:], re.IGNORECASE)
+        matches = [n for n in names if rx.search(n.replace("\\", "/"))]
+    else:
+        matches = [n for n in names if n.replace("\\", "/").endswith(suffix)]
     if len(matches) != 1:
-        raise LookupError(f"expected exactly one member ending with {suffix!r}, found {len(matches)}")
+        nrrd = [n for n in names if n.lower().endswith(".nrrd")]
+        raise LookupError(f"expected exactly one member matching {suffix!r}, found {matches or 0}; .nrrd files: {nrrd}")
     return matches[0]
 
 
@@ -85,6 +95,8 @@ def fetch_openear_member(specimen: str, suffix: str, dest: str | Path) -> Path:
                 print(f"{specimen}: extracting {member}: {info.compress_size / 1e6:.1f} MB compressed, "
                       f"{info.file_size / 1e6:.1f} MB", flush=True)
                 return Path(rz.extract(member, str(dest)))
+        except LookupError:
+            raise  # the archive is readable; the file is simply not there
         except Exception as e:  # remotezip wraps every transport error in its own types
             if attempt == 3:
                 raise
