@@ -4,6 +4,7 @@ import nrrd
 import pytest
 
 from otopipe import mesh as M
+from otopipe import openear
 from otopipe.openear import EXPECTED_SEGMENTS, read_segmentation
 
 
@@ -85,3 +86,15 @@ def test_oblique_and_unnamed_volumes_are_rejected(tmp_path):
 def test_expected_segment_list_matches_what_the_files_contain():
     assert len(EXPECTED_SEGMENTS) == 13
     assert "Cochleovestibular nerve" in EXPECTED_SEGMENTS
+
+
+def test_segment_names_match_ignoring_case_spaces_and_punctuation():
+    found = {"Facial nerve": 1, "scala_tympani": 2, "Bone": 3, "Extra": 4}
+    matched, unused = openear.match_segments(found, ["Facial Nerve", "Scala Tympani", "Bone", "Malleus"])
+    assert matched == {"Facial Nerve": 1, "Scala Tympani": 2, "Bone": 3}
+    assert unused == ["Extra"]
+
+
+def test_two_segments_that_cannot_be_told_apart_are_refused():
+    with pytest.raises(ValueError):
+        openear.match_segments({"Bone": 1, "bone": 2}, ["Bone"])

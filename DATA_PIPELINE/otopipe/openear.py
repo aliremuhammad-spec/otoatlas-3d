@@ -6,6 +6,7 @@ Layout confirmed on specimen ZETA: a 4D array `[segment, i, j, k]` of unsigned c
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 
 import numpy as np
@@ -79,3 +80,23 @@ def read_segmentation(path: str) -> dict[str, Segment]:
         origin = first + lo * step
         segments[name] = Segment(name, mask, tuple(step), tuple(origin))
     return segments
+
+
+def _letters(name: str) -> str:
+    return re.sub(r"[^a-z]", "", name.lower())
+
+
+def match_segments(found: dict, wanted) -> tuple[dict, list[str]]:
+    """Key the file's segments by the wanted names they match, ignoring case, spaces and punctuation.
+
+    Returns the matched segments under the wanted names, and the file names that matched none.
+    """
+    by_letters: dict[str, str] = {}
+    for name in found:
+        key = _letters(name)
+        if key in by_letters:
+            raise ValueError(f"segments {by_letters[key]!r} and {name!r} cannot be told apart")
+        by_letters[key] = name
+    matched = {w: found[by_letters[_letters(w)]] for w in wanted if _letters(w) in by_letters}
+    used = {by_letters[_letters(w)] for w in wanted if _letters(w) in by_letters}
+    return matched, sorted(set(found) - used)

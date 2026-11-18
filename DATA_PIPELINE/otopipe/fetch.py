@@ -73,7 +73,18 @@ def fetch_openear_member(specimen: str, suffix: str, dest: str | Path) -> Path:
     """
     from remotezip import RemoteZip
 
+    import time
+
     meta = record_files(OPENEAR_RECORD)[f"{specimen.upper()}.zip"]
-    with RemoteZip(meta["links"]["self"]) as rz:
-        member = find_member(rz.namelist(), suffix)
-        return Path(rz.extract(member, str(dest)))
+    # Range requests to Zenodo sometimes answer 504 or stall; time out and retry.
+    for attempt in range(4):
+        try:
+            with RemoteZip(meta["links"]["self"], timeout=180) as rz:
+                member = find_member(rz.namelist(), suffix)
+                return Path(rz.extract(member, str(dest)))
+        except Exception as e:  # remotezip wraps every transport error in its own types
+            if attempt == 3:
+                raise
+            print(f"retrying {specimen} after: {e}")
+            time.sleep(20 * (attempt + 1))
+    raise AssertionError("unreachable")

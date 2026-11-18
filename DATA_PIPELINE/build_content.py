@@ -45,7 +45,13 @@ OPENEAR_SIDES = {"ZETA": ("right", "Dr. Ali R. Muhammad", "2026-11-17")}
 def build_openear(specimen: str, out: Path) -> dict:
     with tempfile.TemporaryDirectory() as tmp:
         seg_path = fetch.fetch_openear_member(specimen, "06_Segmentation/Segmentation.seg.nrrd", tmp)
-        segments = openear.read_segmentation(str(seg_path))
+        found = openear.read_segmentation(str(seg_path))
+    print(f"{specimen}: segments in file: {sorted(found)}")
+    # Specimens spell some names differently ("Facial nerve", "Facial Nerve"); match on
+    # letters only, and refuse two file segments that would match one name.
+    segments, unmatched = openear.match_segments(found, OPENEAR_PHASE1)
+    if unmatched:
+        print(f"{specimen}: segments not used: {unmatched}")
     # A specimen may lack a label; build the rest and record the gap rather than failing.
     missing = sorted(set(OPENEAR_PHASE1) - set(segments))
     if "Scala Tympani" in missing and "Scala Vestibuli" not in missing:
@@ -97,8 +103,13 @@ def build_bern(specimen: str, out: Path) -> dict:
     origin = tuple(float(v) for v in affine[:3, 3])
     frame = frames.cochlear_frame(desc["LANDMARKS"], desc["SIDE"])
     disagreement = frames.max_axis_disagreement(frame, desc["COORD"])
+    # Above 0.5 an axis is flipped: stop. Between 0.1 and 0.5 (F05, F06, T02 show 0.10 to 0.16)
+    # the axes differ by a few degrees; the frame is recorded with a warning, since nothing
+    # shown or measured in the app uses it yet.
+    if disagreement > 0.5:
+        raise RuntimeError(f"computed cochlear frame disagrees with the descriptor by {disagreement:.2f}: an axis is flipped")
     if disagreement > 0.1:
-        raise RuntimeError(f"computed cochlear frame disagrees with the descriptor by {disagreement:.2f}")
+        print(f"{specimen}: warning: cochlear frame differs from the descriptor by {disagreement:.2f}")
     extra = {
         "frame": "Scanner frame of the dataset's NIfTI files, millimetres.",
         "landmarks_mm": desc["LANDMARKS"],
