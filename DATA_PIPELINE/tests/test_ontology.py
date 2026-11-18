@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 
-from otopipe.openear import EXPECTED_SEGMENTS
+from otopipe.openear import EXPECTED_SEGMENTS, OPTIONAL_SEGMENTS
 
 ONTOLOGY = json.loads((Path(__file__).parents[2] / "ontology" / "structures.json").read_text(encoding="utf-8"))
 
@@ -10,7 +10,7 @@ ONTOLOGY = json.loads((Path(__file__).parents[2] / "ontology" / "structures.json
 def test_every_openear_label_is_mapped_and_no_label_part_twice():
     keys = [(src["label"], src.get("part")) for s in ONTOLOGY["structures"] for src in s["sources"] if src["dataset"] == "openear"]
     assert len(keys) == len(set(keys))
-    assert {label for label, _ in keys} == set(EXPECTED_SEGMENTS)
+    assert {label for label, _ in keys} == set(EXPECTED_SEGMENTS) | set(OPTIONAL_SEGMENTS)
     # A split label maps by parts only, never also as a whole.
     for label in {label for label, part in keys if part}:
         assert (label, None) not in keys, label

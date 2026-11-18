@@ -15,6 +15,8 @@ function names(key: MessageKey): StructureNames {
 export function createPhantom(): SceneContent {
   return {
     specimenId: 'PHANTOM-01',
+    dataset: null,
+    side: null,
     synthetic: true,
     draft: false,
     sourceVoxelMm: null,

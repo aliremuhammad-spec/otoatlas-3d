@@ -46,6 +46,25 @@ test.describe('specimen package', () => {
     await page.screenshot({ path: testInfo.outputPath('specimen-en.png') });
   });
 
+  test('shows a structure card and labels', async ({ page }, testInfo) => {
+    await serveFixtureContent(page);
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Open the viewer' }).click({ timeout: 8000 });
+    await expect(page.locator('.labels__label[data-label="malleus"]')).toHaveText('Malleus');
+
+    await page.locator('[data-structure="malleus"] .structure-name').click();
+    const card = page.getByTestId('structure-card');
+    await expect(card).toContainText('Malleus');
+    await expect(card).toContainText("Specimen-derived: built from this specimen's own segmentation");
+    await expect(card).toContainText(/Within 0\.\d\d mm of its label \(limit 0\.10 mm\)/);
+    await page.screenshot({ path: testInfo.outputPath('card-en.png') });
+
+    await card.getByRole('button', { name: 'Close' }).click();
+    await expect(card).toHaveCount(0);
+    await page.getByRole('checkbox', { name: 'Labels' }).uncheck();
+    await expect(page.locator('.labels')).toBeHidden();
+  });
+
   test('falls back to the phantom when the package is broken', async ({ page }) => {
     await page.route('**/content/index.json', (route) =>
       route.fulfill({

@@ -49,10 +49,19 @@ export function sceneFromManifest(
       defaultVisible: s.defaultVisible,
       measurable,
       ...(shown && measurable ? { meshErrorMm: shown.hausdorffMm } : {}),
+      info: {
+        provenanceTier: s.provenanceTier,
+        contentStatus: s.contentStatus,
+        sourceVoxelMm: s.sourceVoxelMm,
+        meshErrorLimitMm: s.meshErrorLimitMm,
+        shownErrorMm: shown?.hausdorffMm ?? Number.NaN,
+      },
     };
   });
   return {
     specimenId: manifest.specimenId,
+    dataset: manifest.synthetic ? null : manifest.dataset,
+    side: manifest.side,
     synthetic: manifest.synthetic,
     draft: manifest.structures.some((s) => s.contentStatus === 'draft' || s.arStatus === 'unverified'),
     sourceVoxelMm: Math.max(...manifest.structures.flatMap((s) => [...s.sourceVoxelMm])),

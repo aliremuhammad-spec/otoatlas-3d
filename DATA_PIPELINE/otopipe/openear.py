@@ -30,6 +30,9 @@ EXPECTED_SEGMENTS = (
     "Carotis Interna",
 )
 
+# Labels found in some specimens only (ALPHA's "RW", identified by the reviewer as the round window).
+OPTIONAL_SEGMENTS = ("Round Window",)
+
 
 @dataclass(frozen=True)
 class Segment:
@@ -182,6 +185,7 @@ ALIASES = {
     "Tympanic Membrane": ["Tympanic Drum"],
     "Cochleovestibular nerve": ["Vestibulocochlear nerve", "Vestibulcochlear Nerve", "Vestibucochlear Nerve"],
     "Bone": ["Bone 1300"],
+    "Round Window": ["RW"],
 }
 
 

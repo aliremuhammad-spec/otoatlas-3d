@@ -109,7 +109,9 @@ jobs:
           # The specimen the reviewer has worked on opens first, then OpenEar, then Bern.
           order = lambda m: (m.parent.name != "OPENEAR-ZETA", not m.parent.name.startswith("OPENEAR"), m.parent.name)
           for m in sorted(root.glob("*/manifest.json"), key=order):
-              specimens.append({"id": json.loads(m.read_text(encoding="utf-8"))["specimen_id"], "path": m.parent.name})
+              manifest = json.loads(m.read_text(encoding="utf-8"))
+              specimens.append({"id": manifest["specimen_id"], "path": m.parent.name,
+                                "dataset": manifest["dataset"], "side": manifest.get("side")})
           if not specimens:
               raise SystemExit("no specimen was built")
           (root / "index.json").write_text(json.dumps({"specimens": specimens}, indent=2), encoding="utf-8")

@@ -61,6 +61,8 @@ export class ViewerCore {
   private readonly overlay = new Group();
   private readonly resizeObserver: ResizeObserver;
   private pickHandler: ((pick: PickResult) => void) | null = null;
+  private readonly renderListeners = new Set<() => void>();
+  private highlighted: string | null = null;
   private pointerDown: { x: number; y: number } | null = null;
   private frame = 0;
   private needsRender = true;
@@ -128,6 +130,75 @@ export class ViewerCore {
 
   onPick(handler: ((pick: PickResult) => void) | null): void {
     this.pickHandler = handler;
+  }
+
+  /** Called after every rendered frame, so overlays drawn in HTML can follow the camera. Returns an unsubscribe. */
+  onRender(listener: () => void): () => void {
+    this.renderListeners.add(listener);
+    this.requestRender();
+    return () => this.renderListeners.delete(listener);
+  }
+
+  /** Where a specimen-frame point falls on the canvas, in CSS pixels; null when behind the camera. */
+  project(point: Vec3): { x: number; y: number } | null {
+    const v = new Vector3(...point).project(this.camera);
+    if (v.z < -1 || v.z > 1) return null;
+    const { clientWidth: w, clientHeight: h } = this.renderer.domElement;
+    return { x: ((v.x + 1) / 2) * w, y: ((1 - v.y) / 2) * h };
+  }
+
+  /** Canvas size in CSS pixels. */
+  viewSize(): { width: number; height: number } {
+    const { clientWidth: width, clientHeight: height } = this.renderer.domElement;
+    return { width, height };
+  }
+
+  isVisible(id: string): boolean {
+    return this.meshes.get(id)?.visible ?? false;
+  }
+
+  /**
+   * A point on the structure's surface to pin its label to: the vertex nearest the
+   * centre of its vertices, so curved structures (canals, nerves) still get a point on them.
+   */
+  anchorOf(id: string): Vec3 | null {
+    const mesh = this.meshes.get(id);
+    const position = mesh?.geometry.getAttribute('position');
+    if (!mesh || !position || position.count === 0) return null;
+    const step = Math.max(1, Math.floor(position.count / 20000));
+    let cx = 0;
+    let cy = 0;
+    let cz = 0;
+    let n = 0;
+    for (let i = 0; i < position.count; i += step) {
+      cx += position.getX(i);
+      cy += position.getY(i);
+      cz += position.getZ(i);
+      n += 1;
+    }
+    cx /= n;
+    cy /= n;
+    cz /= n;
+    let best = 0;
+    let bestD = Infinity;
+    for (let i = 0; i < position.count; i += step) {
+      const d = (position.getX(i) - cx) ** 2 + (position.getY(i) - cy) ** 2 + (position.getZ(i) - cz) ** 2;
+      if (d < bestD) {
+        bestD = d;
+        best = i;
+      }
+    }
+    mesh.updateMatrixWorld();
+    const v = new Vector3(position.getX(best), position.getY(best), position.getZ(best)).applyMatrix4(mesh.matrixWorld);
+    return [v.x, v.y, v.z];
+  }
+
+  /** Marks one structure as selected (a soft glow), or none. */
+  setHighlight(id: string | null): void {
+    if (this.highlighted) this.meshes.get(this.highlighted)?.material.emissive.setHex(0x000000);
+    this.highlighted = id;
+    if (id) this.meshes.get(id)?.material.emissive.setHex(0x3a3a3a);
+    this.requestRender();
   }
 
   setVisible(id: string, visible: boolean): void {
@@ -230,6 +301,7 @@ export class ViewerCore {
     if (!this.needsRender) return;
     this.needsRender = false;
     this.renderer.render(this.scene, this.camera);
+    for (const listener of this.renderListeners) listener();
   };
 
   private readonly resize = (): void => {

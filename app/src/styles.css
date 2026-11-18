@@ -237,7 +237,109 @@ fieldset {
 .structure-name {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   line-height: 1.3;
+  padding: 0.2rem 0.4rem;
+  min-block-size: 0;
+  background: none;
+  border: 1px solid transparent;
+  text-align: start;
+  font: inherit;
+  color: inherit;
+}
+
+.structure-name[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--surface-2);
+}
+
+.structures__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Labels over the 3D canvas. They never take taps, so the scene stays usable under them. */
+.labels {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.labels__lines {
+  position: absolute;
+  inset: 0;
+}
+
+.labels__lines line {
+  stroke: rgb(238 243 245 / 70%);
+  stroke-width: 1;
+}
+
+.labels__label {
+  position: absolute;
+  inset-block-start: 0;
+  left: 0;
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+  background: rgb(14 20 24 / 78%);
+  color: var(--text);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.card {
+  position: absolute;
+  inset-block-end: 0.75rem;
+  inset-inline-start: 0.75rem;
+  max-inline-size: min(26rem, calc(100% - 1.5rem));
+  max-block-size: calc(100% - 4rem);
+  overflow: auto;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgb(23 32 38 / 94%);
+}
+
+.card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.card__title {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.card__latin,
+.card__other {
+  margin: 0.15rem 0 0;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+}
+
+.card__latin {
+  font-style: italic;
+}
+
+.card__facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.35rem 0.9rem;
+  margin: 0.75rem 0 0;
+  font-size: 0.85rem;
+}
+
+.card__facts dt {
+  color: var(--text-dim);
+}
+
+.card__facts dd {
+  margin: 0;
 }
 
 .structure-name__latin {

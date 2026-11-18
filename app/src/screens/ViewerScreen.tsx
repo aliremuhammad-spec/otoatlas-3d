@@ -7,6 +7,11 @@ import { createPhantom } from '../viewer/phantom';
 import { SpecimenView } from './SpecimenView';
 
 const PHANTOM = 'phantom';
+const GROUPS = ['openear', 'bern', 'other'] as const;
+
+function groupOf(s: SpecimenIndexEntry): (typeof GROUPS)[number] {
+  return s.dataset === 'openear' || s.dataset === 'bern' ? s.dataset : 'other';
+}
 
 interface Props {
   onBack: () => void;
@@ -66,11 +71,20 @@ export function ViewerScreen({ onBack }: Props) {
         <label className="specimen-select">
           <span>{t('viewer.specimenSelect')}</span>
           <select value={selected} onChange={(e) => setSelected(e.target.value)} data-testid="specimen-select">
-            {specimens.map((s) => (
-              <option key={s.path} value={s.path}>
-                {s.id}
-              </option>
-            ))}
+            {GROUPS.map((group) => {
+              const members = specimens.filter((s) => groupOf(s) === group);
+              if (members.length === 0) return null;
+              return (
+                <optgroup key={group} label={t(`viewer.group.${group}`)}>
+                  {members.map((s) => (
+                    <option key={s.path} value={s.path}>
+                      {s.id}
+                      {s.dataset ? ` · ${t(s.side ? `viewer.side.${s.side}` : 'viewer.side.unknown')}` : ''}
+                    </option>
+                  ))}
+                </optgroup>
+              );
+            })}
             <option value={PHANTOM}>{t('viewer.phantomOption')}</option>
           </select>
         </label>

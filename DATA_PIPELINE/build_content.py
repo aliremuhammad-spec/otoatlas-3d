@@ -36,6 +36,7 @@ OPENEAR_PHASE1 = (
     "Bone",
     "External Auditory Canal",
     "Sinus Dura",
+    "Round Window",
 )
 
 # Enclosing labels that are shown simplified anyway. In finer specimens (BETA is 0.05 mm)
@@ -116,9 +117,10 @@ def build_openear(specimen: str, out: Path) -> dict:
     if resampled:
         extra["labels_resampled"] = resampled
         print(f"{specimen}: resampled before meshing: {resampled}")
-    if missing:
-        extra["labels_not_built"] = missing
-        print(f"{specimen}: labels not built: {missing}")
+    absent_expected = [m for m in missing if m not in openear.OPTIONAL_SEGMENTS]
+    if absent_expected:
+        extra["labels_not_built"] = absent_expected
+        print(f"{specimen}: labels not built: {absent_expected}")
     if report:
         extra["scala_vestibuli_split"] = report
         print("scala vestibuli split:", json.dumps(report))

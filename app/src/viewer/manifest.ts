@@ -173,6 +173,9 @@ export function parseManifest(value: unknown): Manifest {
 export interface SpecimenIndexEntry {
   id: string;
   path: string;
+  /** Dataset and side, when the index lists them, so the picker can group and label specimens. */
+  dataset: string | null;
+  side: 'left' | 'right' | null;
 }
 
 /** Parses `content/index.json`: the list of specimen packages installed beside the app. */
@@ -183,6 +186,9 @@ export function parseSpecimenIndex(value: unknown): SpecimenIndexEntry[] {
     const e = obj(entry, `specimens[${i}]`);
     const path = str(e.path, `specimens[${i}].path`);
     if (!/^[A-Za-z0-9._-]+$/.test(path)) fail(`specimens[${i}].path is not a plain folder name`);
-    return { id: str(e.id, `specimens[${i}].id`), path };
+    const dataset = e.dataset === undefined || e.dataset === null ? null : str(e.dataset, `specimens[${i}].dataset`);
+    const side =
+      e.side === undefined || e.side === null ? null : oneOf(e.side, ['left', 'right'] as const, `specimens[${i}].side`);
+    return { id: str(e.id, `specimens[${i}].id`), path, dataset, side };
   });
 }

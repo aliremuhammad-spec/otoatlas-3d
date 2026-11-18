@@ -7,6 +7,17 @@ export interface StructureNames {
   latin: string | null;
 }
 
+/** What the info card says about a structure from a specimen package. */
+export interface StructureInfo {
+  provenanceTier: 'specimen-derived' | 'expert-annotated' | 'schematic';
+  contentStatus: 'draft' | 'expert-reviewed';
+  /** Voxel edges of the label the mesh was built from, in millimetres. */
+  sourceVoxelMm: readonly [number, number, number];
+  meshErrorLimitMm: number;
+  /** Measured distance of the shown mesh from its label surface. */
+  shownErrorMm: number;
+}
+
 /** One selectable object in the scene. */
 export interface SceneStructure {
   id: string;
@@ -26,10 +37,15 @@ export interface SceneStructure {
   defaultVisible?: boolean;
   /** Opacity the structure starts at; 1 when not given. */
   defaultOpacity?: number;
+  /** Absent for synthetic phantoms. */
+  info?: StructureInfo;
 }
 
 export interface SceneContent {
   specimenId: string;
+  /** Dataset the specimen comes from, such as "openear" or "bern". Null for synthetic content. */
+  dataset: string | null;
+  side: 'left' | 'right' | null;
   /** True when the geometry is not derived from a specimen. Drives the on-screen badge. */
   synthetic: boolean;
   /** True when any structure is still awaiting expert review. */

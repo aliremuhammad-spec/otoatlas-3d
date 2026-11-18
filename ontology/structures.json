@@ -262,7 +262,7 @@
       ],
       "content_status": "draft",
       "reviewed_by": null,
-      "note": "OpenEar ships the sigmoid sinus and the dura as one label. The joined Arabic name was confirmed by the reviewer on 2026-11-17. To be split by expert annotation into sigmoid_sinus (Sinus sigmoideus, الجيب السيني) and dura_mater (Dura mater, الأم الجافية). In ZETA the label is a large block with flat faces filling the space beyond the bone to the edge of the scan, not a vessel-shaped surface, so it starts hidden.",
+      "note": "OpenEar ships the sigmoid sinus and the dura as one label; THETA names it only \"Sinus\". The reviewer noted on 2026-11-19 that the sigmoid sinus is itself part of the dura mater and asked to keep the combined name. The joined Arabic name was confirmed on 2026-11-17. In ZETA the label is a large block with flat faces filling the space beyond the bone to the edge of the scan, not a vessel-shaped surface, so it starts hidden.",
       "color": "#6a7fb5",
       "mesh_error_limit_mm": 0.1,
       "default_opacity": 0.3,
@@ -361,6 +361,29 @@
       "mesh_error_limit_mm": 0.05,
       "ar_reviewed_by": "Dr. Ali R. Muhammad",
       "ar_reviewed_on": "2026-11-17"
+    },
+    {
+      "id": "round_window",
+      "name_en": "Round window",
+      "name_ta_latin": "Fenestra cochleae",
+      "name_ar": "النافذة المستديرة",
+      "ar_status": "verified",
+      "ar_reviewed_by": "Dr. Ali R. Muhammad",
+      "ar_reviewed_on": "2026-11-19",
+      "parent": null,
+      "system": "soft_tissue",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Round Window"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Labelled \"RW\" in OpenEar ALPHA only; the reviewer identified it as the round window on 2026-11-19. ALPHA also has a label named \"Duct\" whose structure is not known; it is not built.",
+      "color": "#ff8fab",
+      "mesh_error_limit_mm": 0.1
     },
     {
       "id": "bony_labyrinth",

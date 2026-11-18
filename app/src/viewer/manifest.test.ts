@@ -89,6 +89,18 @@ describe('content manifest', () => {
     expect(() => parseManifest(m)).toThrow(/not published/);
   });
 
+  it('reads dataset and side from the specimen index when present', () => {
+    const list = parseSpecimenIndex({
+      specimens: [
+        { id: 'OPENEAR-ZETA', path: 'OPENEAR-ZETA', dataset: 'openear', side: 'right' },
+        { id: 'X', path: 'X' },
+      ],
+    });
+    expect(list[0]).toEqual({ id: 'OPENEAR-ZETA', path: 'OPENEAR-ZETA', dataset: 'openear', side: 'right' });
+    expect(list[1]).toEqual({ id: 'X', path: 'X', dataset: null, side: null });
+    expect(() => parseSpecimenIndex({ specimens: [{ id: 'X', path: 'X', side: 'up' }] })).toThrow(/side/);
+  });
+
   it('reads whether a structure starts hidden', () => {
     expect(parseManifest(validManifest()).structures[0]?.defaultVisible).toBe(true);
     expect(parseManifest(withStructure({ default_visible: false })).structures[0]?.defaultVisible).toBe(false);
@@ -104,7 +116,7 @@ describe('content manifest', () => {
 describe('specimen index', () => {
   it('parses the list of installed specimens', () => {
     expect(parseSpecimenIndex({ specimens: [{ id: 'OPENEAR-ZETA', path: 'OPENEAR-ZETA' }] })).toEqual([
-      { id: 'OPENEAR-ZETA', path: 'OPENEAR-ZETA' },
+      { id: 'OPENEAR-ZETA', path: 'OPENEAR-ZETA', dataset: null, side: null },
     ]);
   });
 

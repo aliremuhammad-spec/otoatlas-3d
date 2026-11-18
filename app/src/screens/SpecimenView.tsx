@@ -6,10 +6,12 @@ import { formatMillimetres, formatVoxelSize } from '../measure/format';
 import { distance, type Vec3 } from '../measure/geometry';
 import { minSurfaceDistance } from '../measure/surfaceDistance';
 import type { SceneContent } from '../viewer/content';
+import { LabelLayer } from '../viewer/labels';
 import { displayName, latinLine } from '../viewer/names';
 import { ViewerCore } from '../viewer/ViewerCore';
+import { StructureCard } from './StructureCard';
 
-type Mode = 'p2p' | 's2s';
+type Mode = 'explore' | 'p2p' | 's2s';
 
 interface Measurement {
   value: number;
@@ -24,9 +26,14 @@ interface Props {
 export function SpecimenView({ content }: Props) {
   const { t, numerals, locale } = useI18n();
   const hostRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const coreRef = useRef<ViewerCore | null>(null);
+  const labelsRef = useRef<LabelLayer | null>(null);
   const [failed, setFailed] = useState(false);
-  const [mode, setMode] = useState<Mode>('p2p');
+  const [mode, setMode] = useState<Mode>('explore');
+  const modeRef = useRef<Mode>('explore');
+  const [selected, setSelected] = useState<string | null>(null);
+  const [labelsOn, setLabelsOn] = useState(true);
   const [points, setPoints] = useState<readonly Vec3[]>([]);
   const measurable = content.structures.filter((s) => s.measurable !== false);
   const [pair, setPair] = useState<readonly [string, string]>(() => [
@@ -50,12 +57,44 @@ export function SpecimenView({ content }: Props) {
       return undefined;
     }
     coreRef.current = core;
-    core.onPick((pick) => setPoints((prev) => (prev.length >= 2 ? [pick.point] : [...prev, pick.point])));
+    core.onPick((pick) => {
+      if (modeRef.current === 'explore') select(pick.structureId);
+      else if (modeRef.current === 'p2p') setPoints((prev) => (prev.length >= 2 ? [pick.point] : [...prev, pick.point]));
+    });
+    const stage = stageRef.current;
+    const layer = stage ? new LabelLayer(stage, core) : null;
+    labelsRef.current = layer;
+    const unsubscribe = layer ? core.onRender(() => layer.update()) : () => undefined;
     return () => {
+      unsubscribe();
+      layer?.dispose();
+      labelsRef.current = null;
       core.dispose();
       coreRef.current = null;
     };
   }, [content]);
+
+  // Label text follows the interface language; anchors are computed once per specimen.
+  useEffect(() => {
+    const core = coreRef.current;
+    const layer = labelsRef.current;
+    if (!core || !layer) return;
+    layer.setLabels(
+      content.structures.flatMap((s) => {
+        const anchor = core.anchorOf(s.id);
+        return anchor ? [{ id: s.id, text: displayName(s.names, locale), anchor }] : [];
+      }),
+    );
+  }, [content, locale]);
+
+  useEffect(() => {
+    labelsRef.current?.setEnabled(labelsOn);
+  }, [labelsOn]);
+
+  function select(id: string | null): void {
+    setSelected(id);
+    coreRef.current?.setHighlight(id);
+  }
 
   useEffect(() => {
     if (mode === 'p2p') coreRef.current?.showMeasurement(points);
@@ -65,7 +104,8 @@ export function SpecimenView({ content }: Props) {
     points[0] && points[1]
       ? { value: distance(points[0], points[1]), methodKey: 'viewer.measure.method.p2p' }
       : null;
-  const result = mode === 'p2p' ? pointResult : surfaceResult;
+  const result = mode === 'p2p' ? pointResult : mode === 's2s' ? surfaceResult : null;
+  const selectedStructure = content.structures.find((s) => s.id === selected) ?? null;
 
   function measureSurfaces(a: string, b: string): void {
     const core = coreRef.current;
@@ -92,6 +132,7 @@ export function SpecimenView({ content }: Props) {
 
   function changeMode(next: Mode): void {
     setMode(next);
+    modeRef.current = next;
     setPoints([]);
     setSurfaceResult(null);
     coreRef.current?.showMeasurement([]);
@@ -131,13 +172,16 @@ export function SpecimenView({ content }: Props) {
 
   return (
     <>
-      <div className="viewer__stage">
+      <div className="viewer__stage" ref={stageRef}>
         <div ref={hostRef} className="viewer__canvas" />
         <div className="badges">
           {content.synthetic && <div className="badge badge--synthetic">{t('viewer.phantomBadge')}</div>}
           {content.draft && <div className="badge badge--draft">{t('viewer.draftBadge')}</div>}
         </div>
         {failed && <div className="viewer__error">{t('viewer.webglError')}</div>}
+        {selectedStructure && (
+          <StructureCard structure={selectedStructure} content={content} onClose={() => select(null)} />
+        )}
       </div>
       <aside className="viewer__panel">
         <section>
@@ -148,7 +192,7 @@ export function SpecimenView({ content }: Props) {
               const latin = latinLine(s.names, locale);
               return (
                 <li key={s.id} data-structure={s.id}>
-                  <label className="choice">
+                  <div className="choice">
                     <input
                       type="checkbox"
                       checked={!hidden.has(s.id)}
@@ -159,7 +203,12 @@ export function SpecimenView({ content }: Props) {
                       className="swatch"
                       style={{ background: `#${s.color.toString(16).padStart(6, '0')}` }}
                     />
-                    <span className="structure-name">
+                    <button
+                      type="button"
+                      className="structure-name"
+                      aria-pressed={selected === s.id}
+                      onClick={() => select(selected === s.id ? null : s.id)}
+                    >
                       <span>{name}</span>
                       {latin && (
                         <span className="structure-name__latin" lang="la" dir="ltr">
@@ -169,8 +218,8 @@ export function SpecimenView({ content }: Props) {
                       {s.measurable === false && (
                         <span className="structure-name__note">{t('viewer.displayOnly')}</span>
                       )}
-                    </span>
-                  </label>
+                    </button>
+                  </div>
                   <div className="structures__row">
                     <input
                       type="range"
@@ -189,13 +238,23 @@ export function SpecimenView({ content }: Props) {
               );
             })}
           </ul>
-          <button type="button" onClick={() => isolate(null)}>
-            {t('viewer.showAll')}
-          </button>
+          <div className="structures__actions">
+            <button type="button" onClick={() => isolate(null)}>
+              {t('viewer.showAll')}
+            </button>
+            <label className="choice">
+              <input type="checkbox" checked={labelsOn} onChange={() => setLabelsOn(!labelsOn)} />
+              <span>{t('viewer.labels')}</span>
+            </label>
+          </div>
+          {!selectedStructure && <p className="note">{t('viewer.card.hint')}</p>}
         </section>
         <section>
-          <h2>{t('viewer.measure.title')}</h2>
-          <div className="segmented" role="group" aria-label={t('viewer.measure.title')}>
+          <h2>{t('viewer.tools')}</h2>
+          <div className="segmented" role="group" aria-label={t('viewer.tools')}>
+            <button type="button" aria-pressed={mode === 'explore'} onClick={() => changeMode('explore')}>
+              {t('viewer.mode.explore')}
+            </button>
             <button type="button" aria-pressed={mode === 'p2p'} onClick={() => changeMode('p2p')}>
               {t('viewer.measure.pointToPoint')}
             </button>
@@ -220,10 +279,10 @@ export function SpecimenView({ content }: Props) {
                 </dd>
               )}
             </dl>
-          ) : (
+          ) : mode === 'explore' ? null : (
             <p className="note">{t('viewer.measure.none')}</p>
           )}
-          {mode === 'p2p' ? (
+          {mode === 'explore' ? null : mode === 'p2p' ? (
             <p className="note">{t('viewer.measure.hintPoints')}</p>
           ) : (
             <div className="pair">
