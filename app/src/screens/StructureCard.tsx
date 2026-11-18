@@ -29,7 +29,7 @@ export function StructureCard({ structure, content, onClose }: Props) {
               {latin}
             </p>
           )}
-          {other && other !== name && (
+          {other && other !== name && other !== latin && (
             <p className="card__other" dir="auto">
               {other}
             </p>
