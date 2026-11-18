@@ -38,6 +38,29 @@ OPENEAR_PHASE1 = (
     "Sinus Dura",
 )
 
+# Enclosing labels that are shown simplified anyway. In finer specimens (BETA is 0.05 mm)
+# they would give tens of millions of triangles, so they are meshed from a copy resampled
+# to about 0.125 mm; the error is then measured against that copy, and the manifest says so.
+COARSEN = {"Bone", "Sinus Dura"}
+COARSEN_BELOW_MM = 0.1
+COARSEN_TO_MM = 0.125
+
+
+def coarsen(mask: np.ndarray, spacing, origin, factor: int):
+    """Resample a binary label by an integer factor: a block is inside when most of its voxels are."""
+    if factor == 1:
+        return mask, tuple(spacing), tuple(origin)
+    shape = [s // factor * factor for s in mask.shape]
+    m = mask[: shape[0], : shape[1], : shape[2]].reshape(
+        shape[0] // factor, factor, shape[1] // factor, factor, shape[2] // factor, factor
+    )
+    out = m.mean(axis=(1, 3, 5)) >= 0.5
+    sp = tuple(float(s) * factor for s in spacing)
+    # Block centres sit (factor - 1) / 2 voxels in from the first voxel centre.
+    org = tuple(float(o) + (factor - 1) / 2 * float(s) for o, s in zip(origin, spacing))
+    return out, sp, org
+
+
 # Sides the dataset does not state, as determined by the reviewer.
 OPENEAR_SIDES = {"ZETA": ("right", "Dr. Ali R. Muhammad", "2026-11-17")}
 
@@ -49,7 +72,7 @@ def build_openear(specimen: str, out: Path) -> dict:
     print(f"{specimen}: segments in file: {sorted(found)}")
     # Specimens spell some names differently ("Facial nerve", "Facial Nerve"); match on
     # letters only, and refuse two file segments that would match one name.
-    segments, unmatched = openear.match_segments(found, OPENEAR_PHASE1)
+    segments, source_names, unmatched = openear.match_segments(found, OPENEAR_PHASE1)
     if unmatched:
         print(f"{specimen}: segments not used: {unmatched}")
     # A specimen may lack a label; build the rest and record the gap rather than failing.
@@ -58,10 +81,17 @@ def build_openear(specimen: str, out: Path) -> dict:
         missing.append("Scala Vestibuli")  # cannot be split without scala tympani
     labels = []
     report = None
+    resampled: dict[str, dict] = {}
     for name in OPENEAR_PHASE1:
         if name in missing:
             continue
         seg = segments[name]
+        if name in COARSEN and min(seg.spacing) < COARSEN_BELOW_MM:
+            factor = max(1, round(COARSEN_TO_MM / min(seg.spacing)))
+            mask, spacing, origin = coarsen(seg.mask, seg.spacing, seg.origin, factor)
+            resampled[name] = {"from_mm": list(seg.spacing), "to_mm": list(spacing), "rule": "majority of each block"}
+            labels.append(package.LabelInput(name, mask, spacing, origin))
+            continue
         if name != "Scala Vestibuli":
             labels.append(package.LabelInput(name, seg.mask, seg.spacing, seg.origin))
             continue
@@ -74,6 +104,12 @@ def build_openear(specimen: str, out: Path) -> dict:
         labels.append(package.LabelInput(name, parts.cochlear.mask, seg.spacing, parts.cochlear.origin, part="cochlear"))
         labels.append(package.LabelInput(name, parts.vestibular.mask, seg.spacing, parts.vestibular.origin, part="vestibular"))
     extra = {"frame": "Dataset frame of the segmentation file (right-anterior-superior), millimetres."}
+    extra["segment_names_in_file"] = source_names
+    if unmatched:
+        extra["segments_not_used"] = unmatched
+    if resampled:
+        extra["labels_resampled"] = resampled
+        print(f"{specimen}: resampled before meshing: {resampled}")
     if missing:
         extra["labels_not_built"] = missing
         print(f"{specimen}: labels not built: {missing}")

@@ -90,11 +90,40 @@ def test_expected_segment_list_matches_what_the_files_contain():
 
 def test_segment_names_match_ignoring_case_spaces_and_punctuation():
     found = {"Facial nerve": 1, "scala_tympani": 2, "Bone": 3, "Extra": 4}
-    matched, unused = openear.match_segments(found, ["Facial Nerve", "Scala Tympani", "Bone", "Malleus"])
+    matched, source, unused = openear.match_segments(found, ["Facial Nerve", "Scala Tympani", "Bone", "Malleus"])
     assert matched == {"Facial Nerve": 1, "Scala Tympani": 2, "Bone": 3}
+    assert source["Facial Nerve"] == "Facial nerve"
     assert unused == ["Extra"]
+
+
+def test_other_spellings_in_the_files_match_by_alias():
+    found = {"EAC": 1, "Tympanic Drum": 2, "Vestibucochlear Nerve": 3, "Bone 1300": 4, "RW": 5}
+    matched, source, unused = openear.match_segments(
+        found, ["External Auditory Canal", "Tympanic Membrane", "Cochleovestibular nerve", "Bone"]
+    )
+    assert matched == {"External Auditory Canal": 1, "Tympanic Membrane": 2, "Cochleovestibular nerve": 3, "Bone": 4}
+    assert unused == ["RW"]
+
+
+def test_a_name_and_its_alias_both_present_is_refused():
+    with pytest.raises(ValueError):
+        openear.match_segments({"Sinus Dura": 1, "Sinus": 2}, ["Sinus Dura"])
 
 
 def test_two_segments_that_cannot_be_told_apart_are_refused():
     with pytest.raises(ValueError):
         openear.match_segments({"Bone": 1, "bone": 2}, ["Bone"])
+
+
+def test_coarsen_keeps_a_block_when_most_of_it_is_inside_and_moves_the_origin_to_block_centres():
+    import importlib.util, pathlib
+    spec = importlib.util.spec_from_file_location("build_content", pathlib.Path(__file__).parents[1] / "build_content.py")
+    bc = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(bc)
+    m = np.zeros((4, 4, 4), bool)
+    m[:2, :2, :2] = True  # one full block
+    m[2, 2, 2] = True  # one voxel of another block: minority
+    out, sp, org = bc.coarsen(m, (0.05, 0.05, 0.05), (1.0, 2.0, 3.0), 2)
+    assert out.shape == (2, 2, 2) and out[0, 0, 0] and out.sum() == 1
+    assert sp == (0.1, 0.1, 0.1)
+    assert org == pytest.approx((1.025, 2.025, 3.025))

@@ -86,10 +86,25 @@ def _letters(name: str) -> str:
     return re.sub(r"[^a-z]", "", name.lower())
 
 
-def match_segments(found: dict, wanted) -> tuple[dict, list[str]]:
-    """Key the file's segments by the wanted names they match, ignoring case, spaces and punctuation.
+# Other spellings seen in the OpenEar files, by the name used here (checked on all eight
+# specimens, 2026-11-17). Typos in the files ("Vestibucochlear") are kept as found.
+ALIASES = {
+    "Carotis Interna": ["Carotis", "Carotide"],
+    "External Auditory Canal": ["EAC", "Outer Auditory Canal", "Outer Ear Canal", "External Ear Canal"],
+    "Chorda Tympani": ["Chorda"],
+    "Sinus Dura": ["Sinus"],
+    "Tympanic Membrane": ["Tympanic Drum"],
+    "Cochleovestibular nerve": ["Vestibulocochlear nerve", "Vestibulcochlear Nerve", "Vestibucochlear Nerve"],
+    "Bone": ["Bone 1300"],
+}
 
-    Returns the matched segments under the wanted names, and the file names that matched none.
+
+def match_segments(found: dict, wanted) -> tuple[dict, dict, list[str]]:
+    """Key the file's segments by the wanted names, ignoring case, spaces and punctuation.
+
+    Each wanted name also matches its ALIASES. Returns the matched segments under the
+    wanted names, the file name each came from, and the file names that matched none.
+    Two file segments that could both be one structure are refused.
     """
     by_letters: dict[str, str] = {}
     for name in found:
@@ -97,6 +112,11 @@ def match_segments(found: dict, wanted) -> tuple[dict, list[str]]:
         if key in by_letters:
             raise ValueError(f"segments {by_letters[key]!r} and {name!r} cannot be told apart")
         by_letters[key] = name
-    matched = {w: found[by_letters[_letters(w)]] for w in wanted if _letters(w) in by_letters}
-    used = {by_letters[_letters(w)] for w in wanted if _letters(w) in by_letters}
-    return matched, sorted(set(found) - used)
+    matched, source = {}, {}
+    for w in wanted:
+        hits = [by_letters[k] for k in dict.fromkeys(_letters(n) for n in [w, *ALIASES.get(w, [])]) if k in by_letters]
+        if len(hits) > 1:
+            raise ValueError(f"{w!r} matches several segments: {hits}")
+        if hits:
+            matched[w], source[w] = found[hits[0]], hits[0]
+    return matched, source, sorted(set(found) - set(source.values()))
