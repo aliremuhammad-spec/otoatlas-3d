@@ -151,8 +151,12 @@ def openear_scan(specimen: str, labels: list, out: Path) -> dict | None:
         framing = [(l.mask, l.spacing, l.origin) for l in labels if l.source_label not in SCAN_FRAME_EXCLUDE]
         lo, hi = scan.box_around(framing, SCAN_MARGIN_MM)
         with tempfile.TemporaryDirectory() as tmp:
-            # ZETA's is "05_Registred_Slicer_Volumes/CBCT_Embedded.nrrd"; other specimens name it differently.
-            path = fetch.fetch_openear_member(specimen, r"re:^[^/]*/?05_[^/]*/[^/]*cbct[^/]*\.nrrd$", tmp)
+            # Most specimens have CBCT_Embedded and CBCT_Unembedded (any case); the embedded one is
+            # registered to the segmentation. ALPHA has a single CBCT file, BETA none.
+            try:
+                path = fetch.fetch_openear_member(specimen, r"re:05_[^/]*/cbct_embedded[^/]*\.nrrd$", tmp)
+            except LookupError:
+                path = fetch.fetch_openear_member(specimen, r"re:^[^/]*/?05_[^/]*/[^/]*cbct[^/]*\.nrrd$", tmp)
             data, header = nrrd.read(str(path), index_order="F")
         directions = np.asarray(header["space directions"], dtype=np.float64)
         if np.abs(directions - np.diag(np.diag(directions))).max() > 1e-9:
