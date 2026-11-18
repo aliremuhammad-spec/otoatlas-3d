@@ -17,7 +17,7 @@ from pathlib import Path
 import nibabel as nib
 import numpy as np
 
-from otopipe import fetch, frames, openear, package, split
+from otopipe import fetch, frames, openear, package, scan, split
 
 ONTOLOGY = Path(__file__).resolve().parent.parent / "ontology" / "structures.json"
 
@@ -124,6 +124,9 @@ def build_openear(specimen: str, out: Path) -> dict:
     if report:
         extra["scala_vestibuli_split"] = report
         print("scala vestibuli split:", json.dumps(report))
+    scan_entry = openear_scan(specimen, labels, out)
+    if scan_entry:
+        extra["scan"] = scan_entry
     side = None
     if specimen.upper() in OPENEAR_SIDES:
         side, by, on = OPENEAR_SIDES[specimen.upper()]
@@ -134,6 +137,39 @@ def build_openear(specimen: str, out: Path) -> dict:
     )
 
 
+# Structures that frame the CBCT crop: the middle and inner ear, not the large enclosing labels.
+SCAN_FRAME_EXCLUDE = {"Bone", "Sinus Dura", "External Auditory Canal"}
+SCAN_MARGIN_MM = 3.0
+
+
+def openear_scan(specimen: str, labels: list, out: Path) -> dict | None:
+    """Crop the specimen's registered CBCT around the middle and inner ear. A failure here
+    leaves the specimen without a slice view instead of failing the whole package."""
+    import nrrd
+
+    try:
+        framing = [(l.mask, l.spacing, l.origin) for l in labels if l.source_label not in SCAN_FRAME_EXCLUDE]
+        lo, hi = scan.box_around(framing, SCAN_MARGIN_MM)
+        with tempfile.TemporaryDirectory() as tmp:
+            path = fetch.fetch_openear_member(specimen, "05_Registred_Slicer_Volumes/CBCT_Embedded.nrrd", tmp)
+            data, header = nrrd.read(str(path), index_order="F")
+        directions = np.asarray(header["space directions"], dtype=np.float64)
+        if np.abs(directions - np.diag(np.diag(directions))).max() > 1e-9:
+            raise ValueError("oblique CBCT")
+        signs = openear._to_ras_signs(str(header["space"]))
+        volume = scan.to_positive_axes(
+            data, np.diag(directions) * signs, np.asarray(header["space origin"], dtype=np.float64) * signs
+        )
+        del data
+        cropped = scan.crop(volume, lo, hi)
+        entry = scan.write_scan(out, cropped, "CBCT", "05_Registred_Slicer_Volumes/CBCT_Embedded.nrrd")
+        print(f"{specimen}: scan {entry['shape']} at {entry['spacing_mm']} mm, window {entry['window']}")
+        return entry
+    except Exception as e:  # noqa: BLE001 - reported and recorded; the meshes still ship
+        print(f"{specimen}: warning: no scan packaged: {e}")
+        return None
+
+
 def build_bern(specimen: str, out: Path) -> dict:
     with tempfile.TemporaryDirectory() as tmp:
         root = fetch.fetch_bern_specimen(specimen, tmp)
@@ -141,6 +177,10 @@ def build_bern(specimen: str, out: Path) -> dict:
         image = nib.load(root / "uCT" / f"{specimen}_uCT_LABELS.nii")
         mask = np.asanyarray(image.dataobj) > 0
         affine = image.affine
+        raw_files = sorted((root / "uCT").glob("*_uCT_RAW.nii*"))
+        raw_image = nib.load(raw_files[0]) if raw_files else None
+        raw = np.asanyarray(raw_image.dataobj) if raw_image is not None else None
+        raw_affine = raw_image.affine if raw_image is not None else None
     if not np.allclose(affine[:3, :3], np.diag(np.diag(affine[:3, :3]))):
         raise RuntimeError("oblique volumes are not supported")
     spacing = tuple(float(v) for v in np.diag(affine[:3, :3]))
@@ -166,6 +206,13 @@ def build_bern(specimen: str, out: Path) -> dict:
         },
     }
     labels = [package.LabelInput("bony labyrinth (single label)", mask, spacing, origin)]
+    if raw is not None and np.allclose(raw_affine[:3, :3], np.diag(np.diag(raw_affine[:3, :3]))):
+        volume = scan.to_positive_axes(raw, np.diag(raw_affine[:3, :3]), raw_affine[:3, 3])
+        lo, hi = scan.box_around([(mask, spacing, origin)], 1.5)
+        extra["scan"] = scan.write_scan(out, scan.crop(volume, lo, hi), "micro-CT", f"uCT/{raw_files[0].name}")
+        print(f"{specimen}: scan {extra['scan']['shape']} at {extra['scan']['spacing_mm']} mm")
+    else:
+        print(f"{specimen}: warning: no micro-CT image to package")
     return package.build_package(
         out, f"BERN-{specimen}", "bern-labyrinth", labels, package.load_ontology(ONTOLOGY), side=desc["SIDE"].lower(), extra=extra,
         publish_shown_only=True,
