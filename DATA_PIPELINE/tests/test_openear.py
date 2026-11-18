@@ -127,3 +127,37 @@ def test_coarsen_keeps_a_block_when_most_of_it_is_inside_and_moves_the_origin_to
     assert out.shape == (2, 2, 2) and out[0, 0, 0] and out.sum() == 1
     assert sp == (0.1, 0.1, 0.1)
     assert org == pytest.approx((1.025, 2.025, 3.025))
+
+
+def test_streamed_reading_matches_across_chunks_raw_and_label_value_layouts(tmp_path, monkeypatch):
+    from otopipe import openear as O
+
+    shape = (30, 20, 25)
+    a, b = ball(shape, (10, 10, 5), 4), ball(shape, (20, 8, 18), 5)
+    # Tiny chunks force a segment to span several reads.
+    monkeypatch.setattr(O, "CHUNK_BYTES", 3 * 30 * 20 * 2)
+    for encoding in ("gzip", "raw"):
+        path = tmp_path / f"layers-{encoding}.seg.nrrd"
+        write_seg(path, [a, b], ["Malleus", "Incus"])
+        if encoding == "raw":
+            data, header = nrrd.read(str(path), index_order="F")
+            header["encoding"] = "raw"
+            nrrd.write(str(path), data, header, index_order="F")
+        segs = O.read_segmentation(str(path))
+        assert np.array_equal(segs["Malleus"].mask, a[6:15, 6:15, 1:10])
+        assert segs["Incus"].mask.sum() == b.sum()
+    # One shared layer, each segment its own label value (newer Slicer files).
+    labels = a.astype(np.uint8) + 2 * b.astype(np.uint8)
+    header = {
+        "space": "right-anterior-superior",
+        "space directions": np.diag([0.125] * 3),
+        "space origin": np.zeros(3),
+        "encoding": "gzip",
+        "Segment0_Name": "Malleus", "Segment0_Layer": "0", "Segment0_LabelValue": "1",
+        "Segment1_Name": "Incus", "Segment1_Layer": "0", "Segment1_LabelValue": "2",
+    }
+    path = tmp_path / "shared.seg.nrrd"
+    nrrd.write(str(path), labels, header, index_order="F")
+    segs = O.read_segmentation(str(path))
+    assert segs["Malleus"].mask.sum() == (labels == 1).sum()
+    assert segs["Incus"].mask.sum() == (labels == 2).sum()

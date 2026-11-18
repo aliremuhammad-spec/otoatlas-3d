@@ -7,6 +7,7 @@ Layout confirmed on specimen ZETA: a 4D array `[segment, i, j, k]` of unsigned c
 from __future__ import annotations
 
 import re
+import zlib
 from dataclasses import dataclass
 
 import numpy as np
@@ -47,16 +48,60 @@ def _to_ras_signs(space: str) -> np.ndarray:
     raise ValueError(f"unsupported NRRD space: {space!r}")
 
 
+CHUNK_BYTES = 256 * 1024 * 1024
+
+
+def _plane_chunks(path: str, header: dict, data_start: int, plane_bytes: int, dtype: np.dtype, planes: int):
+    """Yield (first_plane, block) over the data, a few planes along the slowest axis at a time.
+
+    The data is read as a stream (gzip or raw), so a segmentation larger than memory
+    can still be read: DELTA's would not fit when loaded whole.
+    """
+    encoding = str(header.get("encoding", "raw")).lower()
+    if encoding not in ("raw", "gzip", "gz"):
+        raise ValueError(f"unsupported NRRD encoding: {encoding!r}")
+    per = max(1, CHUNK_BYTES // plane_bytes)
+    with open(path, "rb") as fh:
+        fh.seek(data_start)
+        inflate = zlib.decompressobj(16 + zlib.MAX_WBITS) if encoding != "raw" else None
+        pending = bytearray()
+        z = 0
+        while z < planes:
+            want = min(per, planes - z) * plane_bytes
+            while len(pending) < want:
+                raw = fh.read(16 * 1024 * 1024)
+                if not raw:
+                    raise ValueError("segmentation data ends early")
+                pending.extend(inflate.decompress(raw) if inflate else raw)
+            block = bytes(pending[:want])
+            del pending[:want]
+            yield z, np.frombuffer(block, dtype=dtype)
+            z += want // plane_bytes
+
+
 def read_segmentation(path: str) -> dict[str, Segment]:
     """Read every segment as a cropped boolean mask in the specimen frame (RAS, mm).
+
+    Handles both Slicer layouts: one layer per segment (4D, as in ZETA) and segments
+    sharing layers with a label value each. The data is streamed twice, once for each
+    segment's bounding box and once to fill it, so only the cropped masks are held.
 
     Only axis-aligned volumes are accepted: OpenEar's are, and silently resampling
     an oblique volume would blur sub-voxel detail.
     """
-    data, header = nrrd.read(path, index_order="F")
-    if data.ndim != 4:
-        raise ValueError("expected a 4D segmentation with one layer per segment")
-    directions = np.asarray(header["space directions"][1:], dtype=np.float64)
+    with open(path, "rb") as fh:
+        header = nrrd.read_header(fh)
+        data_start = fh.tell()
+    if int(header.get("line skip", 0)) or int(header.get("byte skip", 0)):
+        raise ValueError("NRRD line or byte skips are not supported")
+    sizes = [int(v) for v in header["sizes"]]
+    if len(sizes) not in (3, 4):
+        raise ValueError("expected a 3D or 4D segmentation")
+    layered = len(sizes) == 4
+    layers = sizes[0] if layered else 1
+    nx, ny, nz = sizes[-3:]
+    directions = np.asarray(header["space directions"], dtype=np.float64)
+    directions = directions[1:] if layered else directions
     off_diagonal = directions - np.diag(np.diag(directions))
     if np.abs(off_diagonal).max() > 1e-9:
         raise ValueError("oblique volumes are not supported")
@@ -65,21 +110,61 @@ def read_segmentation(path: str) -> dict[str, Segment]:
     first = np.asarray(header["space origin"], dtype=np.float64) * signs
     if (step <= 0).any():
         raise ValueError("volume axes must run in the positive RAS direction")
+    dtype = nrrd.reader._determine_datatype(header)
 
-    segments: dict[str, Segment] = {}
-    for layer in range(data.shape[0]):
-        name = str(header.get(f"Segment{layer}_Name", "")).strip()
+    # Which layer and which value make up each segment.
+    count = layers if layered else 0
+    while f"Segment{count}_Name" in header:
+        count += 1
+    specs = []
+    for n in range(count):
+        name = str(header.get(f"Segment{n}_Name", "")).strip()
         if not name:
-            raise ValueError(f"layer {layer} has no Segment{layer}_Name")
-        volume = data[layer] > 0
-        if not volume.any():
-            continue
-        idx = np.argwhere(volume)
-        lo, hi = idx.min(axis=0), idx.max(axis=0) + 1
-        mask = volume[lo[0] : hi[0], lo[1] : hi[1], lo[2] : hi[2]].copy()
-        origin = first + lo * step
-        segments[name] = Segment(name, mask, tuple(step), tuple(origin))
-    return segments
+            raise ValueError(f"layer {n} has no Segment{n}_Name")
+        layer = int(header.get(f"Segment{n}_Layer", n if layered else 0))
+        value = header.get(f"Segment{n}_LabelValue")
+        if not 0 <= layer < layers:
+            raise ValueError(f"segment {name!r} names layer {layer}, which does not exist")
+        specs.append((name, layer, None if value is None else int(value)))
+
+    plane_bytes = layers * nx * ny * dtype.itemsize
+
+    def masks_of(block: np.ndarray):
+        # File order is layer fastest, then x, y, z: as C order that is [z, y, x, layer].
+        grid = block.reshape(-1, ny, nx, layers)
+        for name, layer, value in specs:
+            plane = grid[..., layer]
+            yield name, ((plane == value) if value is not None else (plane > 0)).transpose(2, 1, 0)
+
+    bounds: dict[str, list] = {}
+    for z0, block in _plane_chunks(path, header, data_start, plane_bytes, dtype, nz):
+        for name, m in masks_of(block):
+            if not m.any():
+                continue
+            xs, ys, zs = (np.flatnonzero(m.any(axis=a)) for a in ((1, 2), (0, 2), (0, 1)))
+            lo = np.array([xs[0], ys[0], zs[0] + z0])
+            hi = np.array([xs[-1], ys[-1], zs[-1] + z0]) + 1
+            if name in bounds:
+                bounds[name] = [np.minimum(bounds[name][0], lo), np.maximum(bounds[name][1], hi)]
+            else:
+                bounds[name] = [lo, hi]
+
+    crops = {name: np.zeros(tuple(hi - lo), dtype=bool) for name, (lo, hi) in bounds.items()}
+    for z0, block in _plane_chunks(path, header, data_start, plane_bytes, dtype, nz):
+        for name, m in masks_of(block):
+            if name not in crops:
+                continue
+            lo, hi = bounds[name]
+            za, zb = max(lo[2], z0), min(hi[2], z0 + m.shape[2])
+            if za >= zb:
+                continue
+            crops[name][:, :, za - lo[2] : zb - lo[2]] = m[lo[0] : hi[0], lo[1] : hi[1], za - z0 : zb - z0]
+
+    return {
+        name: Segment(name, crops[name], tuple(step), tuple(first + bounds[name][0] * step))
+        for name, _, _ in specs
+        if name in crops
+    }
 
 
 def _letters(name: str) -> str:
