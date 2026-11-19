@@ -164,10 +164,6 @@ def openear_air(specimen: str, segments: dict, cbct):
 
     Fine specimens (BETA, DELTA) are worked at about 0.125 mm: every label is resampled
     by the same per-axis factor first (majority of each block)."""
-    if cbct is None:
-        # Without the scan the air cannot be told from enclosed tissue (see otopipe/airspace.py).
-        print(f"{specimen}: warning: no middle ear air space: no CBCT to tell air from tissue")
-        return None
     if "Bone" not in segments or not any(o in segments for o in OSSICLES):
         print(f"{specimen}: warning: no middle ear air space: bone or ossicles missing")
         return None
@@ -180,7 +176,8 @@ def openear_air(specimen: str, segments: dict, cbct):
         bone = prep(segments["Bone"])
         soft = [prep(s) for n, s in segments.items() if n != "Bone"]
         seeds = [prep(segments[o]) for o in OSSICLES if o in segments]
-        air = airspace.middle_ear_air(bone, soft, seeds, ct=cbct[0])
+        # No intensity test: the registered CBCT shows the cavity filled with epoxy.
+        air = airspace.middle_ear_air(bone, soft, seeds)
         print(f"{specimen}: middle ear air: {json.dumps(air.report)}")
         return air
     except Exception as e:  # noqa: BLE001 - reported; the rest of the package still ships

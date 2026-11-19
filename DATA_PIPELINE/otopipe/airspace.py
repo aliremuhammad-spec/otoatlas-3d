@@ -3,15 +3,17 @@
 No open dataset labels the tympanic cavity. Its air is what the labels leave empty
 inside the temporal bone: this module closes the specimen's solid labels (bone and
 every soft-tissue label) into an envelope, fills it, and keeps the empty voxels inside.
-Of those, only the pieces that touch the ossicles are kept, which is the tympanic
-cavity together with the antrum and air cells that open into it.
+Of those, only the pieces that touch the ossicles, and only within `REACH_MM` of them,
+are kept: the tympanic cavity with its recesses. The antrum and mastoid cells are a
+separate, later step.
 
-Two checks keep it to the middle ear cleft. Only a box reaching `REACH_MM` from the
-ossicles is considered, which covers the antrum and mastoid cells but not the whole
-specimen block. And when the specimen's registered CBCT is given, only voxels darker
-than an Otsu threshold between air and tissue count as air: without it the first run
-also took in tissue spaces enclosed between the bone and the sinus-and-dura label
-(5 to 16 mL per specimen, against a few mL expected).
+The distance limit is what keeps it to the tympanic cavity. Without it the first run
+also took in spaces enclosed between the bone and the sinus-and-dura label (5 to 16 mL
+per specimen, against well under 1 mL expected). The scan cannot separate them: in the
+registered (embedded) CBCT the cavity is filled with epoxy, at tissue-like values
+(median about 750 around the ossicles in ZETA and GAMMA), and the unembedded CBCT does
+not line up with the labels. An intensity test is still available (`ct=`) for scans
+where air is air.
 
 It is a new segmentation, derived by rule, not drawn by an expert: the reviewer checks
 it on the scan before it is marked reviewed. Openings narrower than about twice the
@@ -29,7 +31,7 @@ from scipy import ndimage
 DEFAULT_CLOSING_MM = 3.0
 COARSE_FACTOR = 2  # the envelope is computed at twice the voxel size, then brought back
 SEED_REACH_MM = 0.5
-REACH_MM = 30.0
+REACH_MM = 10.0
 
 
 @dataclass(frozen=True)
@@ -131,6 +133,8 @@ def middle_ear_air(
     local = pieces[box]
     keep = np.unique(local[near_seed & (local > 0)])
     air = np.isin(pieces, keep)
+    # Within reach of the ossicles only (the working box is already that size, so this is cheap).
+    air &= ndimage.distance_transform_edt(~seed, sampling=sp) <= reach_mm
     if not air.any():
         raise ValueError("no air space touches the ossicles")
 
