@@ -124,11 +124,13 @@ def build_openear(specimen: str, out: Path) -> dict:
     if report:
         extra["scala_vestibuli_split"] = report
         print("scala vestibuli split:", json.dumps(report))
-    air = openear_air(specimen, segments)
+    cbct = load_openear_cbct(specimen)
+    air = openear_air(specimen, segments, cbct)
     if air is not None:
         labels.append(package.LabelInput(AIR_LABEL, air.mask, air_spacing(segments), air.origin))
         extra["middle_ear_air"] = air.report
-    scan_entry = openear_scan(specimen, labels, out)
+    scan_entry = openear_scan(specimen, labels, out, cbct)
+    del cbct
     if scan_entry:
         extra["scan"] = scan_entry
     side = None
@@ -157,11 +159,15 @@ def air_spacing(segments: dict) -> tuple[float, float, float]:
     return tuple(float(s) * k for s, k in zip(sp, _air_factor(sp)))
 
 
-def openear_air(specimen: str, segments: dict):
+def openear_air(specimen: str, segments: dict, cbct):
     """The middle ear cleft's air (otopipe/airspace.py), or None when it cannot be derived.
 
     Fine specimens (BETA, DELTA) are worked at about 0.125 mm: every label is resampled
     by the same per-axis factor first (majority of each block)."""
+    if cbct is None:
+        # Without the scan the air cannot be told from enclosed tissue (see otopipe/airspace.py).
+        print(f"{specimen}: warning: no middle ear air space: no CBCT to tell air from tissue")
+        return None
     if "Bone" not in segments or not any(o in segments for o in OSSICLES):
         print(f"{specimen}: warning: no middle ear air space: bone or ossicles missing")
         return None
@@ -174,7 +180,7 @@ def openear_air(specimen: str, segments: dict):
         bone = prep(segments["Bone"])
         soft = [prep(s) for n, s in segments.items() if n != "Bone"]
         seeds = [prep(segments[o]) for o in OSSICLES if o in segments]
-        air = airspace.middle_ear_air(bone, soft, seeds)
+        air = airspace.middle_ear_air(bone, soft, seeds, ct=cbct[0])
         print(f"{specimen}: middle ear air: {json.dumps(air.report)}")
         return air
     except Exception as e:  # noqa: BLE001 - reported; the rest of the package still ships
@@ -183,14 +189,12 @@ def openear_air(specimen: str, segments: dict):
 SCAN_MARGIN_MM = 3.0
 
 
-def openear_scan(specimen: str, labels: list, out: Path) -> dict | None:
-    """Crop the specimen's registered CBCT around the middle and inner ear. A failure here
-    leaves the specimen without a slice view instead of failing the whole package."""
+def load_openear_cbct(specimen: str):
+    """The specimen's registered CBCT with axes running in the positive RAS directions,
+    or None when the archive has none (BETA) or it cannot be read."""
     import nrrd
 
     try:
-        framing = [(l.mask, l.spacing, l.origin) for l in labels if l.source_label not in SCAN_FRAME_EXCLUDE]
-        lo, hi = scan.box_around(framing, SCAN_MARGIN_MM)
         with tempfile.TemporaryDirectory() as tmp:
             # Most specimens have CBCT_Embedded and CBCT_Unembedded (any case); the embedded one is
             # registered to the segmentation. ALPHA has a single CBCT file, BETA none.
@@ -206,12 +210,25 @@ def openear_scan(specimen: str, labels: list, out: Path) -> dict | None:
         volume = scan.to_positive_axes(
             data, np.diag(directions) * signs, np.asarray(header["space origin"], dtype=np.float64) * signs
         )
-        del data
-        cropped = scan.crop(volume, lo, hi)
-        entry = scan.write_scan(out, cropped, "CBCT", path.name)
+        return volume, path.name
+    except Exception as e:  # noqa: BLE001 - reported; the meshes still ship
+        print(f"{specimen}: warning: no CBCT: {e}")
+        return None
+
+
+def openear_scan(specimen: str, labels: list, out: Path, cbct) -> dict | None:
+    """Crop the specimen's registered CBCT around the middle and inner ear. A failure here
+    leaves the specimen without a slice view instead of failing the whole package."""
+    if cbct is None:
+        return None
+    volume, name = cbct
+    try:
+        framing = [(l.mask, l.spacing, l.origin) for l in labels if l.source_label not in SCAN_FRAME_EXCLUDE]
+        lo, hi = scan.box_around(framing, SCAN_MARGIN_MM)
+        entry = scan.write_scan(out, scan.crop(volume, lo, hi), "CBCT", name)
         print(f"{specimen}: scan {entry['shape']} at {entry['spacing_mm']} mm, window {entry['window']}")
         return entry
-    except Exception as e:  # noqa: BLE001 - reported and recorded; the meshes still ship
+    except Exception as e:  # noqa: BLE001
         print(f"{specimen}: warning: no scan packaged: {e}")
         return None
 

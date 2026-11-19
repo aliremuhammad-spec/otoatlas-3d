@@ -6,6 +6,13 @@ every soft-tissue label) into an envelope, fills it, and keeps the empty voxels 
 Of those, only the pieces that touch the ossicles are kept, which is the tympanic
 cavity together with the antrum and air cells that open into it.
 
+Two checks keep it to the middle ear cleft. Only a box reaching `REACH_MM` from the
+ossicles is considered, which covers the antrum and mastoid cells but not the whole
+specimen block. And when the specimen's registered CBCT is given, only voxels darker
+than an Otsu threshold between air and tissue count as air: without it the first run
+also took in tissue spaces enclosed between the bone and the sinus-and-dura label
+(5 to 16 mL per specimen, against a few mL expected).
+
 It is a new segmentation, derived by rule, not drawn by an expert: the reviewer checks
 it on the scan before it is marked reviewed. Openings narrower than about twice the
 closing radius (the Eustachian tube, the aditus) are bridged by the envelope; wider
@@ -22,6 +29,7 @@ from scipy import ndimage
 DEFAULT_CLOSING_MM = 3.0
 COARSE_FACTOR = 2  # the envelope is computed at twice the voxel size, then brought back
 SEED_REACH_MM = 0.5
+REACH_MM = 30.0
 
 
 @dataclass(frozen=True)
@@ -64,6 +72,8 @@ def middle_ear_air(
     soft: list[tuple[np.ndarray, tuple, tuple]],
     seeds: list[tuple[np.ndarray, tuple, tuple]],
     closing_mm: float = DEFAULT_CLOSING_MM,
+    ct=None,
+    reach_mm: float = REACH_MM,
 ) -> AirSpace:
     """Air of the middle ear cleft in the bone label's grid.
 
@@ -72,6 +82,19 @@ def middle_ear_air(
     """
     bmask, spacing, borigin = bone
     sp = np.asarray(spacing, dtype=np.float64)
+    full_seed = np.zeros(bmask.shape, dtype=bool)
+    for mask, s, o in seeds:
+        full_seed |= _place(bmask.shape, borigin, spacing, mask, o)
+    if not full_seed.any():
+        raise ValueError("no ossicle inside the bone grid to find the middle ear from")
+    # Work in a box reaching `reach_mm` from the ossicles.
+    sidx = np.argwhere(full_seed)
+    r = int(np.ceil(reach_mm / sp.min()))
+    blo = np.maximum(sidx.min(axis=0) - r, 0)
+    bhi = np.minimum(sidx.max(axis=0) + 1 + r, bmask.shape)
+    del full_seed
+    bmask = bmask[blo[0] : bhi[0], blo[1] : bhi[1], blo[2] : bhi[2]]
+    borigin = tuple(float(v) for v in np.asarray(borigin) + blo * sp)
     shape = bmask.shape
     solid = bmask.copy()
     for mask, s, o in soft:
@@ -89,6 +112,9 @@ def middle_ear_air(
     envelope = np.repeat(np.repeat(np.repeat(envelope_c, f, 0), f, 1), f, 2)[: shape[0], : shape[1], : shape[2]]
 
     empty = envelope & ~solid
+    threshold = None
+    if ct is not None:
+        empty, threshold = _dark_only(empty, borigin, sp, ct)
     pieces, count = ndimage.label(empty, structure=np.ones((3, 3, 3), bool))
     seed = np.zeros(shape, dtype=bool)
     for mask, s, o in seeds:
@@ -120,5 +146,30 @@ def middle_ear_air(
         "extent_mm": [round(float(v), 2) for v in (hi - lo) * sp],
         "pieces_kept": int(len(keep)),
         "pieces_dropped": int(count - len(keep)),
+        "reach_mm": reach_mm,
+        "ct_air_threshold": None if threshold is None else round(float(threshold), 1),
     }
     return AirSpace(crop, tuple(float(v) for v in np.asarray(borigin) + lo * sp), report)
+
+
+def _dark_only(empty: np.ndarray, origin, sp: np.ndarray, ct) -> tuple[np.ndarray, float]:
+    """Keep the empty voxels whose CBCT value is below an Otsu threshold (air, not tissue)."""
+    from skimage.filters import threshold_otsu
+
+    idx = np.argwhere(empty)
+    if idx.size == 0:
+        return empty, float("nan")
+    world = np.asarray(origin) + idx * sp
+    cidx = np.rint((world - np.asarray(ct.origin)) / np.asarray(ct.spacing)).astype(int)
+    inside = np.all((cidx >= 0) & (cidx < np.array(ct.data.shape)), axis=1)
+    values = np.full(len(idx), np.inf, dtype=np.float64)
+    ci = cidx[inside]
+    values[inside] = ct.data[ci[:, 0], ci[:, 1], ci[:, 2]]
+    finite = values[np.isfinite(values)]
+    if finite.size < 100:
+        raise ValueError("the CBCT does not cover the middle ear")
+    t = float(threshold_otsu(finite))
+    out = np.zeros_like(empty)
+    sel = idx[values < t]
+    out[sel[:, 0], sel[:, 1], sel[:, 2]] = True
+    return out, t
