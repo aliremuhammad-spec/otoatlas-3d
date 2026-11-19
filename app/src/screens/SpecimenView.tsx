@@ -182,7 +182,17 @@ export function SpecimenView({ content }: Props) {
         <div ref={viewRef} className="viewer__view">
           <div ref={hostRef} className="viewer__canvas" />
         </div>
-        {slicesOpen && <SlicePane content={content} core={core} hidden={hidden} onClose={() => setSlicesOpen(false)} />}
+        {slicesOpen && (
+          <SlicePane
+            content={content}
+            core={core}
+            hidden={hidden}
+            selected={selected}
+            labelsOn={labelsOn}
+            onSelect={select}
+            onClose={() => setSlicesOpen(false)}
+          />
+        )}
         <div className="badges">
           {content.synthetic && <div className="badge badge--synthetic">{t('viewer.phantomBadge')}</div>}
           {content.draft && <div className="badge badge--draft">{t('viewer.draftBadge')}</div>}

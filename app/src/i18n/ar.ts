@@ -89,6 +89,7 @@ export const ar: Record<MessageKey, string> = {
   'viewer.group.bern': 'تيه عظمي من Bern',
   'viewer.group.other': 'أخرى',
   'viewer.slices.title': 'مقاطع التصوير',
+  'viewer.slices.tapHint': 'انقر داخل حدود بنية لتحديدها. الأحرف على الأطراف اتجاهات جهاز التصوير: R/L يمين–يسار، A/P أمام–خلف، S/I أعلى–أسفل.',
   'viewer.slices.open': 'عرض مقاطع التصوير',
   'viewer.slices.none': 'لا يوجد تصوير مرفق بهذه العيّنة.',
   'viewer.slices.plane': 'المستوى',

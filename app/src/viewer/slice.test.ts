@@ -42,3 +42,30 @@ describe('meshSection', () => {
     expect(seg.length).toBe(4);
   });
 });
+
+describe('section helpers', () => {
+  // A unit square outline from (0,0) to (1,1), as an unordered list of segments.
+  const square = [0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1];
+
+  it('tells inside from outside', async () => {
+    const { insideSection } = await import('./slice');
+    expect(insideSection(square, 0.5, 0.5)).toBe(true);
+    expect(insideSection(square, 1.5, 0.5)).toBe(false);
+    expect(insideSection(square, 0.5, -0.2)).toBe(false);
+  });
+
+  it('measures the box area and pins the label on the outline', async () => {
+    const { sectionBoxArea, sectionAnchor } = await import('./slice');
+    expect(sectionBoxArea(square)).toBeCloseTo(1);
+    const a = sectionAnchor(square);
+    expect(a).not.toBeNull();
+    const [u, v] = a as [number, number];
+    expect(u === 0 || u === 1 || v === 0 || v === 1).toBe(true);
+  });
+
+  it('labels the edges by scanner axes', async () => {
+    const { edgeLetters } = await import('./slice');
+    expect(edgeLetters('z')).toEqual(['L', 'R', 'P', 'A']);
+    expect(edgeLetters('x')).toEqual(['P', 'A', 'I', 'S']);
+  });
+});

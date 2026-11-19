@@ -77,6 +77,7 @@ export const en = {
   'viewer.group.bern': 'Bern bony labyrinths',
   'viewer.group.other': 'Other',
   'viewer.slices.title': 'Scan slices',
+  'viewer.slices.tapHint': 'Tap inside an outline to select that structure. Letters on the edges are scanner directions: R/L right–left, A/P front–back, S/I up–down.',
   'viewer.slices.open': 'Show scan slices',
   'viewer.slices.none': 'No scan is packaged for this specimen.',
   'viewer.slices.plane': 'Plane',

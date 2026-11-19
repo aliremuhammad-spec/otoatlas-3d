@@ -558,3 +558,8 @@ fieldset {
   color: var(--warn);
   font-size: 0.75rem;
 }
+
+/* With the slice pane open, the card stays within the 3D half. */
+.viewer__stage--split .card {
+  max-inline-size: calc(50% - 1.5rem);
+}

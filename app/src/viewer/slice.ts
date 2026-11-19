@@ -113,3 +113,75 @@ export function meshSection(
   }
   return new Float32Array(out);
 }
+
+/**
+ * Whether the in-plane point (u, v) lies inside the closed outline a section forms,
+ * by counting crossings of a ray towards +u. Works on the unordered segment soup that
+ * meshSection returns, because a closed outline crosses the ray an odd number of times
+ * exactly when the point is inside.
+ */
+export function insideSection(segs: ArrayLike<number>, u: number, v: number): boolean {
+  let inside = false;
+  for (let i = 0; i + 3 < segs.length; i += 4) {
+    const u1 = segs[i] as number;
+    const v1 = segs[i + 1] as number;
+    const u2 = segs[i + 2] as number;
+    const v2 = segs[i + 3] as number;
+    if (v1 > v !== v2 > v) {
+      const uc = u1 + ((v - v1) / (v2 - v1)) * (u2 - u1);
+      if (uc > u) inside = !inside;
+    }
+  }
+  return inside;
+}
+
+/** Area of the box around a section, in mm²: used to prefer the smallest of nested outlines. */
+export function sectionBoxArea(segs: ArrayLike<number>): number {
+  let u0 = Infinity;
+  let v0 = Infinity;
+  let u1 = -Infinity;
+  let v1 = -Infinity;
+  for (let i = 0; i + 1 < segs.length; i += 2) {
+    const u = segs[i] as number;
+    const v = segs[i + 1] as number;
+    u0 = Math.min(u0, u);
+    u1 = Math.max(u1, u);
+    v0 = Math.min(v0, v);
+    v1 = Math.max(v1, v);
+  }
+  return u1 > u0 && v1 > v0 ? (u1 - u0) * (v1 - v0) : 0;
+}
+
+/** A point on the outline to pin its name to: the outline point nearest the outline's centre. */
+export function sectionAnchor(segs: ArrayLike<number>): readonly [number, number] | null {
+  const n = Math.floor(segs.length / 2);
+  if (n === 0) return null;
+  let cu = 0;
+  let cv = 0;
+  for (let i = 0; i < n; i += 1) {
+    cu += segs[2 * i] as number;
+    cv += segs[2 * i + 1] as number;
+  }
+  cu /= n;
+  cv /= n;
+  let best = 0;
+  let bestD = Infinity;
+  for (let i = 0; i < n; i += 1) {
+    const d = ((segs[2 * i] as number) - cu) ** 2 + ((segs[2 * i + 1] as number) - cv) ** 2;
+    if (d < bestD) {
+      bestD = d;
+      best = i;
+    }
+  }
+  return [segs[2 * best] as number, segs[2 * best + 1] as number];
+}
+
+/**
+ * Scanner-axis letters for the four edges of a slice: [left, right, bottom, top].
+ * Axes follow the right-anterior-superior convention of the scan's own frame.
+ */
+export function edgeLetters(axis: Axis): readonly [string, string, string, string] {
+  if (axis === 'z') return ['L', 'R', 'P', 'A'];
+  if (axis === 'y') return ['L', 'R', 'I', 'S'];
+  return ['P', 'A', 'I', 'S'];
+}

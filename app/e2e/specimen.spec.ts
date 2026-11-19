@@ -88,6 +88,27 @@ test.describe('specimen package', () => {
       return n;
     });
     expect(coloured).toBeGreaterThan(20);
+    // Tap inside the malleus outline: halfway between its leftmost and rightmost pixels on one row.
+    const target = await pane.locator('canvas').evaluate((c: HTMLCanvasElement) => {
+      const ctx = c.getContext('2d');
+      if (!ctx) return null;
+      const { width, height } = c;
+      const d = ctx.getImageData(0, 0, width, height).data;
+      const isOrange = (i: number) => (d[i] ?? 0) > 200 && (d[i + 1] ?? 0) > 120 && (d[i + 1] ?? 0) < 190 && (d[i + 2] ?? 0) < 60;
+      for (let y = Math.floor(height / 2); y < height; y += 1) {
+        let lo = -1;
+        let hi = -1;
+        for (let x = 0; x < width; x += 1) if (isOrange(4 * (y * width + x))) { if (lo < 0) lo = x; hi = x; }
+        if (hi - lo > 20) {
+          const r = c.getBoundingClientRect();
+          return { x: ((lo + hi) / 2) * (r.width / width), y: y * (r.height / height) };
+        }
+      }
+      return null;
+    });
+    expect(target).not.toBeNull();
+    await pane.locator('canvas').click({ position: target as { x: number; y: number } });
+    await expect(page.getByTestId('structure-card')).toContainText('Malleus');
     await pane.getByRole('button', { name: 'YZ plane' }).click();
     await expect(pane).toContainText(/x = /);
     await page.screenshot({ path: testInfo.outputPath('slices-en.png') });
