@@ -71,7 +71,7 @@ export function sceneFromManifest(
     structures,
     scan: manifest.scan
       ? {
-          url: `${root}/${manifest.scan.file}`,
+          url: manifest.scan.url ?? `${root}/${manifest.scan.file}`,
           shape: manifest.scan.shape,
           spacingMm: manifest.scan.spacingMm,
           originMm: manifest.scan.originMm,

@@ -39,6 +39,8 @@ export interface ManifestStructure {
 
 export interface ManifestScan {
   file: string;
+  /** Where the scan is published when it is not beside the manifest: a Hugging Face dataset file. */
+  url: string | null;
   shape: readonly [number, number, number];
   spacingMm: readonly [number, number, number];
   originMm: readonly [number, number, number];
@@ -214,8 +216,16 @@ function parseScan(value: unknown): ManifestScan | null {
   if (o.format !== 'uint8, gzip, x fastest') fail('scan.format is not supported');
   const shape = triple(o.shape, 'scan.shape', true);
   if (!shape.every(Number.isInteger)) fail('scan.shape must be whole numbers');
+  let url: string | null = null;
+  if (o.url !== undefined && o.url !== null) {
+    url = str(o.url, 'scan.url');
+    // Only the project's own kind of host: a public Hugging Face dataset file.
+    if (!/^https:\/\/huggingface\.co\/datasets\/[\w.-]+\/[\w.-]+\/resolve\/[0-9a-f]{40}\/[\w./-]+\.gz$/.test(url))
+      fail('scan.url is not a pinned Hugging Face dataset file');
+  }
   return {
     file,
+    url,
     shape,
     spacingMm: triple(o.spacing_mm, 'scan.spacing_mm', true),
     originMm: triple(o.origin_mm, 'scan.origin_mm', false),

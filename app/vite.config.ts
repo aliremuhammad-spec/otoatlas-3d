@@ -37,6 +37,16 @@ export default defineConfig({
             handler: 'StaleWhileRevalidate',
             options: { cacheName: 'specimen-content' },
           },
+          // Scans published on Hugging Face: each URL is pinned to a commit, so a cached copy never goes stale.
+          {
+            urlPattern: /^https:\/\/huggingface\.co\/datasets\/.+\/resolve\/[0-9a-f]{40}\//,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'specimen-scans',
+              cacheableResponse: { statuses: [0, 200] },
+              expiration: { maxEntries: 40 },
+            },
+          },
         ],
       },
     }),

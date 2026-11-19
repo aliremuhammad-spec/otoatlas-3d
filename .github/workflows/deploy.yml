@@ -80,7 +80,11 @@ jobs:
     # Publish whatever was built, even when a specimen failed.
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
+    env:
+      # Optional: with this secret set, scans are published to a Hugging Face dataset
+      # instead of GitHub Pages, which keeps the site under its 1 GB limit.
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -116,6 +120,11 @@ jobs:
               raise SystemExit("no specimen was built")
           (root / "index.json").write_text(json.dumps({"specimens": specimens}, indent=2), encoding="utf-8")
           print(len(specimens), "specimens:", ", ".join(s["id"] for s in specimens))
+      - name: Publish scans to Hugging Face
+        if: env.HF_TOKEN != ''
+        run: |
+          python3 -m pip install --quiet --user "huggingface_hub>=0.25"
+          python3 .github/scripts/publish_scans_hf.py app/dist/content | tee -a "$GITHUB_STEP_SUMMARY"
       - run: du -sh app/dist/content | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

@@ -101,6 +101,23 @@ describe('content manifest', () => {
     expect(() => parseSpecimenIndex({ specimens: [{ id: 'X', path: 'X', side: 'up' }] })).toThrow(/side/);
   });
 
+  it('accepts a scan published on Hugging Face only when pinned to a commit', () => {
+    const scan = {
+      file: 'scan.u8.gz',
+      format: 'uint8, gzip, x fastest',
+      shape: [2, 2, 2],
+      spacing_mm: [0.1, 0.1, 0.1],
+      origin_mm: [0, 0, 0],
+      modality: 'CBCT',
+    };
+    const pinned = `https://huggingface.co/datasets/zero019/otoatlas-3d-content/resolve/${'a'.repeat(40)}/OPENEAR-ZETA/scan.u8.gz`;
+    expect(parseManifest({ ...validManifest(), scan: { ...scan, url: pinned } }).scan?.url).toBe(pinned);
+    expect(parseManifest({ ...validManifest(), scan }).scan?.url).toBeNull();
+    expect(() =>
+      parseManifest({ ...validManifest(), scan: { ...scan, url: 'https://example.com/scan.u8.gz' } }),
+    ).toThrow(/pinned/);
+  });
+
   it('reads whether a structure starts hidden', () => {
     expect(parseManifest(validManifest()).structures[0]?.defaultVisible).toBe(true);
     expect(parseManifest(withStructure({ default_visible: false })).structures[0]?.defaultVisible).toBe(false);
