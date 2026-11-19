@@ -29,7 +29,7 @@ Status: ✔ in the app now · ◐ partly · ○ planned.
 |---|---|---|
 | Auricle: surface landmarks, cartilage, ligaments, intrinsic and extrinsic muscles, vessels, nerves, lymph nodes | D (no dataset includes the auricle) + T | ○ |
 | External canal: cartilaginous and bony parts, S-shaped course, two isthmuses, inferior tympanic recess, foramen of Huschke, relations (parotid, condyle, mastoid cells, epitympanum), skin, blood, nerves, lymph | S (canal label) + A (parts, isthmuses, recess) + measured lengths and diameters + T | ◐ label only |
-| Tympanic membrane: diameters, angle to the canal, umbo, pars tensa and flaccida, malleal folds, notch of Rivinus, fibrous annulus, layers, blood and nerve supply, quadrants and what lies behind each | S (label) + A (parts) + computed quadrants from the malleus handle + T | ◐ label only |
+| Tympanic membrane: diameters, angle to the canal, umbo, pars tensa and flaccida, malleal folds, notch of Rivinus, fibrous annulus, layers, blood and nerve supply, quadrants and what lies behind each | S (label) + computed quadrants and umbo from the malleus handle + label extents + T; pars flaccida, folds and annulus D | ◐ quadrants, umbo, extents and quadrant texts live |
 
 ### Middle ear
 
@@ -56,7 +56,7 @@ Status: ✔ in the app now · ◐ partly · ○ planned.
 |---|---|---|
 | Bony labyrinth as a whole; otic capsule layers | S (Bern, OpenEar split) + T | ✔ + T ○ |
 | Vestibule: elliptical and spherical recesses, vestibular crest, cochlear recess | A on Bern micro-CT | ○ |
-| Cochlea: about 32 mm, two and a half turns, height, modiolus, osseous spiral lamina, helicotrema, scalae | S (scalae in OpenEar) + measured duct length on specimens + D for lamina | ◐ |
+| Cochlea: about 32 mm, two and a half turns, height, modiolus, osseous spiral lamina, helicotrema, scalae | S (scalae in OpenEar) + A and B values on every Bern specimen (live) + duct length once the reviewer picks a method + D for lamina | ◐ |
 | Semicircular canals: planes, arc, ampullae, common crus, lengths and diameters | S (split label, Bern) + measured on each specimen | ◐ shape only |
 | Aqueducts (vestibular, cochlear), paravestibular canaliculi, fissula ante fenestram, fossula post fenestram, Hyrtl's fissure | A on micro-CT where visible + D otherwise + T | ○ |
 | Membranous labyrinth: cochlear duct, utricle, saccule, semicircular ducts, endolymphatic duct and sac | D fitted inside the bony labyrinth + T | ○ |
@@ -71,6 +71,14 @@ Status: ✔ in the app now · ◐ partly · ○ planned.
 | Branches: greater superficial petrosal, nerve to stapedius, chorda tympani | S (chorda label) + D + T | ◐ |
 | Dehiscence, hiatus, anomalies | A where seen + T | ○ |
 | Components, nuclei, central connections | T only (outside the temporal bone) | ○ |
+
+## Working basis from 20 November 2026
+
+The reviewer has no time to draw segmentations. Everything that would need drawing
+(tympanic cavity and recesses, facial canal mastoid segment, air cells, ossicle parts
+below what geometry can separate) is therefore covered by computed geometry where a
+rule is reliable, and otherwise by badged schematic models and card text. The reviewer
+checks by looking, not by drawing.
 
 ## Order of work proposed
 
