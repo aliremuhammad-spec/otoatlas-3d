@@ -118,6 +118,18 @@ describe('content manifest', () => {
     ).toThrow(/pinned/);
   });
 
+  it('reads known measurements and skips unknown ones', () => {
+    const m = parseManifest({
+      ...validManifest(),
+      measurements: [
+        { id: 'cochlear_a_value', value_mm: 9.1, structures: ['bony_labyrinth'] },
+        { id: 'something_new', value_mm: 1, structures: [] },
+      ],
+    });
+    expect(m.measurements).toEqual([{ id: 'cochlear_a_value', valueMm: 9.1, structures: ['bony_labyrinth'] }]);
+    expect(parseManifest(validManifest()).measurements).toEqual([]);
+  });
+
   it('reads whether a structure starts hidden', () => {
     expect(parseManifest(validManifest()).structures[0]?.defaultVisible).toBe(true);
     expect(parseManifest(withStructure({ default_visible: false })).structures[0]?.defaultVisible).toBe(false);

@@ -47,7 +47,23 @@ export interface ManifestScan {
   modality: string;
 }
 
+/** Measurements the pipeline makes on a specimen; ids the app does not know are skipped. */
+export const MEASUREMENT_IDS = [
+  'cochlear_a_value',
+  'cochlear_b_value',
+  'tm_vertical_diameter',
+  'tm_horizontal_diameter',
+] as const;
+export type MeasurementId = (typeof MEASUREMENT_IDS)[number];
+
+export interface SpecimenMeasurement {
+  id: MeasurementId;
+  valueMm: number;
+  structures: readonly string[];
+}
+
 export interface Manifest {
+  measurements: readonly SpecimenMeasurement[];
   /** The specimen's own scan for the slice view, when the package has one. */
   scan: ManifestScan | null;
   specimenId: string;
@@ -198,7 +214,26 @@ export function parseManifest(value: unknown): Manifest {
     },
     structures: o.structures.map(parseStructure),
     scan: parseScan(o.scan),
+    measurements: parseMeasurements(o.measurements),
   };
+}
+
+function parseMeasurements(value: unknown): SpecimenMeasurement[] {
+  if (value === undefined || value === null) return [];
+  if (!Array.isArray(value)) fail('measurements is not a list');
+  return value.flatMap((item, i) => {
+    const o = obj(item, `measurements[${i}]`);
+    const id = str(o.id, `measurements[${i}].id`);
+    if (!(MEASUREMENT_IDS as readonly string[]).includes(id)) return [];
+    if (!Array.isArray(o.structures)) fail(`measurements[${i}].structures is not a list`);
+    return [
+      {
+        id: id as MeasurementId,
+        valueMm: num(o.value_mm, `measurements[${i}].value_mm`),
+        structures: o.structures.map((s, j) => str(s, `measurements[${i}].structures[${j}]`)),
+      },
+    ];
+  });
 }
 
 function triple(value: unknown, what: string, positive: boolean): readonly [number, number, number] {

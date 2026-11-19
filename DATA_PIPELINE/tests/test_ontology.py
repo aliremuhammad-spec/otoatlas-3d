@@ -16,8 +16,9 @@ def test_every_openear_label_is_mapped_and_no_label_part_twice():
     ]
     assert len(keys) == len(set(keys))
     assert {label for label, _ in keys} == set(EXPECTED_SEGMENTS) | set(OPTIONAL_SEGMENTS)
-    # A split label maps by parts only, never also as a whole.
-    for label in {label for label, part in keys if part}:
+    # A split label maps by parts only, never also as a whole, except the tympanic
+    # membrane, which ships whole when its quadrants cannot be computed.
+    for label in {label for label, part in keys if part} - {"Tympanic Membrane"}:
         assert (label, None) not in keys, label
 
 

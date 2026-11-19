@@ -1,12 +1,26 @@
 import { useI18n } from '../i18n/I18nProvider';
 import { formatMillimetres, formatVoxelSize } from '../measure/format';
 import type { SceneContent, SceneStructure } from '../viewer/content';
+import { MEASUREMENT_IDS, type MeasurementId } from '../viewer/manifest';
 import { displayName, latinLine } from '../viewer/names';
 
 interface Props {
   structure: SceneStructure;
   content: SceneContent;
   onClose: () => void;
+}
+
+function MeasurementRow({ id, valueMm }: { id: string; valueMm: number }) {
+  const { t, numerals } = useI18n();
+  if (!(MEASUREMENT_IDS as readonly string[]).includes(id)) return null;
+  return (
+    <>
+      <dt>{t(`viewer.measurement.${id as MeasurementId}`)}</dt>
+      <dd>
+        {formatMillimetres(valueMm, numerals)} {t('units.mm')}
+      </dd>
+    </>
+  );
 }
 
 /** Facts about one structure: its names, where its geometry comes from, and how accurate the mesh is. */
@@ -64,6 +78,11 @@ export function StructureCard({ structure, content, onClose }: Props) {
                   limit: formatMillimetres(info.meshErrorLimitMm, numerals),
                 })}
           </dd>
+          {(content.measurements ?? [])
+            .filter((m) => m.structures.includes(structure.id))
+            .map((m) => (
+              <MeasurementRow key={m.id} id={m.id} valueMm={m.valueMm} />
+            ))}
           <dt>{t('viewer.specimenSelect')}</dt>
           <dd>
             {content.specimenId}

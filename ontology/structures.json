@@ -106,7 +106,96 @@
       "color": "#c7b8e0",
       "mesh_error_limit_mm": 0.1,
       "ar_reviewed_by": "Dr. Ali R. Muhammad",
-      "ar_reviewed_on": "2026-11-17"
+      "ar_reviewed_on": "2026-11-17",
+      "note": "Shown whole only when its quadrants cannot be computed (no malleus or cochlea in the specimen)."
+    },
+    {
+      "id": "tympanic_membrane_anterosuperior",
+      "name_en": "Tympanic membrane, anterosuperior quadrant",
+      "name_ta_latin": "Membrana tympanica, quadrans anterosuperior",
+      "name_ar": "الغشاء الطبلي، الربع الأمامي العلوي",
+      "ar_status": "unverified",
+      "parent": "tympanic_membrane",
+      "system": "soft_tissue",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Tympanic Membrane",
+          "part": "anterosuperior"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Quadrant of the specimen's tympanic membrane label, divided by rule (otopipe/tm.py): a line along the malleus handle and one at right angles through the umbo; anterior is the side of the cochlea. Awaits the reviewer's check.",
+      "color": "#d9b8f0",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "tympanic_membrane_anteroinferior",
+      "name_en": "Tympanic membrane, anteroinferior quadrant",
+      "name_ta_latin": "Membrana tympanica, quadrans anteroinferior",
+      "name_ar": "الغشاء الطبلي، الربع الأمامي السفلي",
+      "ar_status": "unverified",
+      "parent": "tympanic_membrane",
+      "system": "soft_tissue",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Tympanic Membrane",
+          "part": "anteroinferior"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Quadrant of the specimen's tympanic membrane label, divided by rule (otopipe/tm.py): a line along the malleus handle and one at right angles through the umbo; anterior is the side of the cochlea. Awaits the reviewer's check.",
+      "color": "#b98ee0",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "tympanic_membrane_posterosuperior",
+      "name_en": "Tympanic membrane, posterosuperior quadrant",
+      "name_ta_latin": "Membrana tympanica, quadrans posterosuperior",
+      "name_ar": "الغشاء الطبلي، الربع الخلفي العلوي",
+      "ar_status": "unverified",
+      "parent": "tympanic_membrane",
+      "system": "soft_tissue",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Tympanic Membrane",
+          "part": "posterosuperior"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Quadrant of the specimen's tympanic membrane label, divided by rule (otopipe/tm.py): a line along the malleus handle and one at right angles through the umbo; anterior is the side of the cochlea. Awaits the reviewer's check.",
+      "color": "#f0c6e0",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "tympanic_membrane_posteroinferior",
+      "name_en": "Tympanic membrane, posteroinferior quadrant",
+      "name_ta_latin": "Membrana tympanica, quadrans posteroinferior",
+      "name_ar": "الغشاء الطبلي، الربع الخلفي السفلي",
+      "ar_status": "unverified",
+      "parent": "tympanic_membrane",
+      "system": "soft_tissue",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Tympanic Membrane",
+          "part": "posteroinferior"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Quadrant of the specimen's tympanic membrane label, divided by rule (otopipe/tm.py): a line along the malleus handle and one at right angles through the umbo; anterior is the side of the cochlea. Awaits the reviewer's check.",
+      "color": "#e09ec6",
+      "mesh_error_limit_mm": 0.1
     },
     {
       "id": "middle_ear_air_space",

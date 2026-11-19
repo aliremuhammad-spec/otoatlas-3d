@@ -56,6 +56,8 @@ export interface SceneContent {
   /** Dataset credit shown with the specimen. Null for synthetic content. */
   attribution: { dataDoi: string; license: string } | null;
   structures: readonly SceneStructure[];
+  /** Measurements made on the specimen by the pipeline. Absent for synthetic content. */
+  measurements?: readonly { id: string; valueMm: number; structures: readonly string[] }[];
   /** The specimen's scan for the slice view, or null when there is none. */
   scan: {
     url: string;

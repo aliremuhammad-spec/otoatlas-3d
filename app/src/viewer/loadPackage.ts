@@ -69,6 +69,7 @@ export function sceneFromManifest(
     sourceVoxelMm: Math.max(...manifest.structures.flatMap((s) => [...s.sourceVoxelMm])),
     attribution: { dataDoi: manifest.attribution.dataDoi, license: manifest.attribution.license },
     structures,
+    measurements: manifest.measurements,
     scan: manifest.scan
       ? {
           url: manifest.scan.url ?? `${root}/${manifest.scan.file}`,

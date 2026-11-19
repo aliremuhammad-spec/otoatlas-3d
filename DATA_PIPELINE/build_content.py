@@ -17,7 +17,7 @@ from pathlib import Path
 import nibabel as nib
 import numpy as np
 
-from otopipe import airspace, fetch, frames, openear, package, scan, split
+from otopipe import airspace, cochlea, fetch, frames, openear, package, scan, split, tm
 
 ONTOLOGY = Path(__file__).resolve().parent.parent / "ontology" / "structures.json"
 
@@ -84,9 +84,11 @@ def build_openear(specimen: str, out: Path) -> dict:
     labels = []
     report = None
     resampled: dict[str, dict] = {}
+    vestibule_centre = None
+    extra_tm: dict = {}
     for name in OPENEAR_PHASE1:
-        if name in missing:
-            continue
+        if name in missing or name == "Tympanic Membrane":
+            continue  # the membrane is added below, divided into quadrants when possible
         seg = segments[name]
         if name in COARSEN and min(seg.spacing) < COARSEN_BELOW_MM:
             # Per axis: BETA is 0.05 x 0.05 x 0.15 mm, so only its first two axes are merged.
@@ -110,7 +112,19 @@ def build_openear(specimen: str, out: Path) -> dict:
         report = parts.report
         labels.append(package.LabelInput(name, parts.cochlear.mask, seg.spacing, parts.cochlear.origin, part="cochlear"))
         labels.append(package.LabelInput(name, parts.vestibular.mask, seg.spacing, parts.vestibular.origin, part="vestibular"))
+        vestibule_centre = centroid(parts.vestibular.mask, seg.spacing, parts.vestibular.origin)
+    if "Tympanic Membrane" not in missing:
+        labels.extend(tympanic_membrane(specimen, segments, vestibule_centre, extra_tm))
     extra = {"frame": "Dataset frame of the segmentation file (right-anterior-superior), millimetres."}
+    if "Tympanic Membrane" not in missing and extra_tm:
+        extra["tympanic_membrane_quadrants"] = extra_tm
+        quads = [f"tympanic_membrane_{q}" for q in tm.QUADRANTS]
+        extra["measurements"] = [
+            {"id": "tm_vertical_diameter", "value_mm": extra_tm["vertical_diameter_mm"], "structures": quads,
+             "method": "extent of the membrane label along the malleus handle"},
+            {"id": "tm_horizontal_diameter", "value_mm": extra_tm["horizontal_diameter_mm"], "structures": quads,
+             "method": "extent of the membrane label at right angles to the handle"},
+        ]
     extra["segment_names_in_file"] = source_names
     if unmatched:
         extra["segments_not_used"] = unmatched
@@ -149,6 +163,34 @@ def build_openear(specimen: str, out: Path) -> dict:
 
 # Structures that frame the CBCT crop: the middle and inner ear, not the large enclosing labels.
 SCAN_FRAME_EXCLUDE = {"Bone", "Sinus Dura", "External Auditory Canal", "Middle Ear Air (derived)"}
+
+def centroid(mask, spacing, origin) -> np.ndarray:
+    return np.asarray(origin) + np.argwhere(mask).mean(axis=0) * np.asarray(spacing)
+
+
+def tympanic_membrane(specimen: str, segments: dict, vestibule_centre, report_out: dict) -> list:
+    """The membrane as four quadrants (otopipe/tm.py), or whole when they cannot be computed."""
+    seg = segments["Tympanic Membrane"]
+    try:
+        if "Malleus" not in segments or "Scala Tympani" not in segments or vestibule_centre is None:
+            raise ValueError("malleus, scala tympani or vestibule missing")
+        st = segments["Scala Tympani"]
+        q = tm.tympanic_quadrants(
+            (seg.mask, seg.spacing, seg.origin),
+            (segments["Malleus"].mask, segments["Malleus"].spacing, segments["Malleus"].origin),
+            centroid(st.mask, st.spacing, st.origin),
+            vestibule_centre,
+        )
+        report_out.update(q.report)
+        print(f"{specimen}: tympanic membrane quadrants: {json.dumps(q.report)}")
+        return [
+            package.LabelInput("Tympanic Membrane", mask, seg.spacing, origin, part=name)
+            for name, (mask, origin) in q.parts.items()
+        ]
+    except Exception as e:  # noqa: BLE001 - the whole membrane still ships
+        print(f"{specimen}: warning: tympanic membrane kept whole: {e}")
+        return [package.LabelInput("Tympanic Membrane", seg.mask, seg.spacing, seg.origin)]
+
 
 AIR_LABEL = "Middle Ear Air (derived)"
 BUILD_DERIVED_AIR = False
@@ -270,6 +312,15 @@ def build_bern(specimen: str, out: Path) -> dict:
             "max_disagreement_with_descriptor": round(disagreement, 4),
         },
     }
+    try:
+        ab = cochlea.a_and_b(mask, spacing, origin, frame.origin, frame.z, desc["LANDMARKS"]["RW"])
+        extra["measurements"] = [
+            {"id": key, "value_mm": ab[key], "structures": ["bony_labyrinth"], "method": ab["method"]}
+            for key in ("cochlear_a_value", "cochlear_b_value")
+        ]
+        print(f"{specimen}: A {ab['cochlear_a_value']} mm, B {ab['cochlear_b_value']} mm")
+    except Exception as e:  # noqa: BLE001
+        print(f"{specimen}: warning: no A and B values: {e}")
     labels = [package.LabelInput("bony labyrinth (single label)", mask, spacing, origin)]
     if raw is not None and np.allclose(raw_affine[:3, :3], np.diag(np.diag(raw_affine[:3, :3]))):
         volume = scan.to_positive_axes(raw, np.diag(raw_affine[:3, :3]), raw_affine[:3, 3])

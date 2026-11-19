@@ -68,6 +68,22 @@
     "middle_ear_air_space": {
       "en": "The air space of the tympanic cavity, with its epi-, meso-, hypo-, pro- and posterior tympanum and its recesses. It is about 15 mm from front to back and 15 mm high, but only about 2 mm wide at the umbo, 4 mm at the hypotympanum and 6 mm at the epitympanum. Here it is computed from the specimen's labels as the space they leave empty within 10 mm of the ossicles, so it shows this specimen's own cavity; the antrum and mastoid cells are not included yet.",
       "ar": "الفراغ الهوائي للجوف الطبلي، بأقسامه العلوي والمتوسط والسفلي والأمامي والخلفي وتجاويفه. يبلغ نحو 15 مم من الأمام إلى الخلف و15 مم ارتفاعاً، لكن عرضه نحو 2 مم فقط عند السُّرّة، و4 مم في الجزء السفلي، و6 مم في العلّية. يُحسب هنا من تسميات العيّنة على أنه الفراغ الذي تتركه ضمن 10 مم من العظيمات، فيُظهر جوف هذه العيّنة نفسها، ولا يشمل الغار والخلايا الخشائية بعد."
+    },
+    "tympanic_membrane_anterosuperior": {
+      "en": "Quadrant in front of the handle of the malleus and above the umbo. Its upper margin borders the anterior malleal fold; the anterior process of the malleus and the opening of the Eustachian tube lie medial to this region of the membrane.",
+      "ar": "الربع الواقع أمام قبضة المطرقة وفوق السُّرّة. تحاذي حافته العلوية الثنية المطرقية الأمامية، ويقع إنسيّه الناتئ الأمامي للمطرقة وفتحة نفير أوستاكي."
+    },
+    "tympanic_membrane_anteroinferior": {
+      "en": "Quadrant in front of the handle and below the umbo. Medial to it lies the anterior wall of the middle ear over the carotid canal, whose bony cover may be thin or absent, so instruments are kept out of this quadrant. The light reflex runs anteroinferiorly from the umbo across it.",
+      "ar": "الربع الواقع أمام القبضة وتحت السُّرّة. يقع إنسيّه الجدار الأمامي للأذن الوسطى فوق القناة السباتية، وقد يكون غطاؤها العظمي رقيقاً أو غائباً، لذلك تُتجنّب الأدوات في هذا الربع. ويمتد المنعكس الضوئي من السُّرّة عبره إلى الأمام والأسفل."
+    },
+    "tympanic_membrane_posterosuperior": {
+      "en": "Quadrant behind the handle and above the umbo. Medial to it lie the long process of the incus, the incudostapedial joint, the stapes and the oval window, with the chorda tympani crossing above; it is the quadrant to avoid in myringotomy and the one opened to reach the stapes.",
+      "ar": "الربع الواقع خلف القبضة وفوق السُّرّة. يقع إنسيّه الناتئ الطويل للسندان والمفصل السنداني الركابي والركاب والنافذة البيضية، ويعبر حبل الطبل فوقه. يُتجنّب في بضع الطبلة، وهو الربع الذي يُفتح للوصول إلى الركاب."
+    },
+    "tympanic_membrane_posteroinferior": {
+      "en": "Quadrant behind the handle and below the umbo: the usual site for myringotomy, where the membrane lies about 2 to 4 mm from the medial wall of the middle ear. A high jugular bulb can rise behind it, which is worth checking on the scan before an incision.",
+      "ar": "الربع الواقع خلف القبضة وتحت السُّرّة: الموضع المعتاد لبضع الطبلة، إذ يبعد الغشاء فيه نحو 2 إلى 4 مم عن الجدار الإنسي للأذن الوسطى. وقد ترتفع خلفه بصلة وداجية عالية، وهذا يستحق التحقق منه على التصوير قبل الشق."
     }
   }
 }
