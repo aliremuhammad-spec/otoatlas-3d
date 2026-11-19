@@ -104,6 +104,13 @@ jobs:
           pattern: content-*
           path: app/dist/content
           merge-multiple: true
+      # deploy-pages looks for its artifact in the first page of 30 artifacts only; with one
+      # artifact per specimen (31) it missed it. Merging them keeps the run to two artifacts.
+      - uses: actions/upload-artifact/merge@v4
+        with:
+          name: content-all
+          pattern: content-*
+          delete-merged: true
       - name: Write the specimen index
         shell: python
         run: |
