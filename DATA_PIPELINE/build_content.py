@@ -176,8 +176,8 @@ def openear_air(specimen: str, segments: dict, cbct):
         bone = prep(segments["Bone"])
         soft = [prep(s) for n, s in segments.items() if n != "Bone"]
         seeds = [prep(segments[o]) for o in OSSICLES if o in segments]
-        # No intensity test: the registered CBCT shows the cavity filled with epoxy.
-        air = airspace.middle_ear_air(bone, soft, seeds)
+        # Bone is also taken from the registered CBCT (see otopipe/airspace.py).
+        air = airspace.middle_ear_air(bone, soft, seeds, ct=None if cbct is None else cbct[0])
         print(f"{specimen}: middle ear air: {json.dumps(air.report)}")
         return air
     except Exception as e:  # noqa: BLE001 - reported; the rest of the package still ships

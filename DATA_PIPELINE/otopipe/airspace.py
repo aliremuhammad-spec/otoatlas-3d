@@ -7,13 +7,12 @@ Of those, only the pieces that touch the ossicles, and only within `REACH_MM` of
 are kept: the tympanic cavity with its recesses. The antrum and mastoid cells are a
 separate, later step.
 
-The distance limit is what keeps it to the tympanic cavity. Without it the first run
-also took in spaces enclosed between the bone and the sinus-and-dura label (5 to 16 mL
-per specimen, against well under 1 mL expected). The scan cannot separate them: in the
-registered (embedded) CBCT the cavity is filled with epoxy, at tissue-like values
-(median about 750 around the ossicles in ZETA and GAMMA), and the unembedded CBCT does
-not line up with the labels. An intensity test is still available (`ct=`) for scans
-where air is air.
+The bone label alone is not enough: it leaves gaps in less dense bone, so the empty
+space it encloses spread through the whole block (5 to 16 mL per specimen in the first
+run; a 10 mm ball around the ossicles in the second). Bone is therefore also taken from
+the registered CBCT, above an Otsu threshold between bone and the epoxy that fills the
+cavity in these embedded specimens (epoxy around 750, bone up to 2400 in ZETA and
+GAMMA). The unembedded CBCT does not line up with the labels and is not used.
 
 It is a new segmentation, derived by rule, not drawn by an expert: the reviewer checks
 it on the scan before it is marked reviewed. Openings narrower than about twice the
@@ -28,10 +27,10 @@ from dataclasses import dataclass
 import numpy as np
 from scipy import ndimage
 
-DEFAULT_CLOSING_MM = 3.0
+DEFAULT_CLOSING_MM = 2.0
 COARSE_FACTOR = 2  # the envelope is computed at twice the voxel size, then brought back
 SEED_REACH_MM = 0.5
-REACH_MM = 10.0
+REACH_MM = 12.0
 
 
 @dataclass(frozen=True)
@@ -103,6 +102,12 @@ def middle_ear_air(
         if not np.allclose(s, spacing):
             raise ValueError("all labels must share one voxel size")
         solid |= _place(shape, borigin, spacing, mask, o)
+    threshold = None
+    if ct is not None:
+        # The bone label leaves gaps in less dense bone; bone from the scan closes them.
+        values = _ct_on_grid(ct, borigin, sp, shape)
+        threshold = _bone_threshold(values)
+        solid |= values >= threshold
 
     # Envelope at a coarser voxel, where a block counts as solid if any of its voxels is.
     f = COARSE_FACTOR
@@ -114,9 +119,6 @@ def middle_ear_air(
     envelope = np.repeat(np.repeat(np.repeat(envelope_c, f, 0), f, 1), f, 2)[: shape[0], : shape[1], : shape[2]]
 
     empty = envelope & ~solid
-    threshold = None
-    if ct is not None:
-        empty, threshold = _dark_only(empty, borigin, sp, ct)
     pieces, count = ndimage.label(empty, structure=np.ones((3, 3, 3), bool))
     seed = np.zeros(shape, dtype=bool)
     for mask, s, o in seeds:
@@ -151,7 +153,7 @@ def middle_ear_air(
         "pieces_kept": int(len(keep)),
         "pieces_dropped": int(count - len(keep)),
         "reach_mm": reach_mm,
-        "ct_air_threshold": None if threshold is None else round(float(threshold), 1),
+        "ct_bone_threshold": None if threshold is None else round(float(threshold), 1),
     }
     return AirSpace(crop, tuple(float(v) for v in np.asarray(borigin) + lo * sp), report)
 
@@ -177,3 +179,28 @@ def _dark_only(empty: np.ndarray, origin, sp: np.ndarray, ct) -> tuple[np.ndarra
     sel = idx[values < t]
     out[sel[:, 0], sel[:, 1], sel[:, 2]] = True
     return out, t
+
+
+def _ct_on_grid(ct, origin, sp: np.ndarray, shape) -> np.ndarray:
+    """The scan's values at the voxel centres of a grid (nearest voxel; outside the scan: -inf)."""
+    axes = [np.asarray(origin)[i] + np.arange(shape[i]) * sp[i] for i in range(3)]
+    idx = [np.rint((axes[i] - ct.origin[i]) / ct.spacing[i]).astype(int) for i in range(3)]
+    ok = [(v >= 0) & (v < ct.data.shape[i]) for i, v in enumerate(idx)]
+    clipped = [np.clip(v, 0, ct.data.shape[i] - 1) for i, v in enumerate(idx)]
+    out = ct.data[np.ix_(*clipped)].astype(np.float32)
+    outside = ~(ok[0][:, None, None] & ok[1][None, :, None] & ok[2][None, None, :])
+    out[outside] = -np.inf
+    return out
+
+
+def _bone_threshold(values: np.ndarray) -> float:
+    """Otsu threshold between bone and what fills the cavity, ignoring the scan's background."""
+    from skimage.filters import threshold_otsu
+
+    finite = values[np.isfinite(values)]
+    if finite.size < 1000:
+        raise ValueError("the scan does not cover the middle ear")
+    # The scan's padding outside the specimen sits at its minimum value; leave it out.
+    lowest = finite.min()
+    sample = finite[finite > lowest] if (finite == lowest).mean() > 0.01 else finite
+    return float(threshold_otsu(sample[:: max(1, sample.size // 2_000_000)]))

@@ -46,26 +46,27 @@ def test_refuses_when_no_ossicle_is_given():
         airspace.middle_ear_air((bone, SP, (0, 0, 0)), [], [(np.zeros((2, 2, 2), bool), SP, (0, 0, 0))])
 
 
-def test_with_the_scan_only_dark_voxels_count_as_air():
+def test_bone_missing_from_the_label_is_taken_from_the_scan():
     from otopipe.scan import Volume
 
     shape = (60, 60, 60)
-    bone = np.ones(shape, bool)
-    cavity = ball(shape, (30, 30, 30), 12)
-    bone &= ~cavity
+    cavity = ball(shape, (30, 30, 30), 8)
     ossicle = ball(shape, (30, 30, 30), 3)
-    bone &= ~ossicle
-    ct = np.full(shape, 1500.0)  # bone
-    ct[cavity] = -900.0  # air
-    tissue = cavity & (np.indices(shape)[2] > 36)  # one side of the cavity is soft tissue
-    ct[tissue] = 40.0
+    # The label misses a slab of (less dense) bone that opens the cavity to a big space.
+    bone_label = ~cavity & ~ossicle
+    gap = np.zeros(shape, bool)
+    gap[:, :, 38:60] = True
+    bone_label &= ~gap
+    ct = np.full(shape, 2000.0)  # all of it is bone on the scan...
+    ct[cavity] = 750.0  # ...except the epoxy-filled cavity
+    ct[ossicle] = 2000.0
     result = airspace.middle_ear_air(
-        (bone, SP, (0.0, 0.0, 0.0)),
+        (bone_label, SP, (0.0, 0.0, 0.0)),
         [(ossicle, SP, (0.0, 0.0, 0.0))],
         [(ossicle, SP, (0.0, 0.0, 0.0))],
         closing_mm=1.5,
         ct=Volume(ct, SP, (0.0, 0.0, 0.0)),
     )
-    expected = (cavity & ~ossicle & ~tissue).sum() * 0.25**3
+    expected = (cavity & ~ossicle).sum() * 0.25**3
     assert result.report["volume_mm3"] == pytest.approx(expected, rel=0.05)
-    assert -900 < result.report["ct_air_threshold"] < 40
+    assert 750 < result.report["ct_bone_threshold"] < 2000
