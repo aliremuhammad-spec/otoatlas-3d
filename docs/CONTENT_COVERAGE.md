@@ -41,7 +41,7 @@ Status: ✔ in the app now · ◐ partly · ○ planned.
 | Suspensory ligaments (anterior, lateral, superior malleal; posterior and superior incudal; incudomallear), annular ligament | D + T | ○ |
 | Joints: incudomallear, incudostapedial, stapediovestibular | A (contact zones) + T | ○ |
 | Stapedius (canal, pyramidal eminence, tendon) and tensor tympani (semicanal, cochleariform process, tendon) | S where the canals show on CBCT + D for muscle and tendon + T | ○ |
-| Middle ear cavity and its divisions: epi-, meso-, hypo-, pro- and posterior tympanum; dimensions | S (air space computed inside the bone, new segmentation) + A (division planes) + measured | ○ |
+| Middle ear cavity and its divisions: epi-, meso-, hypo-, pro- and posterior tympanum; dimensions | A (reviewer segments the cavity on the scan slices with a painting tool) + A (division planes) + measured. Computing it was tried and failed (see note below) | ○ |
 | Walls: tegmen, jugular floor, carotid wall with tube opening, mastoid wall, lateral wall with scutum, labyrinthine wall | A on bone surface + T | ○ |
 | Eminences, ridges and recesses: promontory, ponticulus, subiculum, pyramidal, chordal and styloid eminences and ridges, sinus tympani, facial recess, oval and round window niches, cochleariform process, anterior epitympanic recess, cog, Prussak's space, pouches of von Tröltsch | A (points, regions, volumes) + S where the air space defines them + T | ○ |
 | Mucosal folds and their embryological sacs | D + T | ○ |
@@ -82,3 +82,16 @@ Status: ✔ in the app now · ◐ partly · ○ planned.
 6. Inner ear measurements and the membranous labyrinth (schematic).
 7. Schematic layer for ligaments, folds, muscles, vessels and nerves; auricle.
 8. Card text covering every topic above, reviewed.
+
+## Notes on what was tried
+
+**Tympanic cavity by rule (20 November 2026).** Three rule-based attempts to derive the
+air space from the labels did not converge: each filled a ball around the ossicles
+(1.5 to 3.2 mL against well under 1 mL expected). The OpenEar bone label leaves gaps in
+less dense bone. In the registered CBCT the cavity is filled with epoxy, at values
+overlapping thin bone. The unembedded CBCT does not line up with the labels. The colour
+micro-slicing volume (0.05 × 0.05 × 0.15 mm) sits in its own frame, starting at the
+origin, and its colours in the cavity overlap bone. The code stays in
+`otopipe/airspace.py`, switched off. The cavity, the facial canal's mastoid segment and
+the air cells need segmentation drawn on the slices, by the reviewer or under his
+direction.
