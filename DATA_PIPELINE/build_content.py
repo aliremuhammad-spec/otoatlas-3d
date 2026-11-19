@@ -17,7 +17,7 @@ from pathlib import Path
 import nibabel as nib
 import numpy as np
 
-from otopipe import fetch, frames, openear, package, scan, split
+from otopipe import airspace, fetch, frames, openear, package, scan, split
 
 ONTOLOGY = Path(__file__).resolve().parent.parent / "ontology" / "structures.json"
 
@@ -124,6 +124,10 @@ def build_openear(specimen: str, out: Path) -> dict:
     if report:
         extra["scala_vestibuli_split"] = report
         print("scala vestibuli split:", json.dumps(report))
+    air = openear_air(specimen, segments)
+    if air is not None:
+        labels.append(package.LabelInput(AIR_LABEL, air.mask, air_spacing(segments), air.origin))
+        extra["middle_ear_air"] = air.report
     scan_entry = openear_scan(specimen, labels, out)
     if scan_entry:
         extra["scan"] = scan_entry
@@ -138,7 +142,44 @@ def build_openear(specimen: str, out: Path) -> dict:
 
 
 # Structures that frame the CBCT crop: the middle and inner ear, not the large enclosing labels.
-SCAN_FRAME_EXCLUDE = {"Bone", "Sinus Dura", "External Auditory Canal"}
+SCAN_FRAME_EXCLUDE = {"Bone", "Sinus Dura", "External Auditory Canal", "Middle Ear Air (derived)"}
+
+AIR_LABEL = "Middle Ear Air (derived)"
+OSSICLES = ("Malleus", "Incus", "Stapes")
+
+
+def _air_factor(spacing) -> tuple[int, int, int]:
+    return tuple(max(1, round(COARSEN_TO_MM / float(s))) if float(s) < COARSEN_BELOW_MM else 1 for s in spacing)
+
+
+def air_spacing(segments: dict) -> tuple[float, float, float]:
+    sp = segments["Bone"].spacing
+    return tuple(float(s) * k for s, k in zip(sp, _air_factor(sp)))
+
+
+def openear_air(specimen: str, segments: dict):
+    """The middle ear cleft's air (otopipe/airspace.py), or None when it cannot be derived.
+
+    Fine specimens (BETA, DELTA) are worked at about 0.125 mm: every label is resampled
+    by the same per-axis factor first (majority of each block)."""
+    if "Bone" not in segments or not any(o in segments for o in OSSICLES):
+        print(f"{specimen}: warning: no middle ear air space: bone or ossicles missing")
+        return None
+    try:
+        factor = _air_factor(segments["Bone"].spacing)
+
+        def prep(seg):
+            return coarsen(seg.mask, seg.spacing, seg.origin, factor)
+
+        bone = prep(segments["Bone"])
+        soft = [prep(s) for n, s in segments.items() if n != "Bone"]
+        seeds = [prep(segments[o]) for o in OSSICLES if o in segments]
+        air = airspace.middle_ear_air(bone, soft, seeds)
+        print(f"{specimen}: middle ear air: {json.dumps(air.report)}")
+        return air
+    except Exception as e:  # noqa: BLE001 - reported; the rest of the package still ships
+        print(f"{specimen}: warning: no middle ear air space: {e}")
+        return None
 SCAN_MARGIN_MM = 3.0
 
 

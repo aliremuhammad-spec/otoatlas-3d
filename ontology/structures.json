@@ -109,6 +109,29 @@
       "ar_reviewed_on": "2026-11-17"
     },
     {
+      "id": "middle_ear_air_space",
+      "name_en": "Tympanic cavity and connected air spaces",
+      "name_ta_latin": "Cavitas tympani et cellulae pneumaticae",
+      "name_ar": "الجوف الطبلي والفراغات الهوائية المتصلة به",
+      "ar_status": "unverified",
+      "parent": null,
+      "system": "soft_tissue",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Middle Ear Air (derived)",
+          "derived": true
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "New segmentation computed by the pipeline (otopipe/airspace.py), not a dataset label: the empty space left inside the closed and filled solid labels, keeping only the pieces that touch the ossicles. Includes the antrum and air cells that open into the cavity; openings narrower than about 6 mm (Eustachian tube, aditus) are bridged, cells opened by the specimen's cut faces are left out. Awaits the reviewer's check on the scan.",
+      "color": "#9be7ff",
+      "mesh_error_limit_mm": 0.1,
+      "default_opacity": 0.35
+    },
+    {
       "id": "malleus",
       "name_en": "Malleus",
       "name_ta_latin": "Malleus",

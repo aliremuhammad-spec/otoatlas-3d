@@ -8,7 +8,12 @@ ONTOLOGY = json.loads((Path(__file__).parents[2] / "ontology" / "structures.json
 
 
 def test_every_openear_label_is_mapped_and_no_label_part_twice():
-    keys = [(src["label"], src.get("part")) for s in ONTOLOGY["structures"] for src in s["sources"] if src["dataset"] == "openear"]
+    keys = [
+        (src["label"], src.get("part"))
+        for s in ONTOLOGY["structures"]
+        for src in s["sources"]
+        if src["dataset"] == "openear" and not src.get("derived")
+    ]
     assert len(keys) == len(set(keys))
     assert {label for label, _ in keys} == set(EXPECTED_SEGMENTS) | set(OPTIONAL_SEGMENTS)
     # A split label maps by parts only, never also as a whole.
