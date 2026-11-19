@@ -1,0 +1,19 @@
+name: microslicing-probe
+# One-off diagnostic: is the OpenEar colour micro-slicing usable and registered? Run by hand.
+on:
+  workflow_dispatch:
+    inputs:
+      specimen:
+        default: ZETA
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: |
+          pip install -e DATA_PIPELINE
+          python -u .github/scripts/microslicing_probe.py ${{ inputs.specimen }} | tee -a "$GITHUB_STEP_SUMMARY"

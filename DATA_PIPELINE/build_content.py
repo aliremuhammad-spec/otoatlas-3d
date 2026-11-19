@@ -125,10 +125,14 @@ def build_openear(specimen: str, out: Path) -> dict:
         extra["scala_vestibuli_split"] = report
         print("scala vestibuli split:", json.dumps(report))
     cbct = load_openear_cbct(specimen)
-    air = openear_air(specimen, segments, cbct)
-    if air is not None:
-        labels.append(package.LabelInput(AIR_LABEL, air.mask, air_spacing(segments), air.origin))
-        extra["middle_ear_air"] = air.report
+    # The derived tympanic cavity is not shipped: three rule-based attempts did not
+    # converge (otopipe/airspace.py; 1.5 to 3.2 mL filling a ball around the ossicles,
+    # because the embedded CBCT separates epoxy from bone poorly). Set to True to rebuild it.
+    if BUILD_DERIVED_AIR:
+        air = openear_air(specimen, segments, cbct)
+        if air is not None:
+            labels.append(package.LabelInput(AIR_LABEL, air.mask, air_spacing(segments), air.origin))
+            extra["middle_ear_air"] = air.report
     scan_entry = openear_scan(specimen, labels, out, cbct)
     del cbct
     if scan_entry:
@@ -147,6 +151,7 @@ def build_openear(specimen: str, out: Path) -> dict:
 SCAN_FRAME_EXCLUDE = {"Bone", "Sinus Dura", "External Auditory Canal", "Middle Ear Air (derived)"}
 
 AIR_LABEL = "Middle Ear Air (derived)"
+BUILD_DERIVED_AIR = False
 OSSICLES = ("Malleus", "Incus", "Stapes")
 
 
