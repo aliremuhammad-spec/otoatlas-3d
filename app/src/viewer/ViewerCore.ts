@@ -242,6 +242,29 @@ export class ViewerCore {
     this.requestRender();
   }
 
+  /**
+   * Moves the camera to fit the given structures (all visible ones when null), keeping the
+   * current viewing direction, so isolating a small structure such as the stapes fills the view.
+   */
+  frameOn(ids: readonly string[] | null): void {
+    const box = new Box3();
+    for (const [id, mesh] of this.meshes) {
+      if (ids ? ids.includes(id) : mesh.visible) box.expandByObject(mesh);
+    }
+    if (box.isEmpty()) return;
+    const centre = box.getCenter(new Vector3());
+    const radius = Math.max(box.getSize(new Vector3()).length() / 2, 1e-3);
+    const distance = (radius / Math.sin((this.camera.fov * Math.PI) / 360)) * 1.15;
+    const direction = this.camera.position.clone().sub(this.controls.target).normalize();
+    this.camera.position.copy(centre).add(direction.multiplyScalar(distance));
+    this.camera.near = distance / 200;
+    this.camera.far = distance * 20;
+    this.camera.updateProjectionMatrix();
+    this.controls.target.copy(centre);
+    this.controls.update();
+    this.requestRender();
+  }
+
   /** Marks one structure as selected (a soft glow), or none. */
   setHighlight(id: string | null): void {
     if (this.highlighted) this.meshes.get(this.highlighted)?.material.emissive.setHex(0x000000);

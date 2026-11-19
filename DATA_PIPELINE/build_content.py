@@ -314,9 +314,15 @@ def build_bern(specimen: str, out: Path) -> dict:
     }
     try:
         ab = cochlea.a_and_b(mask, spacing, origin, frame.origin, frame.z, desc["LANDMARKS"]["RW"])
+        # A value outside a plausible adult range means the line missed the turn; do not ship it.
+        # F05's B came out at 2.6 mm on the first run.
+        bounds = {"cochlear_a_value": (7.0, 11.5), "cochlear_b_value": (5.0, 9.0)}
+        kept = [k for k, (lo, hi) in bounds.items() if lo <= ab[k] <= hi]
+        for k in set(bounds) - set(kept):
+            print(f"{specimen}: warning: {k} {ab[k]} mm is outside {bounds[k]} and is not shipped")
         extra["measurements"] = [
             {"id": key, "value_mm": ab[key], "structures": ["bony_labyrinth"], "method": ab["method"]}
-            for key in ("cochlear_a_value", "cochlear_b_value")
+            for key in kept
         ]
         print(f"{specimen}: A {ab['cochlear_a_value']} mm, B {ab['cochlear_b_value']} mm")
     except Exception as e:  # noqa: BLE001

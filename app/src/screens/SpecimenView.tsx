@@ -169,6 +169,7 @@ export function SpecimenView({ content }: Props) {
     const next = new Set(id ? content.structures.filter((s) => s.id !== id).map((s) => s.id) : []);
     setHidden(next);
     for (const s of content.structures) coreRef.current?.setVisible(s.id, !next.has(s.id));
+    coreRef.current?.frameOn(id ? [id] : null);
   }
 
   function changeOpacity(id: string, value: number): void {
