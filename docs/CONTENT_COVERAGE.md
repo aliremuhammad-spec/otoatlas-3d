@@ -1,0 +1,84 @@
+# Content coverage against the reference chapter
+
+Reference: Janfaza P, Nadol JB Jr, Galla RJ, Fabian RL, Montgomery WW. *Surgical Anatomy of
+the Head and Neck*, chapter on the temporal bone and ear (about book pages 423–492), supplied by the
+reviewer on 20 November 2026. The chapter itself is not in this repository; this file lists its
+topics in our own words and says how the app covers each one.
+
+Target set by the reviewer: the app's level of detail must match or exceed the chapter's.
+
+## How a topic can be covered
+
+| Tier | Meaning | Measurable |
+|---|---|---|
+| **S** specimen-derived | Geometry from a dataset label, or a new segmentation of the specimen's own scan, with a method note | Yes |
+| **A** expert-annotated | Point, line, region or volume placed on specimen geometry; first pass computed where possible, corrected by the reviewer | Yes, marked "annotation-based" |
+| **D** schematic | Model not from the specimen, fitted to its landmarks, badged in every view | No; cited values shown instead |
+| **T** text | Card text in our own words, reviewed: description, surgical relevance, variants, numbers with source | — |
+
+Resolution decides the tier. OpenEar CBCT is 0.125 mm (BETA 0.05, DELTA 0.063); Bern micro-CT
+is 0.061 mm. Anything thinner than about two voxels cannot be specimen-derived.
+
+## Coverage map
+
+Status: ✔ in the app now · ◐ partly · ○ planned.
+
+### External ear
+
+| Topic | Plan | Status |
+|---|---|---|
+| Auricle: surface landmarks, cartilage, ligaments, intrinsic and extrinsic muscles, vessels, nerves, lymph nodes | D (no dataset includes the auricle) + T | ○ |
+| External canal: cartilaginous and bony parts, S-shaped course, two isthmuses, inferior tympanic recess, foramen of Huschke, relations (parotid, condyle, mastoid cells, epitympanum), skin, blood, nerves, lymph | S (canal label) + A (parts, isthmuses, recess) + measured lengths and diameters + T | ◐ label only |
+| Tympanic membrane: diameters, angle to the canal, umbo, pars tensa and flaccida, malleal folds, notch of Rivinus, fibrous annulus, layers, blood and nerve supply, quadrants and what lies behind each | S (label) + A (parts) + computed quadrants from the malleus handle + T | ◐ label only |
+
+### Middle ear
+
+| Topic | Plan | Status |
+|---|---|---|
+| Malleus: head, neck, anterior process, lateral process, manubrium | S (whole bone) + A (parts; computed first pass) | ◐ whole bone |
+| Incus: body, short, long and lenticular processes | S + A | ◐ whole bone |
+| Stapes: head, neck, crura, footplate (about 3.0 × 1.4 mm), obturator foramen | S at BETA and DELTA resolution + A + measured footplate | ◐ whole bone |
+| Suspensory ligaments (anterior, lateral, superior malleal; posterior and superior incudal; incudomallear), annular ligament | D + T | ○ |
+| Joints: incudomallear, incudostapedial, stapediovestibular | A (contact zones) + T | ○ |
+| Stapedius (canal, pyramidal eminence, tendon) and tensor tympani (semicanal, cochleariform process, tendon) | S where the canals show on CBCT + D for muscle and tendon + T | ○ |
+| Middle ear cavity and its divisions: epi-, meso-, hypo-, pro- and posterior tympanum; dimensions | S (air space computed inside the bone, new segmentation) + A (division planes) + measured | ○ |
+| Walls: tegmen, jugular floor, carotid wall with tube opening, mastoid wall, lateral wall with scutum, labyrinthine wall | A on bone surface + T | ○ |
+| Eminences, ridges and recesses: promontory, ponticulus, subiculum, pyramidal, chordal and styloid eminences and ridges, sinus tympani, facial recess, oval and round window niches, cochleariform process, anterior epitympanic recess, cog, Prussak's space, pouches of von Tröltsch | A (points, regions, volumes) + S where the air space defines them + T | ○ |
+| Mucosal folds and their embryological sacs | D + T | ○ |
+| Eustachian tube: bony and cartilaginous parts, isthmus, orifice, palatal muscles, supply | S for the bony part inside the scan + D beyond it + T | ○ |
+| Pneumatization: regions, areas, tracts; antrum, aditus, Körner's septum; tegmental, sinodural, sinal, facial, tip and perilabyrinthine cells | S (air cells computed from CBCT) + A (region labels) + T | ○ |
+| Blood supply and anomalies: tympanic arteries, persistent stapedial artery, aberrant internal carotid, high jugular bulb | D variants + T | ○ |
+| Nerves: tympanic (Jacobson's), auricular branch of vagus (Arnold's), tympanic plexus, lesser petrosal | D + T | ○ |
+
+### Inner ear and internal auditory canal
+
+| Topic | Plan | Status |
+|---|---|---|
+| Bony labyrinth as a whole; otic capsule layers | S (Bern, OpenEar split) + T | ✔ + T ○ |
+| Vestibule: elliptical and spherical recesses, vestibular crest, cochlear recess | A on Bern micro-CT | ○ |
+| Cochlea: about 32 mm, two and a half turns, height, modiolus, osseous spiral lamina, helicotrema, scalae | S (scalae in OpenEar) + measured duct length on specimens + D for lamina | ◐ |
+| Semicircular canals: planes, arc, ampullae, common crus, lengths and diameters | S (split label, Bern) + measured on each specimen | ◐ shape only |
+| Aqueducts (vestibular, cochlear), paravestibular canaliculi, fissula ante fenestram, fossula post fenestram, Hyrtl's fissure | A on micro-CT where visible + D otherwise + T | ○ |
+| Membranous labyrinth: cochlear duct, utricle, saccule, semicircular ducts, endolymphatic duct and sac | D fitted inside the bony labyrinth + T | ○ |
+| Internal auditory canal: porus, fundus, falciform and vertical crests, nerve quadrants, dimensions | S (canal from bone) + A (crests) + D (nerves) + measured | ○ |
+| Inner ear blood supply: labyrinthine artery and branches, AICA loop variants, veins | D + T | ○ |
+
+### Facial nerve
+
+| Topic | Plan | Status |
+|---|---|---|
+| Course: meatal, labyrinthine, geniculate, tympanic, second genu, mastoid segments; stylomastoid foramen | S (OpenEar label covers labyrinthine and tympanic) + new segmentation of the mastoid segment's canal from CBCT + A (segment boundaries) | ◐ |
+| Branches: greater superficial petrosal, nerve to stapedius, chorda tympani | S (chorda label) + D + T | ◐ |
+| Dehiscence, hiatus, anomalies | A where seen + T | ○ |
+| Components, nuclei, central connections | T only (outside the temporal bone) | ○ |
+
+## Order of work proposed
+
+1. Middle ear air space and its recesses (sinus tympani, facial recess, niches), with measurements.
+2. Full facial canal course, including the mastoid segment.
+3. Ossicle parts on the finest specimens, with the annotation tool the reviewer will use.
+4. Tympanic membrane parts and quadrants.
+5. Mastoid air cell system and pneumatization tracts.
+6. Inner ear measurements and the membranous labyrinth (schematic).
+7. Schematic layer for ligaments, folds, muscles, vessels and nerves; auricle.
+8. Card text covering every topic above, reviewed.
