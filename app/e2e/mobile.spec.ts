@@ -205,14 +205,20 @@ test.describe('touch, phone, parts of a structure', () => {
     await expect(group).toContainText('2 parts');
     await expect(page.locator('[data-structure="malleus"]')).toHaveCount(0);
 
-    // Hide and show every part from the group's box.
+    // Folded, the structure has one label; hide and show every part from the group's box.
+    const groupLabel = page.locator('.labels__label[data-label="test_bone"]');
+    await expect(groupLabel).toHaveText('Test bone');
+    await expect(page.locator('.labels__label[data-label="malleus"]')).toHaveCount(0);
     const box = group.getByRole('checkbox', { name: 'Show: Test bone' });
     await box.tap();
-    await expect(page.locator('.labels__label[data-label="malleus"]')).toBeHidden();
+    await expect(groupLabel).toBeHidden();
     await box.tap();
-    await expect(page.locator('.labels__label[data-label="malleus"]')).toBeVisible();
+    await expect(groupLabel).toBeVisible();
 
-    // Tapping a part in 3D opens its card and its place in the list.
+    // Unfolded, each part has its own label; tapping a part in 3D opens its card.
+    await group.getByRole('button', { name: 'Show the parts of Test bone' }).tap();
+    await expect(page.locator('.labels__label[data-label="malleus"]')).toBeVisible();
+    await expect(groupLabel).toHaveCount(0);
     const at = await anchors(page);
     await page.touchscreen.tap(pt(at.malleus, 'malleus').x, pt(at.malleus, 'malleus').y);
     const card = page.getByTestId('structure-card');

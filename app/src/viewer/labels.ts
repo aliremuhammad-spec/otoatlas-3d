@@ -9,6 +9,8 @@ export interface LabelSpec {
   id: string;
   text: string;
   anchor: Vec3;
+  /** Structures whose visibility shows the label: any of them. Default: the structure named by `id`. */
+  showWhen?: readonly string[];
 }
 
 export interface LabelHost {
@@ -176,7 +178,8 @@ export class LabelLayer {
     this.svg.setAttribute('height', String(height));
     const anchors: { id: string; x: number; y: number; w: number; h: number }[] = [];
     for (const { spec, el, line } of this.items.values()) {
-      const p = this.host.isVisible(spec.id) ? this.host.project(spec.anchor) : null;
+      const visible = spec.showWhen ? spec.showWhen.some((id) => this.host.isVisible(id)) : this.host.isVisible(spec.id);
+      const p = visible ? this.host.project(spec.anchor) : null;
       const shown = p !== null && p.x >= 0 && p.y >= 0 && p.x <= width && p.y <= height;
       el.hidden = !shown;
       line.style.display = shown ? '' : 'none';

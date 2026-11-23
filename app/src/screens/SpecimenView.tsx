@@ -85,18 +85,29 @@ export function SpecimenView({ content }: Props) {
     };
   }, [content]);
 
-  // Label text follows the interface language; anchors are computed once per specimen.
+  // Label text follows the interface language. Labels follow the list's level of detail:
+  // a structure whose parts are folded away in the list has one label, its parts one each
+  // once they are listed.
   useEffect(() => {
     const core = coreRef.current;
     const layer = labelsRef.current;
     if (!core || !layer) return;
     layer.setLabels(
-      content.structures.flatMap((s) => {
-        const anchor = core.anchorOf(s.id);
-        return anchor ? [{ id: s.id, text: displayName(s.names, locale), anchor }] : [];
+      listEntries(content.structures).flatMap((e) => {
+        const members = e.kind === 'single' ? [e.structure] : e.members;
+        if (e.kind === 'group' && !expanded.has(e.group.id)) {
+          const anchor = members.map((m) => core.anchorOf(m.id)).find((a) => a);
+          return anchor
+            ? [{ id: e.group.id, text: displayName(e.group.names, locale), anchor, showWhen: members.map((m) => m.id) }]
+            : [];
+        }
+        return members.flatMap((s) => {
+          const anchor = core.anchorOf(s.id);
+          return anchor ? [{ id: s.id, text: displayName(s.names, locale), anchor }] : [];
+        });
       }),
     );
-  }, [content, locale]);
+  }, [content, locale, expanded, core]);
 
   useEffect(() => {
     labelsRef.current?.setEnabled(labelsOn);
