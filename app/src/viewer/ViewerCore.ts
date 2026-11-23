@@ -43,6 +43,8 @@ export interface PickResult {
 export const PICK_MIN_OPACITY = 0.5;
 /** Pointer travel (CSS pixels) below which a press-and-release counts as a tap, not a drag. */
 const TAP_SLOP_PX = 6;
+/** Opacity at which a structure counts as solid for picking. */
+const OPAQUE_PICK = 0.95;
 /** A fingertip moves more than a mouse during a tap. */
 const TOUCH_TAP_SLOP_PX = 14;
 
@@ -440,11 +442,14 @@ export class ViewerCore {
       -((e.clientY - rect.top) / rect.height) * 2 + 1,
     );
     this.raycaster.setFromCamera(ndc, this.camera);
-    this.raycaster.firstHitOnly = true;
+    this.raycaster.firstHitOnly = false;
     // Faded structures (opacity below 0.5) do not take taps, so a see-through bone
     // does not block picking the structures inside it.
     const visible = [...this.meshes.values()].filter((m) => m.visible && m.material.opacity >= PICK_MIN_OPACITY && !this.displayOnly.has(m.name));
-    const hit = this.raycaster.intersectObjects(visible, false)[0];
+    const hits = this.raycaster.intersectObjects(visible, false);
+    // A part-transparent structure in front (the ear canal at 0.6) is seen through, so the
+    // tap goes to the first fully opaque structure behind it; with none, to the first hit.
+    const hit = hits.find((h) => (h.object as Mesh<BufferGeometry, MeshStandardMaterial>).material.opacity >= OPAQUE_PICK) ?? hits[0];
     if (!hit) return;
     this.pickHandler({
       structureId: hit.object.name,
