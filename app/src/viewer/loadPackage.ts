@@ -72,6 +72,7 @@ export function sceneFromManifest(
     attribution: { dataDoi: manifest.attribution.dataDoi, license: manifest.attribution.license },
     structures,
     measurements: manifest.measurements,
+    anatomicalFrame: manifest.anatomicalFrame,
     scan: manifest.scan
       ? {
           url: manifest.scan.url ?? `${root}/${manifest.scan.file}`,

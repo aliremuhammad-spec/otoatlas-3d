@@ -69,8 +69,16 @@ export interface SpecimenMeasurement {
   structures: readonly string[];
 }
 
+/** Unit directions of the ear in the specimen frame, computed from its labels. */
+export interface AnatomicalFrame {
+  lateral: readonly [number, number, number];
+  anterior: readonly [number, number, number];
+  superior: readonly [number, number, number];
+}
+
 export interface Manifest {
   measurements: readonly SpecimenMeasurement[];
+  anatomicalFrame: AnatomicalFrame | null;
   /** The specimen's own scan for the slice view, when the package has one. */
   scan: ManifestScan | null;
   specimenId: string;
@@ -238,6 +246,7 @@ export function parseManifest(value: unknown): Manifest {
     structures: o.structures.map(parseStructure),
     scan: parseScan(o.scan),
     measurements: parseMeasurements(o.measurements),
+    anatomicalFrame: parseFrame(o.anatomical_frame),
   };
 }
 
@@ -257,6 +266,17 @@ function parseMeasurements(value: unknown): SpecimenMeasurement[] {
       },
     ];
   });
+}
+
+function parseFrame(value: unknown): AnatomicalFrame | null {
+  if (value === undefined || value === null) return null;
+  const o = obj(value, 'anatomical_frame');
+  const unit = (v: unknown, what: string) => {
+    const t = triple(v, `anatomical_frame.${what}`, false);
+    if (Math.abs(Math.hypot(...t) - 1) > 0.01) fail(`anatomical_frame.${what} is not a unit vector`);
+    return t;
+  };
+  return { lateral: unit(o.lateral, 'lateral'), anterior: unit(o.anterior, 'anterior'), superior: unit(o.superior, 'superior') };
 }
 
 function triple(value: unknown, what: string, positive: boolean): readonly [number, number, number] {

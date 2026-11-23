@@ -129,9 +129,17 @@ export class ViewerCore {
       mesh.renderOrder = 2 * i + 1;
     });
 
-    this.camera.up.set(0, 0, 1);
+    // With the ear's own directions known, superior is up and the first view is from the
+    // lateral side, a little from above: the view down the ear canal. Otherwise scanner z is up.
+    const frame = content.anatomicalFrame;
+    if (frame) this.camera.up.set(...frame.superior);
+    else this.camera.up.set(0, 0, 1);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.frameContent();
+    this.frameContent(
+      frame
+        ? new Vector3(...frame.lateral).add(new Vector3(...frame.superior).multiplyScalar(0.35)).normalize()
+        : new Vector3(0.25, -0.85, 0.45).normalize(),
+    );
     this.controls.enableDamping = true;
     this.controls.addEventListener('change', this.requestRender);
 
@@ -345,14 +353,14 @@ export class ViewerCore {
   }
 
   /** Points the camera at the whole specimen and sizes markers to it. */
-  private frameContent(): void {
+  private frameContent(direction: Vector3): void {
     const box = new Box3();
     for (const mesh of this.meshes.values()) box.expandByObject(mesh);
     if (box.isEmpty()) return;
     const centre = box.getCenter(new Vector3());
     const radius = Math.max(box.getSize(new Vector3()).length() / 2, 1e-3);
     const distance = (radius / Math.sin((this.camera.fov * Math.PI) / 360)) * 1.15;
-    this.camera.position.copy(centre).add(new Vector3(0.25, -0.85, 0.45).normalize().multiplyScalar(distance));
+    this.camera.position.copy(centre).add(direction.clone().multiplyScalar(distance));
     this.camera.near = distance / 200;
     this.camera.far = distance * 20;
     this.camera.updateProjectionMatrix();

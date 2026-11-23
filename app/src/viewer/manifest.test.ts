@@ -145,6 +145,13 @@ describe('content manifest', () => {
     expect(() => parseManifest(withStructure({ group: { id: 'x' } }))).toThrow(/group.names/);
   });
 
+  it('reads the anatomical frame and refuses one that is not unit length', () => {
+    expect(parseManifest(validManifest()).anatomicalFrame).toBeNull();
+    const frame = { lateral: [1, 0, 0], anterior: [0, 1, 0], superior: [0, 0, 1] };
+    expect(parseManifest({ ...validManifest(), anatomical_frame: frame }).anatomicalFrame).toEqual(frame);
+    expect(() => parseManifest({ ...validManifest(), anatomical_frame: { ...frame, lateral: [2, 0, 0] } })).toThrow(/unit/);
+  });
+
   it('reads whether a structure starts hidden', () => {
     expect(parseManifest(validManifest()).structures[0]?.defaultVisible).toBe(true);
     expect(parseManifest(withStructure({ default_visible: false })).structures[0]?.defaultVisible).toBe(false);

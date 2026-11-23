@@ -62,6 +62,12 @@ export interface SceneContent {
   structures: readonly SceneStructure[];
   /** Measurements made on the specimen by the pipeline. Absent for synthetic content. */
   measurements?: readonly { id: string; valueMm: number; structures: readonly string[] }[];
+  /** Lateral, anterior and superior of this ear, when the pipeline could work them out. */
+  anatomicalFrame?: {
+    lateral: readonly [number, number, number];
+    anterior: readonly [number, number, number];
+    superior: readonly [number, number, number];
+  } | null;
   /** The specimen's scan for the slice view, or null when there is none. */
   scan: {
     url: string;

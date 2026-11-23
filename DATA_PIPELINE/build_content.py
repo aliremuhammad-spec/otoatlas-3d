@@ -141,6 +141,14 @@ def build_openear(specimen: str, out: Path) -> dict:
             {"id": "tm_horizontal_diameter", "value_mm": extra_tm["horizontal_diameter_mm"], "structures": quads,
              "method": "extent of the membrane label at right angles to the handle"},
         ]
+    frame = ossicle_report.pop("_frame", None)
+    if frame is not None:
+        extra["anatomical_frame"] = {
+            "lateral": [round(float(v), 5) for v in frame.lateral],
+            "anterior": [round(float(v), 5) for v in frame.anterior],
+            "superior": [round(float(v), 5) for v in frame.superior],
+            "basis": "vestibule to membrane, vestibule to cochlea, and their cross product (otopipe/ossicles.py)",
+        }
     if ossicle_report:
         extra["ossicle_parts"] = ossicle_report
     if ossicle_measurements:
@@ -230,6 +238,7 @@ def ossicle_labels(specimen, segments, missing, vestibular, vestibule_centre, re
             vestibule_centre, centroid(st.mask, st.spacing, st.origin), lab("Tympanic Membrane"), lab("Malleus")
         )
         report_out["side_from_anatomy"] = frame.side
+        report_out["_frame"] = frame
         print(f"{specimen}: side from the labels' anatomy: {frame.side}")
     except Exception as e:  # noqa: BLE001 - the whole bones still ship
         print(f"{specimen}: warning: ossicles kept whole: {e}")
