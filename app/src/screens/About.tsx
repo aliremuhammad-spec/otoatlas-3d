@@ -27,8 +27,7 @@ export function About({ onBack }: Props) {
         <Disclaimer />
         <section aria-labelledby="data-title" data-testid="data-credits">
           <h2 id="data-title">{t('about.dataTitle')}</h2>
-          <p>{t('about.dataNone')}</p>
-          <p>{t('about.dataPlanned')}</p>
+          <p>{t('about.dataUsed')}</p>
           <ul className="citations">
             {DATASET_CREDITS.map((d) => (
               <li key={d.id} dir="ltr" lang="en">

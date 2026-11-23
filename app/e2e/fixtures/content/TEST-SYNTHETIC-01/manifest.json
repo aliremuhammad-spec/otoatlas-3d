@@ -131,5 +131,15 @@
       "high": 200.0,
       "rule": "0.5th to 99.8th percentile of the crop"
     }
-  }
+  },
+  "measurements": [
+    {
+      "id": "cochlear_a_value",
+      "value_mm": 9.0,
+      "structures": [
+        "scala_tympani"
+      ],
+      "method": "synthetic fixture"
+    }
+  ]
 }

@@ -42,7 +42,21 @@ function overlaps(a: Box, b: Box): boolean {
 export function placeLabels(
   anchors: readonly { id: string; x: number; y: number; w: number; h: number }[],
   centre: { x: number; y: number },
+  bounds?: { width: number; height: number },
 ): Map<string, Box> {
+  const MARGIN = 2;
+  // On a narrow screen a label pushed outwards can leave the view; keep every label inside it.
+  const fits = (b: Box): boolean =>
+    !bounds ||
+    (b.x >= MARGIN && b.y >= MARGIN && b.x + b.w <= bounds.width - MARGIN && b.y + b.h <= bounds.height - MARGIN);
+  const clamp = (b: Box): Box =>
+    bounds
+      ? {
+          ...b,
+          x: Math.min(Math.max(b.x, MARGIN), Math.max(MARGIN, bounds.width - b.w - MARGIN)),
+          y: Math.min(Math.max(b.y, MARGIN), Math.max(MARGIN, bounds.height - b.h - MARGIN)),
+        }
+      : b;
   const placed = new Map<string, Box>();
   // Nearest the centre first: they have the least room.
   const order = [...anchors].sort(
@@ -70,13 +84,28 @@ export function placeLabels(
         // Grow away from the anchor: to the right of it on the right side, to the left on the left.
         const candidate = { x: dx >= 0 ? px : px - a.w, y: py - a.h / 2 + row * (a.h + 2), w: a.w, h: a.h };
         if (push === 0 && row === 0) fallback = candidate;
-        if (![...placed.values()].some((p) => overlaps(p, candidate))) {
+        if (fits(candidate) && ![...placed.values()].some((p) => overlaps(p, candidate))) {
           box = candidate;
           break search;
         }
       }
     }
-    placed.set(a.id, box ?? fallback);
+    if (!box) {
+      // No free spot inside the view: try the same spots pulled inside, then the clamped default.
+      for (let push = 0; push <= MAX_PUSHES && !box; push += 1) {
+        const reach = LEADER_PX + push * PUSH_PX;
+        const px = a.x + dx * reach;
+        const py = a.y + dy * reach;
+        for (const row of ROW_STEPS) {
+          const candidate = clamp({ x: dx >= 0 ? px : px - a.w, y: py - a.h / 2 + row * (a.h + 2), w: a.w, h: a.h });
+          if (![...placed.values()].some((p) => overlaps(p, candidate))) {
+            box = candidate;
+            break;
+          }
+        }
+      }
+    }
+    placed.set(a.id, box ?? clamp(fallback));
   }
   return placed;
 }
@@ -139,7 +168,7 @@ export class LabelLayer {
       line.style.display = shown ? '' : 'none';
       if (shown) anchors.push({ id: spec.id, x: p.x, y: p.y, w: el.offsetWidth, h: el.offsetHeight });
     }
-    const boxes = placeLabels(anchors, { x: width / 2, y: height / 2 });
+    const boxes = placeLabels(anchors, { x: width / 2, y: height / 2 }, { width, height });
     for (const a of anchors) {
       const item = this.items.get(a.id);
       const box = boxes.get(a.id);

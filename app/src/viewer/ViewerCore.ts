@@ -43,6 +43,8 @@ export interface PickResult {
 export const PICK_MIN_OPACITY = 0.5;
 /** Pointer travel (CSS pixels) below which a press-and-release counts as a tap, not a drag. */
 const TAP_SLOP_PX = 6;
+/** A fingertip moves more than a mouse during a tap. */
+const TOUCH_TAP_SLOP_PX = 14;
 
 /**
  * Framework-free 3D viewer. Owns the renderer, camera, controls and scene, and
@@ -68,7 +70,11 @@ export class ViewerCore {
   private readonly renderListeners = new Set<() => void>();
   private highlighted: string | null = null;
   private slicePlane: Group | null = null;
-  private pointerDown: { x: number; y: number } | null = null;
+  private pointerDown: { x: number; y: number; id: number } | null = null;
+  /** Pointers currently down; a gesture that used two fingers (pinch, pan) is never a tap. */
+  private readonly activePointers = new Set<number>();
+  private multiTouch = false;
+  private contextLostHandler: (() => void) | null = null;
   private frame = 0;
   private needsRender = true;
   private markerRadius = 0.12;
@@ -78,7 +84,10 @@ export class ViewerCore {
     content: SceneContent,
   ) {
     this.renderer = new WebGLRenderer({ antialias: true, alpha: true });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // Touch devices get a lower pixel ratio: phones and tablets have dense screens and
+    // little graphics memory, and the large bone meshes are heavy at full density.
+    const coarse = typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches;
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, coarse ? 1.5 : 2));
     this.renderer.domElement.style.touchAction = 'none';
     container.appendChild(this.renderer.domElement);
 
@@ -126,6 +135,8 @@ export class ViewerCore {
 
     this.renderer.domElement.addEventListener('pointerdown', this.onPointerDown);
     this.renderer.domElement.addEventListener('pointerup', this.onPointerUp);
+    this.renderer.domElement.addEventListener('pointercancel', this.onPointerCancel);
+    this.renderer.domElement.addEventListener('webglcontextlost', this.handleContextLost);
 
     this.resizeObserver = new ResizeObserver(this.resize);
     this.resizeObserver.observe(container);
@@ -353,6 +364,8 @@ export class ViewerCore {
     this.controls.dispose();
     this.renderer.domElement.removeEventListener('pointerdown', this.onPointerDown);
     this.renderer.domElement.removeEventListener('pointerup', this.onPointerUp);
+    this.renderer.domElement.removeEventListener('pointercancel', this.onPointerCancel);
+    this.renderer.domElement.removeEventListener('webglcontextlost', this.handleContextLost);
     for (const mesh of this.meshes.values()) {
       mesh.geometry.disposeBoundsTree();
       mesh.material.dispose();
@@ -387,15 +400,40 @@ export class ViewerCore {
     this.requestRender();
   };
 
+  /** Called when the browser takes the graphics context away (usually out of memory on a phone). */
+  onContextLost(handler: () => void): void {
+    this.contextLostHandler = handler;
+  }
+
+  private readonly handleContextLost = (e: Event): void => {
+    e.preventDefault();
+    cancelAnimationFrame(this.frame);
+    this.contextLostHandler?.();
+  };
+
   private readonly onPointerDown = (e: PointerEvent): void => {
-    this.pointerDown = { x: e.clientX, y: e.clientY };
+    this.activePointers.add(e.pointerId);
+    if (this.activePointers.size > 1) {
+      this.multiTouch = true;
+      this.pointerDown = null;
+      return;
+    }
+    this.multiTouch = false;
+    this.pointerDown = { x: e.clientX, y: e.clientY, id: e.pointerId };
+  };
+
+  private readonly onPointerCancel = (e: PointerEvent): void => {
+    this.activePointers.delete(e.pointerId);
+    this.pointerDown = null;
   };
 
   private readonly onPointerUp = (e: PointerEvent): void => {
+    this.activePointers.delete(e.pointerId);
     const down = this.pointerDown;
     this.pointerDown = null;
-    if (!down || !this.pickHandler) return;
-    if (Math.hypot(e.clientX - down.x, e.clientY - down.y) > TAP_SLOP_PX) return;
+    if (!down || down.id !== e.pointerId || this.multiTouch || !this.pickHandler) return;
+    const slop = e.pointerType === 'mouse' ? TAP_SLOP_PX : TOUCH_TAP_SLOP_PX;
+    if (Math.hypot(e.clientX - down.x, e.clientY - down.y) > slop) return;
     const rect = this.renderer.domElement.getBoundingClientRect();
     const ndc = new Vector2(
       ((e.clientX - rect.left) / rect.width) * 2 - 1,

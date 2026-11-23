@@ -30,4 +30,19 @@ describe('placeLabels', () => {
     const box = placeLabels([{ id: 'c', x: 400, y: 300, w: 50, h: 20 }], centre).get('c');
     expect(box?.x).toBeGreaterThan(400);
   });
+
+  it('keeps labels inside the view on a narrow screen', () => {
+    const bounds = { width: 390, height: 400 };
+    const anchors = [
+      { id: 'edge', x: 360, y: 200, w: 120, h: 20 },
+      { id: 'top', x: 200, y: 10, w: 90, h: 20 },
+    ];
+    const boxes = placeLabels(anchors, { x: 195, y: 200 }, bounds);
+    for (const b of boxes.values()) {
+      expect(b.x).toBeGreaterThanOrEqual(0);
+      expect(b.y).toBeGreaterThanOrEqual(0);
+      expect(b.x + b.w).toBeLessThanOrEqual(bounds.width);
+      expect(b.y + b.h).toBeLessThanOrEqual(bounds.height);
+    }
+  });
 });

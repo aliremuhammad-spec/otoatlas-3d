@@ -309,8 +309,11 @@ export function SlicePane({ content, core, hidden, selected, labelsOn, onSelect,
           voxel,
         })}
       </p>
-      <p className="note">{t('viewer.slices.axesNote')}</p>
-      <p className="note">{t('viewer.slices.tapHint')}</p>
+      <details className="slices__help">
+        <summary>{t('viewer.slices.help')}</summary>
+        <p className="note">{t('viewer.slices.axesNote')}</p>
+        <p className="note">{t('viewer.slices.tapHint')}</p>
+      </details>
     </section>
   );
 }

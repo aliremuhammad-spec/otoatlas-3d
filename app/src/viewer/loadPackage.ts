@@ -82,12 +82,21 @@ export function sceneFromManifest(
   };
 }
 
-/** Downloads and unpacks a scan (gzip, 8-bit). Needs DecompressionStream (Safari 16.4 and later). */
+/**
+ * Downloads and unpacks a scan (gzip, 8-bit). Uses the browser's DecompressionStream where
+ * there is one, and a bundled decoder on older browsers (iPadOS and iOS before 16.4).
+ */
 export async function loadScan(url: string, shape: readonly [number, number, number]): Promise<Uint8Array> {
   const response = await fetch(url);
   if (!response.ok || !response.body) throw new Error(`${url}: HTTP ${response.status}`);
-  const stream = response.body.pipeThrough(new DecompressionStream('gzip'));
-  const bytes = new Uint8Array(await new Response(stream).arrayBuffer());
+  let bytes: Uint8Array;
+  if (typeof DecompressionStream === 'function') {
+    const stream = response.body.pipeThrough(new DecompressionStream('gzip'));
+    bytes = new Uint8Array(await new Response(stream).arrayBuffer());
+  } else {
+    const { gunzipSync } = await import('three/examples/jsm/libs/fflate.module.js');
+    bytes = gunzipSync(new Uint8Array(await response.arrayBuffer()));
+  }
   if (bytes.length !== shape[0] * shape[1] * shape[2]) throw new Error(`${url}: size does not match its shape`);
   return bytes;
 }

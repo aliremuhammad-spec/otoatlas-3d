@@ -93,6 +93,7 @@ button[aria-pressed='true'] {
 }
 
 .page__body {
+  min-inline-size: 0;
   flex: 1;
   inline-size: min(100%, 46rem);
   margin-inline: auto;
@@ -188,7 +189,9 @@ fieldset {
 }
 
 .citations {
-  padding-inline-start: 1.2rem;
+  /* The entries are left to right inside a right-to-left page: room for their markers on both sides. */
+  padding-inline: 1.2rem;
+  overflow-wrap: anywhere;
   color: var(--text-dim);
   font-size: 0.9rem;
 }
@@ -196,7 +199,8 @@ fieldset {
 .viewer {
   block-size: 100%;
   display: grid;
-  grid-template-columns: 1fr minmax(18rem, 22rem);
+  overflow: hidden;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 22rem);
   grid-template-rows: auto 1fr;
   grid-template-areas:
     'header header'
@@ -209,11 +213,17 @@ fieldset {
 
 .specimen-select {
   margin-inline-start: auto;
+  min-inline-size: 0;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   color: var(--text-dim);
   font-size: 0.9rem;
+}
+
+.specimen-select select {
+  min-inline-size: 0;
+  max-inline-size: 100%;
 }
 
 .viewer__stage--message {
@@ -301,6 +311,7 @@ fieldset {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: rgb(23 32 38 / 94%);
+  z-index: 2;
 }
 
 .card__header {
@@ -328,7 +339,7 @@ fieldset {
 
 .card__facts {
   display: grid;
-  grid-template-columns: max-content 1fr;
+  grid-template-columns: fit-content(45%) minmax(0, 1fr);
   gap: 0.35rem 0.9rem;
   margin: 0.75rem 0 0;
   font-size: 0.85rem;
@@ -357,6 +368,9 @@ fieldset {
   grid-area: stage;
   position: relative;
   min-block-size: 0;
+  min-inline-size: 0;
+  /* Lets the slice pane and the card size themselves to the stage, not the window. */
+  container: stage / size;
 }
 
 .viewer__view {
@@ -385,6 +399,14 @@ fieldset {
   padding: 0.6rem;
   border-inline-start: 1px solid var(--line);
   background: var(--bg);
+  /* Above the badges; the structure card stays above both. */
+  z-index: 1;
+}
+
+.slices__help summary {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  cursor: pointer;
 }
 
 .slices__header {
@@ -428,8 +450,12 @@ fieldset {
   inset: 0;
   display: grid;
   place-items: center;
+  align-content: center;
+  gap: 1rem;
   padding: 2rem;
   text-align: center;
+  background: rgb(14 20 24 / 92%);
+  z-index: 3;
 }
 
 .badge {
@@ -531,10 +557,12 @@ fieldset {
 }
 
 /* Phones and narrow windows: the panel moves under the stage. */
-@media (max-width: 720px) {
+/* Phones, and tablets held upright: the 3D view on top, the panel below it scrolling on its own. */
+@media (max-width: 720px), (orientation: portrait) and (max-width: 1100px) {
   .viewer {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(45vh, 1fr) auto;
+    block-size: 100dvh;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 3fr) minmax(0, 2fr);
     grid-template-areas:
       'header'
       'stage'
@@ -544,6 +572,81 @@ fieldset {
   .viewer__panel {
     border-inline-start: 0;
     border-block-start: 1px solid var(--line);
+    padding-block-end: max(1rem, env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 720px) {
+  .viewer > .page__header {
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .viewer > .page__header h1 {
+    font-size: 1.15rem;
+  }
+
+  .specimen-select > span {
+    display: none;
+  }
+
+  .specimen-select {
+    flex: 1 1 auto;
+    justify-content: flex-end;
+  }
+
+  .specimen-select select {
+    flex: 1 1 auto;
+    padding-inline: 0.6rem;
+  }
+}
+
+/* A narrow stage cannot be split: the slices cover the whole stage until closed. */
+@container stage (max-width: 560px) {
+  .viewer__stage--split .viewer__view {
+    inset-inline-end: 0;
+  }
+
+  .slices {
+    inline-size: 100%;
+    border-inline-start: 0;
+  }
+
+  .slices__header .segmented button {
+    padding-inline: 0.6rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* A tall, narrow stage splits top and bottom instead of side by side. */
+@container stage (min-width: 561px) and (max-aspect-ratio: 4/5) {
+  .viewer__stage--split .viewer__view {
+    inset-inline-end: 0;
+    inset-block-end: 50%;
+  }
+
+  .slices {
+    inset-block: 50% 0;
+    inline-size: 100%;
+  }
+}
+
+/* On a narrow stage the card spans it, and each fact sits under its heading. */
+@container stage (max-width: 560px) {
+  .card {
+    inset-inline: 0.5rem;
+    inset-block-end: 0.5rem;
+    max-inline-size: none;
+    max-block-size: 70%;
+  }
+
+  .card__facts {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.1rem;
+  }
+
+  .card__facts dd {
+    margin-block-end: 0.45rem;
   }
 }
 
@@ -562,4 +665,27 @@ fieldset {
 /* With the slice pane open, the card stays within the 3D half. */
 .viewer__stage--split .card {
   max-inline-size: calc(50% - 1.5rem);
+}
+
+.card__method {
+  display: block;
+  margin-block-start: 0.2rem;
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+/* Phones on their side: little height, so a slimmer header and panel. */
+@media (max-height: 500px) and (orientation: landscape) {
+  .viewer {
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 18rem);
+  }
+
+  .viewer > .page__header {
+    padding-block: 0.35rem;
+  }
+
+  .viewer > .page__header h1 {
+    font-size: 1.1rem;
+  }
 }

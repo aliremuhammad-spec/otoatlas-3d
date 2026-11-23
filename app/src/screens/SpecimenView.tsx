@@ -31,6 +31,7 @@ export function SpecimenView({ content }: Props) {
   const coreRef = useRef<ViewerCore | null>(null);
   const labelsRef = useRef<LabelLayer | null>(null);
   const [failed, setFailed] = useState(false);
+  const [lost, setLost] = useState(false);
   const [mode, setMode] = useState<Mode>('explore');
   const modeRef = useRef<Mode>('explore');
   const [selected, setSelected] = useState<string | null>(null);
@@ -62,6 +63,7 @@ export function SpecimenView({ content }: Props) {
     }
     coreRef.current = core;
     setCore(core);
+    core.onContextLost(() => setLost(true));
     core.onPick((pick) => {
       if (modeRef.current === 'explore') select(pick.structureId);
       else if (modeRef.current === 'p2p') setPoints((prev) => (prev.length >= 2 ? [pick.point] : [...prev, pick.point]));
@@ -199,6 +201,14 @@ export function SpecimenView({ content }: Props) {
           {content.draft && <div className="badge badge--draft">{t('viewer.draftBadge')}</div>}
         </div>
         {failed && <div className="viewer__error">{t('viewer.webglError')}</div>}
+        {lost && (
+          <div className="viewer__error" role="alert">
+            <p>{t('viewer.contextLost')}</p>
+            <button type="button" onClick={() => window.location.reload()}>
+              {t('viewer.reload')}
+            </button>
+          </div>
+        )}
         {selectedStructure && (
           <StructureCard structure={selectedStructure} content={content} onClose={() => select(null)} />
         )}

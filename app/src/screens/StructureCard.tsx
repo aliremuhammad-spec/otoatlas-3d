@@ -1,4 +1,5 @@
 import { useI18n } from '../i18n/I18nProvider';
+import { estimateCdlOrganOfCorti } from '../measure/cdl';
 import { formatMillimetres, formatVoxelSize } from '../measure/format';
 import type { SceneContent, SceneStructure } from '../viewer/content';
 import { MEASUREMENT_IDS, type MeasurementId } from '../viewer/manifest';
@@ -18,6 +19,20 @@ function MeasurementRow({ id, valueMm }: { id: string; valueMm: number }) {
       <dt>{t(`viewer.measurement.${id as MeasurementId}`)}</dt>
       <dd>
         {formatMillimetres(valueMm, numerals)} {t('units.mm')}
+      </dd>
+    </>
+  );
+}
+
+/** Cochlear duct length worked out from A with the default formula; shown as an estimate with its source. */
+function CdlEstimateRow({ aMm }: { aMm: number }) {
+  const { t, numerals } = useI18n();
+  return (
+    <>
+      <dt>{t('viewer.measurement.cdl_estimate')}</dt>
+      <dd data-testid="cdl-estimate">
+        ≈ {formatMillimetres(estimateCdlOrganOfCorti(aMm), numerals)} {t('units.mm')}
+        <span className="card__method">{t('viewer.measurement.cdl_method')}</span>
       </dd>
     </>
   );
@@ -82,6 +97,11 @@ export function StructureCard({ structure, content, onClose }: Props) {
             .filter((m) => m.structures.includes(structure.id))
             .map((m) => (
               <MeasurementRow key={m.id} id={m.id} valueMm={m.valueMm} />
+            ))}
+          {(content.measurements ?? [])
+            .filter((m) => m.id === 'cochlear_a_value' && m.structures.includes(structure.id))
+            .map((m) => (
+              <CdlEstimateRow key="cdl" aMm={m.valueMm} />
             ))}
           <dt>{t('viewer.specimenSelect')}</dt>
           <dd>
