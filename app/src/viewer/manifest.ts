@@ -39,6 +39,8 @@ export interface ManifestStructure {
   group: { id: string; names: { en: string; ar: string | null; latin: string | null } } | null;
   /** Set when the structure is one part of a label divided by a computed rule. */
   sourcePart: string | null;
+  /** Who checked the computed division, and when. */
+  divisionReview: { by: string; on: string } | null;
 }
 
 export interface ManifestScan {
@@ -208,7 +210,16 @@ function parseStructure(value: unknown, index: number): ManifestStructure {
     lods,
     group: parseGroup(o.group, `${what}.group`),
     sourcePart: o.source_part === undefined || o.source_part === null ? null : str(o.source_part, `${what}.source_part`),
+    divisionReview: parseReview(o.division_review, `${what}.division_review`),
   };
+}
+
+function parseReview(value: unknown, what: string): { by: string; on: string } | null {
+  if (value === undefined || value === null) return null;
+  const o = obj(value, what);
+  const on = str(o.on, `${what}.on`);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(on)) fail(`${what}.on is not a date`);
+  return { by: str(o.by, `${what}.by`), on };
 }
 
 function parseGroup(value: unknown, what: string): ManifestStructure['group'] {

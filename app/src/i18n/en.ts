@@ -67,6 +67,8 @@ export const en = {
   'viewer.card.division': 'Division',
   'viewer.card.division.computed':
     'One part of this specimen\'s label, divided by a stated rule from the bone\'s or membrane\'s own shape. Boundaries are approximate and await review.',
+  'viewer.card.division.reviewed':
+    'One part of this specimen\'s label, divided by a stated rule from the bone\'s own shape. Boundaries checked by eye by {by} on {on}.',
   'viewer.group.parts': '{count} parts',
   'viewer.group.expand': 'Show the parts of {name}',
   'viewer.group.collapse': 'Hide the parts of {name}',

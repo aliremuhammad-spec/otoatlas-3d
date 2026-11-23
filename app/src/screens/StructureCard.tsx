@@ -1,4 +1,5 @@
 import { useI18n } from '../i18n/I18nProvider';
+import { localizeDigits } from '../i18n/numerals';
 import { estimateCdlOrganOfCorti } from '../measure/cdl';
 import { formatMillimetres, formatVoxelSize } from '../measure/format';
 import type { SceneContent, SceneStructure } from '../viewer/content';
@@ -36,6 +37,15 @@ function CdlEstimateRow({ aMm }: { aMm: number }) {
       </dd>
     </>
   );
+}
+
+/** Names of reviewers as written in each language; others are shown as recorded. */
+const REVIEWER_NAMES: Readonly<Record<string, { ar: string }>> = {
+  'Dr. Ali R. Muhammad': { ar: 'د. علي ر. محمد' },
+};
+
+function reviewerName(name: string, locale: string): string {
+  return locale === 'ar' ? (REVIEWER_NAMES[name]?.ar ?? name) : name;
 }
 
 /** Facts about one structure: its names, where its geometry comes from, and how accurate the mesh is. */
@@ -96,7 +106,14 @@ export function StructureCard({ structure, content, onClose }: Props) {
           {info.computedPart && (
             <>
               <dt>{t('viewer.card.division')}</dt>
-              <dd>{t('viewer.card.division.computed')}</dd>
+              <dd>
+                {info.divisionReview
+                  ? t('viewer.card.division.reviewed', {
+                      by: reviewerName(info.divisionReview.by, locale),
+                      on: localizeDigits(info.divisionReview.on, numerals),
+                    })
+                  : t('viewer.card.division.computed')}
+              </dd>
             </>
           )}
           {(content.measurements ?? [])

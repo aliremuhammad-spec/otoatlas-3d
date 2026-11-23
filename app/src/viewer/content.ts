@@ -19,6 +19,8 @@ export interface StructureInfo {
   description: { en: string; ar: string; status: 'draft' | 'reviewed' } | null;
   /** True for one part of a label divided by a computed rule (membrane quadrants, parts of a bone). */
   computedPart: boolean;
+  /** Who checked the division of a computed part by eye, and when. */
+  divisionReview: { by: string; on: string } | null;
 }
 
 /** One selectable object in the scene. */

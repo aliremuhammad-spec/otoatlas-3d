@@ -58,6 +58,7 @@ export function sceneFromManifest(
         shownErrorMm: shown?.hausdorffMm ?? Number.NaN,
         description: s.description,
         computedPart: s.sourcePart !== null,
+        divisionReview: s.divisionReview,
       },
       ...(s.group ? { group: s.group } : {}),
     };

@@ -141,6 +141,12 @@ describe('content manifest', () => {
       }),
     ).structures[0];
     expect(part?.sourcePart).toBe('footplate');
+    expect(part?.divisionReview).toBeNull();
+    const checked = parseManifest(
+      withStructure({ source_part: 'footplate', division_review: { by: 'Dr. Ali R. Muhammad', on: '2026-11-24' } }),
+    ).structures[0];
+    expect(checked?.divisionReview).toEqual({ by: 'Dr. Ali R. Muhammad', on: '2026-11-24' });
+    expect(() => parseManifest(withStructure({ division_review: { by: 'X', on: 'yesterday' } }))).toThrow(/date/);
     expect(part?.group).toEqual({ id: 'stapes', names: { en: 'Stapes', ar: 'الركاب', latin: 'Stapes' } });
     expect(() => parseManifest(withStructure({ group: { id: 'x' } }))).toThrow(/group.names/);
   });

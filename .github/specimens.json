@@ -1,0 +1,17 @@
+{
+  "note": "Specimens published in the app, in the order the picker lists them. Chosen on 24 November 2026 at the reviewer's request to keep the most complete and detailed specimens and drop near-duplicates. Every specimen in the two Zenodo records can still be built: add its package name here.",
+  "specimens": [
+    {"pkg": "OPENEAR-ZETA", "why": "Reviewer-checked right ear; complete labels; registered CBCT."},
+    {"pkg": "OPENEAR-DELTA", "why": "Finest labels with a registered CBCT (0.063 mm); right ear."},
+    {"pkg": "OPENEAR-BETA", "why": "Finest labels of all (0.05 mm in plane), for ossicle detail; no CBCT, so no slice view."},
+    {"pkg": "OPENEAR-ALPHA", "why": "The only specimen with a round window label; registered CBCT."},
+    {"pkg": "OPENEAR-ETA", "why": "Left ear with complete labels and a registered CBCT, so both sides are represented."},
+    {"pkg": "BERN-F01", "why": "Median-sized cochlea (A 9.1 mm); left ear."},
+    {"pkg": "BERN-F03", "why": "Largest cochlea of the Bern set (A 10.2 mm); right ear."},
+    {"pkg": "BERN-T07", "why": "Small cochlea (A 8.2 mm); right ear. With F01 and F03 it shows the range of cochlear size."}
+  ],
+  "dropped": {
+    "OPENEAR": ["GAMMA", "EPSILON", "THETA"],
+    "BERN": "the other 20 specimens: same labels and scan type as those kept"
+  }
+}

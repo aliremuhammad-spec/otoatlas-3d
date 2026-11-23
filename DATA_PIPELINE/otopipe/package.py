@@ -142,6 +142,11 @@ def build_package(
                 "default_visible": bool(entry.get("default_visible", True)),
                 **({"description": entry["description"]} if "description" in entry else {}),
                 **({"group": group_of(ontology, entry)} if group_of(ontology, entry) else {}),
+                **(
+                    {"division_review": {"by": entry["division_reviewed_by"], "on": entry["division_reviewed_on"]}}
+                    if entry.get("division_reviewed_by")
+                    else {}
+                ),
                 "smoothing": {"method": "taubin", "max_vertex_displacement_mm": round(build.clamp_mm, 4)},
                 "closed_surface": bool(lod0.is_watertight),
                 "source_voxel_mm": [round(float(v), 5) for v in label.spacing],

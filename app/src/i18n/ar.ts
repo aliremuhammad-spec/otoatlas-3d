@@ -79,6 +79,8 @@ export const ar: Record<MessageKey, string> = {
   'viewer.card.division': 'التقسيم',
   'viewer.card.division.computed':
     'جزء من تسمية هذه العيّنة، قُسِّم بقاعدة معلنة من شكل العظم أو الغشاء نفسه. الحدود تقريبية وبانتظار المراجعة.',
+  'viewer.card.division.reviewed':
+    'جزء من تسمية هذه العيّنة، قُسِّم بقاعدة معلنة من شكل العظم نفسه. راجع {by} الحدود بالنظر بتاريخ {on}.',
   'viewer.group.parts': '{count} أجزاء',
   'viewer.group.expand': 'إظهار أجزاء {name}',
   'viewer.group.collapse': 'إخفاء أجزاء {name}',

@@ -54,3 +54,13 @@ def test_every_structure_has_a_description_in_both_languages():
     assert set(texts) == ids
     for sid, t in texts.items():
         assert t["en"].strip() and t["ar"].strip(), sid
+
+
+def test_division_reviews_are_complete():
+    import re
+
+    for s in ONTOLOGY["structures"]:
+        if "division_reviewed_by" in s or "division_reviewed_on" in s:
+            assert s["division_reviewed_by"], s["id"]
+            assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", s["division_reviewed_on"]), s["id"]
+            assert any(src.get("part") for src in s["sources"]), s["id"]

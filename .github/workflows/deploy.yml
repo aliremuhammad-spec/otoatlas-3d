@@ -19,6 +19,7 @@ jobs:
     outputs:
       specimens: ${{ steps.list.outputs.specimens }}
     steps:
+      - uses: actions/checkout@v4
       - id: list
         shell: python
         run: |
@@ -36,6 +37,12 @@ jobs:
                    for k in keys(1473724) if k.lower().endswith(".zip")]
           items += [{"kind": "bern", "id": k[:-4], "pkg": "BERN-" + k[:-4]}
                     for k in keys(3355272) if k.lower().endswith(".zip")]
+          # Only the specimens chosen for the app (.github/specimens.json) are built.
+          chosen = [e["pkg"] for e in json.load(open(".github/specimens.json"))["specimens"]]
+          absent = sorted(set(chosen) - {i["pkg"] for i in items})
+          if absent:
+              raise SystemExit(f"chosen specimens not in the Zenodo records: {absent}")
+          items = [i for i in items if i["pkg"] in chosen]
           print(json.dumps(items, indent=1))
           with open(os.environ["GITHUB_OUTPUT"], "a") as out:
               out.write("specimens=" + json.dumps(items) + "\n")
@@ -105,7 +112,7 @@ jobs:
           path: app/dist/content
           merge-multiple: true
       # deploy-pages looks for its artifact in the first page of 30 artifacts only; with one
-      # artifact per specimen (31) it missed it. Merging them keeps the run to two artifacts.
+      # artifact per specimen (31 at the time) it missed it. Merging keeps the run to two artifacts.
       - uses: actions/upload-artifact/merge@v4
         with:
           name: content-all
@@ -117,8 +124,9 @@ jobs:
           import json, pathlib
           root = pathlib.Path("app/dist/content")
           specimens = []
-          # The specimen the reviewer has worked on opens first, then OpenEar, then Bern.
-          order = lambda m: (m.parent.name != "OPENEAR-ZETA", not m.parent.name.startswith("OPENEAR"), m.parent.name)
+          # In the order of .github/specimens.json: the reviewer's specimen first.
+          chosen = [e["pkg"] for e in json.load(open(".github/specimens.json"))["specimens"]]
+          order = lambda m: chosen.index(m.parent.name) if m.parent.name in chosen else len(chosen)
           for m in sorted(root.glob("*/manifest.json"), key=order):
               manifest = json.loads(m.read_text(encoding="utf-8"))
               specimens.append({"id": manifest["specimen_id"], "path": m.parent.name,
