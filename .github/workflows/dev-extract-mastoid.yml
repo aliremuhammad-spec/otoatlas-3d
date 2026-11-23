@@ -1,0 +1,51 @@
+name: dev-extract-mastoid
+# Development only: the bone, its neighbours and the registered CBCT of chosen OpenEar
+# specimens, pushed to the `dev-data-mastoid` branch for work on the mastoid air cells.
+on:
+  workflow_dispatch:
+    inputs:
+      specimens:
+        description: JSON list of OpenEar specimen names
+        default: '["ZETA", "ALPHA", "ETA"]'
+permissions:
+  contents: write
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        specimen: ${{ fromJSON(inputs.specimens) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: |
+          pip install -e DATA_PIPELINE
+          python -u .github/scripts/extract_mastoid_dev.py ${{ matrix.specimen }} dev-out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: devm-${{ matrix.specimen }}
+          path: dev-out
+  publish:
+    needs: extract
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: devm-*
+          merge-multiple: true
+          path: dev-out
+      - run: |
+          cd dev-out
+          ls -la
+          printf '%s\n' "Temporal bone labels and registered CBCT extracted from OpenEar (Sieber et al., Scientific Data 2019," "doi:10.1038/sdata.2018.297; data doi:10.5281/zenodo.1473724), CC BY 4.0." "Development data for OtoAtlas 3D, designed under the supervision of Dr. Ali R. Muhammad." > README.md
+          git init -q -b dev-data-mastoid
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add -A
+          git commit -q -m "OpenEar temporal bone labels and CBCT for development"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" dev-data-mastoid
