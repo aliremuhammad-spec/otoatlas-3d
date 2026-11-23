@@ -73,6 +73,15 @@ export const ar: Record<MessageKey, string> = {
   'viewer.reload': 'إعادة التحميل',
   'viewer.card.close': 'إغلاق',
   'viewer.card.origin': 'المصدر',
+  'viewer.measurement.malleus_length': 'طول تسمية المطرقة على محورها الطويل',
+  'viewer.measurement.stapes_footplate_length': 'طول صفيحة الركاب (امتداد جزء الصفيحة)',
+  'viewer.measurement.stapes_footplate_width': 'عرض صفيحة الركاب (امتداد جزء الصفيحة)',
+  'viewer.card.division': 'التقسيم',
+  'viewer.card.division.computed':
+    'جزء من تسمية هذه العيّنة، قُسِّم بقاعدة معلنة من شكل العظم أو الغشاء نفسه. الحدود تقريبية وبانتظار المراجعة.',
+  'viewer.group.parts': '{count} أجزاء',
+  'viewer.group.expand': 'إظهار أجزاء {name}',
+  'viewer.group.collapse': 'إخفاء أجزاء {name}',
   'viewer.measurement.cochlear_a_value': 'قيمة A للقوقعة (من النافذة المستديرة عبر المحور إلى الجدار المقابل)',
   'viewer.measurement.cdl_estimate': 'الطول المقدَّر للقناة القوقعية (عضو كورتي، الطول الكامل)',
   'viewer.measurement.cdl_method':

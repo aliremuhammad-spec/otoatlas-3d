@@ -17,6 +17,8 @@ export interface StructureInfo {
   /** Measured distance of the shown mesh from its label surface. */
   shownErrorMm: number;
   description: { en: string; ar: string; status: 'draft' | 'reviewed' } | null;
+  /** True for one part of a label divided by a computed rule (membrane quadrants, parts of a bone). */
+  computedPart: boolean;
 }
 
 /** One selectable object in the scene. */
@@ -40,6 +42,8 @@ export interface SceneStructure {
   defaultOpacity?: number;
   /** Absent for synthetic phantoms. */
   info?: StructureInfo;
+  /** The larger structure this one is part of; parts of one group are listed together. */
+  group?: { id: string; names: StructureNames };
 }
 
 export interface SceneContent {

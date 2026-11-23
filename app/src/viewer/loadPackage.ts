@@ -57,7 +57,9 @@ export function sceneFromManifest(
         meshErrorLimitMm: s.meshErrorLimitMm,
         shownErrorMm: shown?.hausdorffMm ?? Number.NaN,
         description: s.description,
+        computedPart: s.sourcePart !== null,
       },
+      ...(s.group ? { group: s.group } : {}),
     };
   });
   return {

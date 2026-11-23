@@ -95,3 +95,14 @@ def test_publish_shown_only_keeps_one_file_per_structure_but_every_measurement(t
     assert [l["published"] for l in lods] == [True, False, False]
     assert sorted(p.name for p in tmp_path.glob("*.glb")) == ["malleus.lod0.glb"]
     assert all("hausdorff_mm" in l for l in lods)
+
+
+
+def test_parts_carry_their_whole_structure_as_group():
+    by_id = {s["id"]: s for s in ONTOLOGY["structures"]}
+    assert package.group_of(ONTOLOGY, by_id["stapes_footplate"]) == {
+        "id": "stapes", "names": {"en": "Stapes", "ar": "الركاب", "latin": "Stapes"}
+    }
+    assert package.group_of(ONTOLOGY, by_id["tympanic_membrane_anterosuperior"])["id"] == "tympanic_membrane"
+    # A whole bone's parent is a group of structures, not a structure: no group entry.
+    assert package.group_of(ONTOLOGY, by_id["malleus"]) is None

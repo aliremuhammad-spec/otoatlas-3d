@@ -710,3 +710,19 @@ fieldset {
 .update-banner span {
   flex: 1 1 12rem;
 }
+
+/* Parts of one structure (membrane quadrants, parts of a bone) listed under it. */
+.structures--parts {
+  margin: 0.5rem 0 0;
+  padding-inline-start: 1.4rem;
+  border-inline-start: 2px solid var(--line);
+}
+
+.structure-name--group[aria-expanded='true'] {
+  color: var(--accent);
+}
+
+.group-chevron {
+  display: inline-block;
+  inline-size: 1em;
+}

@@ -57,6 +57,15 @@ def load_ontology(path: str | Path) -> dict:
     return ontology
 
 
+def group_of(ontology: dict, entry: dict) -> dict | None:
+    """For a part of another structure (a membrane quadrant, a part of a bone), that structure's id and names."""
+    parent = entry.get("parent")
+    for s in ontology["structures"]:
+        if s["id"] == parent:
+            return {"id": s["id"], "names": {"en": s["name_en"], "ar": s["name_ar"], "latin": s["name_ta_latin"]}}
+    return None
+
+
 def structure_for(ontology: dict, dataset: str, source_label: str, part: str | None = None) -> dict:
     """The ontology entry that a dataset label (or one part of it) maps to. Unknown labels are an error, never skipped."""
     for s in ontology["structures"]:
@@ -132,6 +141,7 @@ def build_package(
                 "default_opacity": float(entry.get("default_opacity", 1.0)),
                 "default_visible": bool(entry.get("default_visible", True)),
                 **({"description": entry["description"]} if "description" in entry else {}),
+                **({"group": group_of(ontology, entry)} if group_of(ontology, entry) else {}),
                 "smoothing": {"method": "taubin", "max_vertex_displacement_mm": round(build.clamp_mm, 4)},
                 "closed_surface": bool(lod0.is_watertight),
                 "source_voxel_mm": [round(float(v), 5) for v in label.spacing],

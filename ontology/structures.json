@@ -243,6 +243,94 @@
       "ar_reviewed_on": "2026-11-17"
     },
     {
+      "id": "malleus_head",
+      "name_en": "Head of malleus",
+      "name_ta_latin": "Caput mallei",
+      "name_ar": "رأس المطرقة",
+      "ar_status": "unverified",
+      "parent": "malleus",
+      "system": "ossicles",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Malleus",
+          "part": "head"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Part of the specimen's malleus label, divided by rule (otopipe/ossicles.py). Awaits the reviewer's check.",
+      "color": "#E69F00",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "malleus_neck",
+      "name_en": "Neck of malleus",
+      "name_ta_latin": "Collum mallei",
+      "name_ar": "عنق المطرقة",
+      "ar_status": "unverified",
+      "parent": "malleus",
+      "system": "ossicles",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Malleus",
+          "part": "neck"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Part of the specimen's malleus label, divided by rule (otopipe/ossicles.py). Awaits the reviewer's check.",
+      "color": "#F2BE55",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "malleus_lateral_process",
+      "name_en": "Lateral process of malleus",
+      "name_ta_latin": "Processus lateralis mallei",
+      "name_ar": "الناتئ الوحشي للمطرقة",
+      "ar_status": "unverified",
+      "parent": "malleus",
+      "system": "ossicles",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Malleus",
+          "part": "lateral_process"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Part of the specimen's malleus label, divided by rule (otopipe/ossicles.py). Awaits the reviewer's check.",
+      "color": "#B97100",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "malleus_handle",
+      "name_en": "Handle of malleus",
+      "name_ta_latin": "Manubrium mallei",
+      "name_ar": "قبضة المطرقة",
+      "ar_status": "unverified",
+      "parent": "malleus",
+      "system": "ossicles",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Malleus",
+          "part": "handle"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Part of the specimen's malleus label, divided by rule (otopipe/ossicles.py). Awaits the reviewer's check.",
+      "color": "#FFD98A",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
       "id": "incus",
       "name_en": "Incus",
       "name_ta_latin": "Incus",
@@ -265,6 +353,94 @@
       "ar_reviewed_on": "2026-11-17"
     },
     {
+      "id": "incus_body",
+      "name_en": "Body of incus",
+      "name_ta_latin": "Corpus incudis",
+      "name_ar": "جسم السندان",
+      "ar_status": "unverified",
+      "parent": "incus",
+      "system": "ossicles",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Incus",
+          "part": "body"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Part of the specimen's incus label, divided by rule (otopipe/ossicles.py). Awaits the reviewer's check.",
+      "color": "#CC79A7",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "incus_short_process",
+      "name_en": "Short process of incus",
+      "name_ta_latin": "Crus breve incudis",
+      "name_ar": "الساق القصيرة للسندان",
+      "ar_status": "unverified",
+      "parent": "incus",
+      "system": "ossicles",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Incus",
+          "part": "short_process"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Part of the specimen's incus label, divided by rule (otopipe/ossicles.py). Awaits the reviewer's check.",
+      "color": "#E8AED0",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "incus_long_process",
+      "name_en": "Long process of incus",
+      "name_ta_latin": "Crus longum incudis",
+      "name_ar": "الساق الطويلة للسندان",
+      "ar_status": "unverified",
+      "parent": "incus",
+      "system": "ossicles",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Incus",
+          "part": "long_process"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Part of the specimen's incus label, divided by rule (otopipe/ossicles.py). Awaits the reviewer's check.",
+      "color": "#A3578A",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "incus_lenticular_process",
+      "name_en": "Lenticular process of incus",
+      "name_ta_latin": "Processus lenticularis incudis",
+      "name_ar": "الناتئ العدسي للسندان",
+      "ar_status": "unverified",
+      "parent": "incus",
+      "system": "ossicles",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Incus",
+          "part": "lenticular_process"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Part of the specimen's incus label, divided by rule (otopipe/ossicles.py). Awaits the reviewer's check.",
+      "color": "#7A3566",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
       "id": "stapes",
       "name_en": "Stapes",
       "name_ta_latin": "Stapes",
@@ -285,6 +461,94 @@
       "mesh_error_limit_mm": 0.1,
       "ar_reviewed_by": "Dr. Ali R. Muhammad",
       "ar_reviewed_on": "2026-11-17"
+    },
+    {
+      "id": "stapes_head_neck",
+      "name_en": "Head and neck of stapes",
+      "name_ta_latin": "Caput et collum stapedis",
+      "name_ar": "رأس الركاب وعنقه",
+      "ar_status": "unverified",
+      "parent": "stapes",
+      "system": "ossicles",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Stapes",
+          "part": "head_neck"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Part of the specimen's stapes label, divided by rule (otopipe/ossicles.py). Awaits the reviewer's check.",
+      "color": "#D55E00",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "stapes_anterior_crus",
+      "name_en": "Anterior crus of stapes",
+      "name_ta_latin": "Crus anterius stapedis",
+      "name_ar": "الساق الأمامية للركاب",
+      "ar_status": "unverified",
+      "parent": "stapes",
+      "system": "ossicles",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Stapes",
+          "part": "anterior_crus"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Part of the specimen's stapes label, divided by rule (otopipe/ossicles.py). Awaits the reviewer's check.",
+      "color": "#F39256",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "stapes_posterior_crus",
+      "name_en": "Posterior crus of stapes",
+      "name_ta_latin": "Crus posterius stapedis",
+      "name_ar": "الساق الخلفية للركاب",
+      "ar_status": "unverified",
+      "parent": "stapes",
+      "system": "ossicles",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Stapes",
+          "part": "posterior_crus"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Part of the specimen's stapes label, divided by rule (otopipe/ossicles.py). Awaits the reviewer's check.",
+      "color": "#A84700",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "stapes_footplate",
+      "name_en": "Footplate of stapes",
+      "name_ta_latin": "Basis stapedis",
+      "name_ar": "صفيحة الركاب (قاعدة الركاب)",
+      "ar_status": "unverified",
+      "parent": "stapes",
+      "system": "ossicles",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Stapes",
+          "part": "footplate"
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Part of the specimen's stapes label, divided by rule (otopipe/ossicles.py). Awaits the reviewer's check.",
+      "color": "#FFB27F",
+      "mesh_error_limit_mm": 0.1
     },
     {
       "id": "facial_nerve",

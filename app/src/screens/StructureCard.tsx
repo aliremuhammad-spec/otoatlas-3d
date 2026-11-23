@@ -93,6 +93,12 @@ export function StructureCard({ structure, content, onClose }: Props) {
                   limit: formatMillimetres(info.meshErrorLimitMm, numerals),
                 })}
           </dd>
+          {info.computedPart && (
+            <>
+              <dt>{t('viewer.card.division')}</dt>
+              <dd>{t('viewer.card.division.computed')}</dd>
+            </>
+          )}
           {(content.measurements ?? [])
             .filter((m) => m.structures.includes(structure.id))
             .map((m) => (

@@ -130,6 +130,21 @@ describe('content manifest', () => {
     expect(parseManifest(validManifest()).measurements).toEqual([]);
   });
 
+  it('reads the group and the computed part of a structure', () => {
+    const plain = parseManifest(validManifest()).structures[0];
+    expect(plain?.group).toBeNull();
+    expect(plain?.sourcePart).toBeNull();
+    const part = parseManifest(
+      withStructure({
+        source_part: 'footplate',
+        group: { id: 'stapes', names: { en: 'Stapes', ar: 'الركاب', latin: 'Stapes' } },
+      }),
+    ).structures[0];
+    expect(part?.sourcePart).toBe('footplate');
+    expect(part?.group).toEqual({ id: 'stapes', names: { en: 'Stapes', ar: 'الركاب', latin: 'Stapes' } });
+    expect(() => parseManifest(withStructure({ group: { id: 'x' } }))).toThrow(/group.names/);
+  });
+
   it('reads whether a structure starts hidden', () => {
     expect(parseManifest(validManifest()).structures[0]?.defaultVisible).toBe(true);
     expect(parseManifest(withStructure({ default_visible: false })).structures[0]?.defaultVisible).toBe(false);

@@ -17,7 +17,18 @@ from pathlib import Path
 import nibabel as nib
 import numpy as np
 
-from otopipe import airspace, cochlea, fetch, frames, openear, package, scan, split, tm
+from otopipe import (
+    airspace,
+    cochlea,
+    fetch,
+    frames,
+    openear,
+    ossicles,
+    package,
+    scan,
+    split,
+    tm,
+)
 
 ONTOLOGY = Path(__file__).resolve().parent.parent / "ontology" / "structures.json"
 
@@ -85,10 +96,11 @@ def build_openear(specimen: str, out: Path) -> dict:
     report = None
     resampled: dict[str, dict] = {}
     vestibule_centre = None
+    vestibular = None
     extra_tm: dict = {}
     for name in OPENEAR_PHASE1:
-        if name in missing or name == "Tympanic Membrane":
-            continue  # the membrane is added below, divided into quadrants when possible
+        if name in missing or name == "Tympanic Membrane" or name in OSSICLES:
+            continue  # the membrane and the ossicles are added below, divided into parts when possible
         seg = segments[name]
         if name in COARSEN and min(seg.spacing) < COARSEN_BELOW_MM:
             # Per axis: BETA is 0.05 x 0.05 x 0.15 mm, so only its first two axes are merged.
@@ -113,8 +125,12 @@ def build_openear(specimen: str, out: Path) -> dict:
         labels.append(package.LabelInput(name, parts.cochlear.mask, seg.spacing, parts.cochlear.origin, part="cochlear"))
         labels.append(package.LabelInput(name, parts.vestibular.mask, seg.spacing, parts.vestibular.origin, part="vestibular"))
         vestibule_centre = centroid(parts.vestibular.mask, seg.spacing, parts.vestibular.origin)
+        vestibular = (parts.vestibular.mask, seg.spacing, parts.vestibular.origin)
     if "Tympanic Membrane" not in missing:
         labels.extend(tympanic_membrane(specimen, segments, vestibule_centre, extra_tm))
+    ossicle_report: dict = {}
+    ossicle_measurements: list = []
+    labels.extend(ossicle_labels(specimen, segments, missing, vestibular, vestibule_centre, ossicle_report, ossicle_measurements))
     extra = {"frame": "Dataset frame of the segmentation file (right-anterior-superior), millimetres."}
     if "Tympanic Membrane" not in missing and extra_tm:
         extra["tympanic_membrane_quadrants"] = extra_tm
@@ -125,6 +141,10 @@ def build_openear(specimen: str, out: Path) -> dict:
             {"id": "tm_horizontal_diameter", "value_mm": extra_tm["horizontal_diameter_mm"], "structures": quads,
              "method": "extent of the membrane label at right angles to the handle"},
         ]
+    if ossicle_report:
+        extra["ossicle_parts"] = ossicle_report
+    if ossicle_measurements:
+        extra["measurements"] = extra.get("measurements", []) + ossicle_measurements
     extra["segment_names_in_file"] = source_names
     if unmatched:
         extra["segments_not_used"] = unmatched
@@ -190,6 +210,59 @@ def tympanic_membrane(specimen: str, segments: dict, vestibule_centre, report_ou
     except Exception as e:  # noqa: BLE001 - the whole membrane still ships
         print(f"{specimen}: warning: tympanic membrane kept whole: {e}")
         return [package.LabelInput("Tympanic Membrane", seg.mask, seg.spacing, seg.origin)]
+
+
+def ossicle_labels(specimen, segments, missing, vestibular, vestibule_centre, report_out: dict, measurements_out: list) -> list:
+    """Each ossicle divided into its parts (otopipe/ossicles.py), or whole when a rule fails for it."""
+    present = [n for n in OSSICLES if n not in missing]
+    whole = {n: package.LabelInput(n, segments[n].mask, segments[n].spacing, segments[n].origin) for n in present}
+
+    def lab(name):
+        g = segments[name]
+        return (g.mask, g.spacing, g.origin)
+
+    try:
+        need = {"Malleus", "Incus", "Stapes", "Tympanic Membrane", "Scala Tympani"}
+        if need & set(missing) or vestibular is None:
+            raise ValueError("ossicles, membrane, scala tympani or vestibule missing")
+        st = segments["Scala Tympani"]
+        frame = ossicles.anatomical_frame(
+            vestibule_centre, centroid(st.mask, st.spacing, st.origin), lab("Tympanic Membrane"), lab("Malleus")
+        )
+        report_out["side_from_anatomy"] = frame.side
+        print(f"{specimen}: side from the labels' anatomy: {frame.side}")
+    except Exception as e:  # noqa: BLE001 - the whole bones still ship
+        print(f"{specimen}: warning: ossicles kept whole: {e}")
+        return list(whole.values())
+    rules = {
+        "Malleus": lambda: ossicles.malleus_parts(lab("Malleus"), lab("Tympanic Membrane"), lab("Incus"), frame),
+        "Incus": lambda: ossicles.incus_parts(lab("Incus"), lab("Stapes"), frame),
+        "Stapes": lambda: ossicles.stapes_parts(lab("Stapes"), lab("Incus"), vestibular, frame),
+    }
+    out = []
+    for name in present:
+        try:
+            result = rules[name]()
+        except Exception as e:  # noqa: BLE001
+            print(f"{specimen}: warning: {name.lower()} kept whole: {e}")
+            report_out[name.lower()] = {"divided": False, "reason": str(e)}
+            out.append(whole[name])
+            continue
+        seg = segments[name]
+        report_out[name.lower()] = {"divided": True, **result.report}
+        print(f"{specimen}: {name.lower()} parts: {json.dumps(result.report)}")
+        ids = [f"{name.lower()}_{p}" for p in result.parts]
+        out.extend(package.LabelInput(name, mask, seg.spacing, origin, part=p) for p, (mask, origin) in result.parts.items())
+        r = result.report
+        if name == "Malleus":
+            measurements_out.append({"id": "malleus_length", "value_mm": r["length_mm"], "structures": ids,
+                                     "method": "extent of the malleus label along its long axis"})
+        if name == "Stapes":
+            measurements_out.append({"id": "stapes_footplate_length", "value_mm": r["footplate_length_mm"],
+                                     "structures": ["stapes_footplate"], "method": "extent of the footplate part along its long axis"})
+            measurements_out.append({"id": "stapes_footplate_width", "value_mm": r["footplate_width_mm"],
+                                     "structures": ["stapes_footplate"], "method": "extent of the footplate part across its long axis"})
+    return out
 
 
 AIR_LABEL = "Middle Ear Air (derived)"

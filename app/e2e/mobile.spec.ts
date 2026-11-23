@@ -183,3 +183,44 @@ test.describe('touch, phone, settings and about', () => {
     await noSidewaysScroll(page);
   });
 });
+
+test.describe('touch, phone, parts of a structure', () => {
+  test.use({ viewport: SCREENS.phone, isMobile: true, hasTouch: true, deviceScaleFactor: 2, locale: 'en-US' });
+
+  test('parts are listed under their structure and can be shown, hidden and opened', async ({ page }) => {
+    await serveFixtureContent(page);
+    // Make both fixture structures parts of one group, as the ossicle parts are.
+    await page.route('**/content/TEST-SYNTHETIC-01/manifest.json', async (route) => {
+      const m = JSON.parse(await readFile(path.join(FIXTURES, 'TEST-SYNTHETIC-01', 'manifest.json'), 'utf8'));
+      for (const s of m.structures) {
+        s.group = { id: 'test_bone', names: { en: 'Test bone', ar: 'عظم اختباري', latin: 'Os probationis' } };
+        s.source_part = s.id;
+      }
+      await route.fulfill({ contentType: 'application/json', body: JSON.stringify(m) });
+    });
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Open the viewer' }).tap({ timeout: 8000 });
+    const group = page.locator('[data-group="test_bone"]');
+    await expect(group).toContainText('Test bone');
+    await expect(group).toContainText('2 parts');
+    await expect(page.locator('[data-structure="malleus"]')).toHaveCount(0);
+
+    // Hide and show every part from the group's box.
+    const box = group.getByRole('checkbox', { name: 'Show: Test bone' });
+    await box.tap();
+    await expect(page.locator('.labels__label[data-label="malleus"]')).toBeHidden();
+    await box.tap();
+    await expect(page.locator('.labels__label[data-label="malleus"]')).toBeVisible();
+
+    // Tapping a part in 3D opens its card and its place in the list.
+    const at = await anchors(page);
+    await page.touchscreen.tap(pt(at.malleus, 'malleus').x, pt(at.malleus, 'malleus').y);
+    const card = page.getByTestId('structure-card');
+    await expect(card).toContainText('Malleus');
+    await expect(card).toContainText('divided by a stated rule');
+    await expect(page.locator('[data-structure="malleus"] .structure-name')).toHaveAttribute('aria-pressed', 'true');
+
+    await group.getByRole('button', { name: 'Hide the parts of Test bone' }).tap();
+    await expect(page.locator('[data-structure="malleus"]')).toHaveCount(0);
+  });
+});

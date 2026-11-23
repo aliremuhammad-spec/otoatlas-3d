@@ -61,6 +61,15 @@ export const en = {
   'viewer.reload': 'Reload',
   'viewer.card.close': 'Close',
   'viewer.card.origin': 'Origin',
+  'viewer.measurement.malleus_length': 'Length of the malleus label along its long axis',
+  'viewer.measurement.stapes_footplate_length': 'Footplate length (extent of the footplate part)',
+  'viewer.measurement.stapes_footplate_width': 'Footplate width (extent of the footplate part)',
+  'viewer.card.division': 'Division',
+  'viewer.card.division.computed':
+    'One part of this specimen\'s label, divided by a stated rule from the bone\'s or membrane\'s own shape. Boundaries are approximate and await review.',
+  'viewer.group.parts': '{count} parts',
+  'viewer.group.expand': 'Show the parts of {name}',
+  'viewer.group.collapse': 'Hide the parts of {name}',
   'viewer.measurement.cochlear_a_value': 'Cochlear A value (round window through the modiolus to the far wall)',
   'viewer.measurement.cdl_estimate': 'Estimated cochlear duct length (organ of Corti, full length)',
   'viewer.measurement.cdl_method':

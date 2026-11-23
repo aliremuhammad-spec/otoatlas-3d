@@ -35,6 +35,10 @@ export interface ManifestStructure {
   description: StructureDescription | null;
   sourceVoxelMm: readonly [number, number, number];
   lods: readonly ManifestLod[];
+  /** For a part of a larger structure (a quadrant, a part of a bone): that structure. */
+  group: { id: string; names: { en: string; ar: string | null; latin: string | null } } | null;
+  /** Set when the structure is one part of a label divided by a computed rule. */
+  sourcePart: string | null;
 }
 
 export interface ManifestScan {
@@ -53,6 +57,9 @@ export const MEASUREMENT_IDS = [
   'cochlear_b_value',
   'tm_vertical_diameter',
   'tm_horizontal_diameter',
+  'malleus_length',
+  'stapes_footplate_length',
+  'stapes_footplate_width',
 ] as const;
 export type MeasurementId = (typeof MEASUREMENT_IDS)[number];
 
@@ -191,6 +198,22 @@ function parseStructure(value: unknown, index: number): ManifestStructure {
       num(voxel[2], `${what}.source_voxel_mm[2]`),
     ],
     lods,
+    group: parseGroup(o.group, `${what}.group`),
+    sourcePart: o.source_part === undefined || o.source_part === null ? null : str(o.source_part, `${what}.source_part`),
+  };
+}
+
+function parseGroup(value: unknown, what: string): ManifestStructure['group'] {
+  if (value === undefined || value === null) return null;
+  const o = obj(value, what);
+  const names = obj(o.names, `${what}.names`);
+  return {
+    id: str(o.id, `${what}.id`),
+    names: {
+      en: str(names.en, `${what}.names.en`),
+      ar: strOrNull(names.ar, `${what}.names.ar`),
+      latin: strOrNull(names.latin, `${what}.names.latin`),
+    },
   };
 }
 

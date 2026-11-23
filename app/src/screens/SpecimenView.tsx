@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Vector3 } from 'three';
 import { useI18n } from '../i18n/I18nProvider';
 import type { MessageKey } from '../i18n/en';
+import { localizeDigits, type NumeralSystem } from '../i18n/numerals';
 import { formatMillimetres, formatVoxelSize } from '../measure/format';
 import { distance, type Vec3 } from '../measure/geometry';
 import { minSurfaceDistance } from '../measure/surfaceDistance';
@@ -50,6 +51,8 @@ export function SpecimenView({ content }: Props) {
     () => new Set(content.structures.filter((s) => s.defaultVisible === false).map((s) => s.id)),
   );
   const [opacity, setOpacity] = useState<Readonly<Record<string, number>>>({});
+  const [expanded, setExpanded] = useState<ReadonlySet<string>>(() => new Set());
+  const entries = listEntries(content.structures);
 
   useEffect(() => {
     const host = hostRef.current;
@@ -65,7 +68,7 @@ export function SpecimenView({ content }: Props) {
     setCore(core);
     core.onContextLost(() => setLost(true));
     core.onPick((pick) => {
-      if (modeRef.current === 'explore') select(pick.structureId);
+      if (modeRef.current === 'explore') selectRef.current(pick.structureId);
       else if (modeRef.current === 'p2p') setPoints((prev) => (prev.length >= 2 ? [pick.point] : [...prev, pick.point]));
     });
     const view = viewRef.current;
@@ -99,7 +102,13 @@ export function SpecimenView({ content }: Props) {
     labelsRef.current?.setEnabled(labelsOn);
   }, [labelsOn]);
 
+  // The 3D view's tap handler is set up once per specimen; it calls the latest `select`.
+  const selectRef = useRef<(id: string | null) => void>(() => undefined);
+  selectRef.current = select;
+
   function select(id: string | null): void {
+    const group = content.structures.find((s) => s.id === id)?.group;
+    if (group) setExpanded((prev) => (prev.has(group.id) ? prev : new Set([...prev, group.id])));
     setSelected(id);
     coreRef.current?.setHighlight(id);
     labelsRef.current?.setSelected(id);
@@ -168,16 +177,84 @@ export function SpecimenView({ content }: Props) {
     coreRef.current?.setVisible(id, !next.has(id));
   }
 
-  function isolate(id: string | null): void {
-    const next = new Set(id ? content.structures.filter((s) => s.id !== id).map((s) => s.id) : []);
+  function isolate(ids: readonly string[] | null): void {
+    const keep = new Set(ids ?? []);
+    const next = new Set(ids ? content.structures.filter((s) => !keep.has(s.id)).map((s) => s.id) : []);
     setHidden(next);
     for (const s of content.structures) coreRef.current?.setVisible(s.id, !next.has(s.id));
-    coreRef.current?.frameOn(id ? [id] : null);
+    coreRef.current?.frameOn(ids ? [...ids] : null);
   }
 
-  function changeOpacity(id: string, value: number): void {
-    setOpacity({ ...opacity, [id]: value });
-    coreRef.current?.setOpacity(id, value);
+  function changeOpacity(ids: readonly string[], value: number): void {
+    const next = { ...opacity };
+    for (const id of ids) {
+      next[id] = value;
+      coreRef.current?.setOpacity(id, value);
+    }
+    setOpacity(next);
+  }
+
+  function setGroupVisible(ids: readonly string[], visible: boolean): void {
+    const next = new Set(hidden);
+    for (const id of ids) {
+      if (visible) next.delete(id);
+      else next.add(id);
+      coreRef.current?.setVisible(id, visible);
+    }
+    setHidden(next);
+  }
+
+  function toggleExpanded(id: string): void {
+    const next = new Set(expanded);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    setExpanded(next);
+  }
+
+  function structureRow(s: (typeof content.structures)[number]) {
+    const name = displayName(s.names, locale);
+    const latin = latinLine(s.names, locale);
+    return (
+      <li key={s.id} data-structure={s.id}>
+        <div className="choice">
+          <input
+            type="checkbox"
+            checked={!hidden.has(s.id)}
+            onChange={() => toggleVisible(s.id)}
+            aria-label={`${t('viewer.show')}: ${name}`}
+          />
+          <span className="swatch" style={{ background: `#${s.color.toString(16).padStart(6, '0')}` }} />
+          <button
+            type="button"
+            className="structure-name"
+            aria-pressed={selected === s.id}
+            onClick={() => select(selected === s.id ? null : s.id)}
+          >
+            <span>{name}</span>
+            {latin && (
+              <span className="structure-name__latin" lang="la" dir="ltr">
+                {latin}
+              </span>
+            )}
+            {s.measurable === false && <span className="structure-name__note">{t('viewer.displayOnly')}</span>}
+          </button>
+        </div>
+        <div className="structures__row">
+          <input
+            type="range"
+            min={0.1}
+            max={1}
+            step={0.05}
+            value={opacity[s.id] ?? s.defaultOpacity ?? 1}
+            onChange={(e) => changeOpacity([s.id], Number(e.target.value))}
+            aria-label={`${t('viewer.opacity')}: ${name}`}
+          />
+          <button type="button" onClick={() => isolate([s.id])}>
+            {t('viewer.isolate')}
+          </button>
+        </div>
+      </li>
+    );
   }
 
   return (
@@ -218,37 +295,52 @@ export function SpecimenView({ content }: Props) {
         <section>
           <h2>{t('viewer.structures')}</h2>
           <ul className="structures">
-            {content.structures.map((s) => {
-              const name = displayName(s.names, locale);
-              const latin = latinLine(s.names, locale);
+            {entries.map((entry) => {
+              if (entry.kind === 'single') return structureRow(entry.structure);
+              const { group, members } = entry;
+              const ids = members.map((m) => m.id);
+              const name = displayName(group.names, locale);
+              const latin = latinLine(group.names, locale);
+              const shown = ids.filter((id) => !hidden.has(id)).length;
+              const open = expanded.has(group.id);
+              const first = members[0];
               return (
-                <li key={s.id} data-structure={s.id}>
+                <li key={group.id} data-group={group.id} className="structures__group">
                   <div className="choice">
                     <input
                       type="checkbox"
-                      checked={!hidden.has(s.id)}
-                      onChange={() => toggleVisible(s.id)}
+                      checked={shown === ids.length}
+                      ref={(el) => {
+                        if (el) el.indeterminate = shown > 0 && shown < ids.length;
+                      }}
+                      onChange={() => setGroupVisible(ids, shown < ids.length)}
                       aria-label={`${t('viewer.show')}: ${name}`}
                     />
                     <span
                       className="swatch"
-                      style={{ background: `#${s.color.toString(16).padStart(6, '0')}` }}
+                      style={{ background: `#${(first?.color ?? 0).toString(16).padStart(6, '0')}` }}
                     />
                     <button
                       type="button"
-                      className="structure-name"
-                      aria-pressed={selected === s.id}
-                      onClick={() => select(selected === s.id ? null : s.id)}
+                      className="structure-name structure-name--group"
+                      aria-expanded={open}
+                      aria-label={t(open ? 'viewer.group.collapse' : 'viewer.group.expand', { name })}
+                      onClick={() => toggleExpanded(group.id)}
                     >
-                      <span>{name}</span>
+                      <span>
+                        <span className="group-chevron" aria-hidden="true">
+                          {open ? '▾' : '▸'}
+                        </span>{' '}
+                        {name}
+                      </span>
                       {latin && (
                         <span className="structure-name__latin" lang="la" dir="ltr">
                           {latin}
                         </span>
                       )}
-                      {s.measurable === false && (
-                        <span className="structure-name__note">{t('viewer.displayOnly')}</span>
-                      )}
+                      <span className="structure-name__note">
+                        {t('viewer.group.parts', { count: formatCount(ids.length, numerals) })}
+                      </span>
                     </button>
                   </div>
                   <div className="structures__row">
@@ -257,14 +349,15 @@ export function SpecimenView({ content }: Props) {
                       min={0.1}
                       max={1}
                       step={0.05}
-                      value={opacity[s.id] ?? s.defaultOpacity ?? 1}
-                      onChange={(e) => changeOpacity(s.id, Number(e.target.value))}
+                      value={opacity[ids[0] ?? ''] ?? first?.defaultOpacity ?? 1}
+                      onChange={(e) => changeOpacity(ids, Number(e.target.value))}
                       aria-label={`${t('viewer.opacity')}: ${name}`}
                     />
-                    <button type="button" onClick={() => isolate(s.id)}>
+                    <button type="button" onClick={() => isolate(ids)}>
                       {t('viewer.isolate')}
                     </button>
                   </div>
+                  {open && <ul className="structures structures--parts">{members.map((m) => structureRow(m))}</ul>}
                 </li>
               );
             })}
@@ -335,11 +428,21 @@ export function SpecimenView({ content }: Props) {
                   onChange={(e) => changePair(i, e.target.value)}
                   aria-label={t('viewer.structures')}
                 >
-                  {measurable.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {displayName(s.names, locale)}
-                    </option>
-                  ))}
+                  {listEntries(measurable).map((e) =>
+                    e.kind === 'single' ? (
+                      <option key={e.structure.id} value={e.structure.id}>
+                        {displayName(e.structure.names, locale)}
+                      </option>
+                    ) : (
+                      <optgroup key={e.group.id} label={displayName(e.group.names, locale)}>
+                        {e.members.map((m) => (
+                          <option key={m.id} value={m.id}>
+                            {displayName(m.names, locale)}
+                          </option>
+                        ))}
+                      </optgroup>
+                    ),
+                  )}
                 </select>
               ))}
             </div>
@@ -359,4 +462,34 @@ export function SpecimenView({ content }: Props) {
       </aside>
     </>
   );
+}
+
+type ListEntry =
+  | { kind: 'single'; structure: SceneContent['structures'][number] }
+  | { kind: 'group'; group: NonNullable<SceneContent['structures'][number]['group']>; members: SceneContent['structures'][number][] };
+
+/** Structures in manifest order, with the parts of one larger structure gathered where the first of them stands. */
+function listEntries(structures: SceneContent['structures']): ListEntry[] {
+  const out: ListEntry[] = [];
+  const groups = new Map<string, Extract<ListEntry, { kind: 'group' }>>();
+  for (const s of structures) {
+    if (!s.group) {
+      out.push({ kind: 'single', structure: s });
+      continue;
+    }
+    const existing = groups.get(s.group.id);
+    if (existing) {
+      existing.members.push(s);
+      continue;
+    }
+    const entry: Extract<ListEntry, { kind: 'group' }> = { kind: 'group', group: s.group, members: [s] };
+    groups.set(s.group.id, entry);
+    out.push(entry);
+  }
+  // A group of one is just that structure.
+  return out.map((e) => (e.kind === 'group' && e.members.length === 1 && e.members[0] ? { kind: 'single', structure: e.members[0] } : e));
+}
+
+function formatCount(n: number, numerals: NumeralSystem): string {
+  return localizeDigits(String(n), numerals);
 }

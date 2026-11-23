@@ -84,6 +84,54 @@
     "tympanic_membrane_posteroinferior": {
       "en": "Quadrant behind the handle and below the umbo: the usual site for myringotomy, where the membrane lies about 2 to 4 mm from the medial wall of the middle ear. A high jugular bulb can rise behind it, which is worth checking on the scan before an incision.",
       "ar": "الربع الواقع خلف القبضة وتحت السُّرّة: الموضع المعتاد لبضع الطبلة، إذ يبعد الغشاء فيه نحو 2 إلى 4 مم عن الجدار الإنسي للأذن الوسطى. وقد ترتفع خلفه بصلة وداجية عالية، وهذا يستحق التحقق منه على التصوير قبل الشق."
+    },
+    "malleus_head": {
+      "en": "The rounded upper part of the malleus, lying in the epitympanum (attic). Its posterior surface carries the saddle-shaped facet of the incudomalleolar joint; the superior malleal ligament runs from it to the tegmen. In attic cholesteatoma the head and the body of the incus are often the first ossicular structures involved.",
+      "ar": "الجزء العلوي المدوَّر من المطرقة، يقع في العلّية الطبلية. يحمل سطحه الخلفي الوجيه السرجي للمفصل السنداني المطرقي، ويمتد منه الرباط المطرقي العلوي إلى سقف الطبلة. في الكوليستياتوما العلّية يكون الرأس وجسم السندان غالباً أول ما يُصاب من السلسلة العظمية."
+    },
+    "malleus_neck": {
+      "en": "The narrowed part below the head. The anterior process and the anterior malleal ligament arise near it, and the chorda tympani crosses medial to the neck on its way across the tympanic cavity. The tensor tympani tendon inserts just below, on the medial side of the upper handle.",
+      "ar": "الجزء المتضيّق تحت الرأس. ينشأ قربه الناتئ الأمامي والرباط المطرقي الأمامي، ويعبر حبل الطبل إنسيَّ العنق في مساره عبر الجوف الطبلي. يرتكز وتر العضلة الموترة للطبلة تحته مباشرة على الوجه الإنسي لأعلى القبضة."
+    },
+    "malleus_lateral_process": {
+      "en": "A short conical projection at the top of the handle, pressing outwards on the upper tympanic membrane. It is the most constant otoscopic landmark; the anterior and posterior malleal folds run from it, separating the pars tensa below from the pars flaccida above.",
+      "ar": "بروز مخروطي قصير في أعلى القبضة يدفع الجزء العلوي من الغشاء الطبلي نحو الخارج. هو أثبت علامة بالتنظير الأذني، ومنه تمتد الثنيتان المطرقيتان الأمامية والخلفية اللتان تفصلان الجزء المشدود في الأسفل عن الجزء الرخو في الأعلى."
+    },
+    "malleus_handle": {
+      "en": "The handle (manubrium) runs downwards and backwards within the fibrous layer of the tympanic membrane, from the lateral process to its tip at the umbo. It is the anchor for tympanoplasty grafts and for prostheses that couple to the malleus.",
+      "ar": "تنزل القبضة نحو الأسفل والخلف ضمن الطبقة الليفية للغشاء الطبلي، من الناتئ الوحشي إلى ذروتها عند السُّرّة. هي مرتكز الطُّعوم في رأب الطبلة والأطراف الصناعية التي تُوصل بالمطرقة."
+    },
+    "incus_body": {
+      "en": "The bulky part of the incus in the epitympanum, behind the malleus head, with which it forms the incudomalleolar joint. The superior incudal ligament attaches it to the tegmen. Removing the incus body is a standard step when attic disease extends medial to the ossicles.",
+      "ar": "الجزء الضخم من السندان في العلّية الطبلية خلف رأس المطرقة، ويشكّل معه المفصل السنداني المطرقي. يثبّته الرباط السنداني العلوي إلى سقف الطبلة. استئصال جسم السندان خطوة معتادة عندما يمتد المرض العلّي إنسيَّ العظيمات."
+    },
+    "incus_short_process": {
+      "en": "Projects backwards from the body into the fossa incudis, held by the posterior incudal ligament at the entrance to the aditus ad antrum. In mastoidectomy it is a key landmark: the second genu of the facial nerve lies medial and slightly inferior to its tip.",
+      "ar": "يبرز نحو الخلف من الجسم إلى الحفرة السندانية، ويثبّته الرباط السنداني الخلفي عند مدخل المدخل إلى الغار. هو علامة أساسية في استئصال الخشاء: يقع المرفق الثاني للعصب الوجهي إنسيَّ ذروته ودونها قليلاً."
+    },
+    "incus_long_process": {
+      "en": "Descends from the body behind and roughly parallel to the handle of the malleus, then bends medially to end in the lenticular process. Its distal part has a poor blood supply and is the commonest site of ossicular erosion in chronic otitis media and retraction pockets.",
+      "ar": "تنزل من الجسم خلف قبضة المطرقة وبموازاتها تقريباً، ثم تنعطف إنسياً لتنتهي بالناتئ العدسي. تروية جزئها البعيد ضعيفة، وهو أشيع موضع لتآكل العظيمات في التهاب الأذن الوسطى المزمن وجيوب الانسحاب."
+    },
+    "incus_lenticular_process": {
+      "en": "The small knob at the end of the long process that articulates with the head of the stapes at the incudostapedial joint. Pistons in stapes surgery are crimped just above it, on the long process.",
+      "ar": "العقدة الصغيرة في نهاية الساق الطويلة، تتمفصل مع رأس الركاب في المفصل السنداني الركابي. يُثبَّت المكبس في جراحة الركاب فوقها مباشرة على الساق الطويلة."
+    },
+    "stapes_head_neck": {
+      "en": "The head carries the facet for the lenticular process; the stapedius tendon inserts on the posterior aspect of the neck. Both are seen through a posterior tympanotomy and are the reference point for measuring prosthesis length in stapedotomy.",
+      "ar": "يحمل الرأس الوجيه الذي يتمفصل مع الناتئ العدسي، ويرتكز وتر العضلة الركابية على الوجه الخلفي للعنق. يُريان عبر فتح الطبلة الخلفي، ومنهما يُقاس طول الطرف الصناعي في فغر الركاب."
+    },
+    "stapes_anterior_crus": {
+      "en": "The thinner, straighter limb joining the neck to the anterior end of the footplate. With the posterior crus it bounds the obturator foramen; both crura are divided when the superstructure is removed in stapes surgery.",
+      "ar": "الساق الأرقّ والأكثر استقامةً، تصل العنق بالطرف الأمامي للصفيحة. تحدّ مع الساق الخلفية الثقبة السدّادية، وتُقطع الساقان كلتاهما عند إزالة البنية الفوقية في جراحة الركاب."
+    },
+    "stapes_posterior_crus": {
+      "en": "The thicker, more curved limb joining the neck to the posterior end of the footplate, close to the stapedius tendon and the tympanic segment of the facial nerve, which can overhang it.",
+      "ar": "الساق الأثخن والأكثر انحناءً، تصل العنق بالطرف الخلفي للصفيحة، قرب وتر العضلة الركابية والقطعة الطبلية للعصب الوجهي الذي قد يتدلّى فوقها."
+    },
+    "stapes_footplate": {
+      "en": "Fits the oval window and is held there by the annular ligament, with the vestibule immediately medial to it. In adults it averages about 3.0 by 1.4 mm. Otosclerosis fixes it, usually from the anterior margin; stapedotomy places a small opening in it.",
+      "ar": "تستقر في النافذة البيضية ويثبّتها الرباط الحلقي، ويقع الدهليز إنسيّها مباشرة. متوسط أبعادها عند البالغين نحو 3.0 × 1.4 مم. يثبّتها التصلب الأذني، عادةً بدءاً من حافتها الأمامية، ويُحدث فغر الركاب فتحة صغيرة فيها."
     }
   }
 }
