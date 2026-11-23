@@ -1,0 +1,52 @@
+name: dev-extract
+# Development only: pulls the ossicle labels of every OpenEar specimen into the `dev-data`
+# branch, so geometry work can be done on real shapes. Not part of the published site.
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        specimen: [ALPHA, BETA, GAMMA, DELTA, EPSILON, ZETA, ETA, THETA]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - working-directory: DATA_PIPELINE
+        run: |
+          pip install -e .
+          python -u extract_dev.py ${{ matrix.specimen }} ../dev-out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dev-${{ matrix.specimen }}
+          path: dev-out
+  publish:
+    needs: extract
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: dev-*
+          merge-multiple: true
+          path: dev-out
+      - run: |
+          cd dev-out
+          ls -la
+          cat > README.md <<'TXT'
+          Ossicle and neighbouring labels extracted from OpenEar (Sieber et al., Scientific Data 2019,
+          doi:10.1038/sdata.2018.297; data doi:10.5281/zenodo.1473724), CC BY 4.0.
+          Development data for OtoAtlas 3D, designed under the supervision of Dr. Ali R. Muhammad.
+          TXT
+          git init -q -b dev-data
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add -A
+          git commit -q -m "OpenEar ossicle labels for development"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" dev-data
