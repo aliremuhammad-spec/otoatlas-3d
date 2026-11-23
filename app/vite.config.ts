@@ -15,6 +15,8 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'prompt',
+      // The update banner registers the worker itself.
+      injectRegister: false,
       includeAssets: ['icon.svg'],
       manifest: {
         name: 'OtoAtlas 3D',
@@ -32,6 +34,13 @@ export default defineConfig({
         // Specimen packages are installed beside the app after the build; keep the
         // ones the user has opened so they work without a network.
         runtimeCaching: [
+          // The specimen list and manifests come from the network when it answers, so a phone
+          // never pairs an old manifest with mesh files a newer build renamed; offline, the cached copy.
+          {
+            urlPattern: /\/content\/.*\.json$/,
+            handler: 'NetworkFirst',
+            options: { cacheName: 'specimen-manifests', networkTimeoutSeconds: 6 },
+          },
           {
             urlPattern: /\/content\//,
             handler: 'StaleWhileRevalidate',

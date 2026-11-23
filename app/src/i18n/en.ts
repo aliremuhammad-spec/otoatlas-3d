@@ -7,6 +7,8 @@ export const en = {
   'app.tagline': '3D anatomy atlas of the middle and inner ear',
   'credit.supervision': 'Designed under the supervision of Dr. Ali R. Muhammad',
 
+  'update.ready': 'A newer version of OtoAtlas is ready.',
+  'update.apply': 'Update now',
   'nav.home': 'Home',
   'nav.viewer': 'Viewer',
   'nav.about': 'About',

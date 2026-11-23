@@ -9,6 +9,8 @@ export const ar: Record<MessageKey, string> = {
   'app.tagline': 'أطلس تشريحي ثلاثي الأبعاد للأذن الوسطى والداخلية',
   'credit.supervision': 'تم تصميم التطبيق بإشراف د. علي ر. محمد',
 
+  'update.ready': 'نسخة أحدث من OtoAtlas جاهزة.',
+  'update.apply': 'حدِّث الآن',
   'nav.home': 'الرئيسية',
   'nav.viewer': 'العارض',
   'nav.about': 'حول التطبيق',

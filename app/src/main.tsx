@@ -4,6 +4,7 @@ import './styles.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
+import { UpdateBanner } from './components/UpdateBanner';
 import { I18nProvider } from './i18n/I18nProvider';
 
 const root = document.getElementById('root');
@@ -13,6 +14,7 @@ createRoot(root).render(
   <StrictMode>
     <I18nProvider>
       <App />
+      <UpdateBanner />
     </I18nProvider>
   </StrictMode>,
 );
