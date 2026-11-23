@@ -67,7 +67,8 @@ def coarsen(mask: np.ndarray, spacing, origin, factor):
     m = mask[: shape[0], : shape[1], : shape[2]].reshape(
         shape[0] // f[0], f[0], shape[1] // f[1], f[1], shape[2] // f[2], f[2]
     )
-    out = m.mean(axis=(1, 3, 5)) >= 0.5
+    # Counted in 16 bits: a float mean of the whole bone label needs several gigabytes.
+    out = m.sum(axis=(1, 3, 5), dtype=np.uint16) * 2 >= int(np.prod(f))
     sp = tuple(float(s) * k for s, k in zip(spacing, f))
     # Block centres sit (k - 1) / 2 voxels in from the first voxel centre.
     org = tuple(float(o) + (k - 1) / 2 * float(s) for o, s, k in zip(origin, spacing, f))
@@ -86,6 +87,7 @@ def build_openear(specimen: str, out: Path) -> dict:
     # Specimens spell some names differently ("Facial nerve", "Facial Nerve"); match on
     # letters only, and refuse two file segments that would match one name.
     segments, source_names, unmatched = openear.match_segments(found, OPENEAR_PHASE1)
+    del found  # labels not asked for are dropped; the large ones are a gigabyte or more on fine specimens
     if unmatched:
         print(f"{specimen}: segments not used: {unmatched}")
     # A specimen may lack a label; build the rest and record the gap rather than failing.
@@ -112,6 +114,10 @@ def build_openear(specimen: str, out: Path) -> dict:
                 "rule": "majority of each block",
             }
             labels.append(package.LabelInput(name, mask, spacing, origin))
+            # Only the merged copy is needed from here on; the full-resolution one is the
+            # largest array of a fine specimen (DELTA's runner ran out of memory with both).
+            segments[name] = openear.Segment(name, mask, spacing, origin)
+            del seg
             continue
         if name != "Scala Vestibuli":
             labels.append(package.LabelInput(name, seg.mask, seg.spacing, seg.origin))
