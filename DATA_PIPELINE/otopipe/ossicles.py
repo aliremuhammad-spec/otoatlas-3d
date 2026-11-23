@@ -83,19 +83,26 @@ def _unit(v: np.ndarray) -> np.ndarray:
 
 
 def anatomical_frame(vestibule_centre, cochlea_centre, tm: Label, malleus: Label) -> Frame:
+    """Lateral: vestibule towards the membrane's centre. Superior: the malleus's long axis
+    (towards its head), at right angles to lateral; this follows the ossicular chain rather
+    than the head's true vertical, which the labels cannot give, and stands within about
+    20 degrees of it. Anterior: completes the frame, on the side of the cochlea."""
     tm_pts = points(tm)
     tm_centre = tm_pts.mean(axis=0)
     vest = np.asarray(vestibule_centre, float)
     lateral = _unit(tm_centre - vest)
-    ahead = np.asarray(cochlea_centre, float) - vest
-    anterior = _unit(ahead - (ahead @ lateral) * lateral)
     m = points(malleus)
     umbo = m[np.argmin(np.linalg.norm(m - tm_centre, axis=1))]
-    superior = np.cross(lateral, anterior)
-    # In a right ear lateral x anterior points up; the malleus head lies above the umbo.
-    side = "right" if (m.mean(axis=0) - umbo) @ superior > 0 else "left"
+    _, _, vt = np.linalg.svd(m - m.mean(axis=0), full_matrices=False)
+    axis = vt[0] if (m.mean(axis=0) - umbo) @ vt[0] > 0 else -vt[0]
+    superior = _unit(axis - (axis @ lateral) * lateral)
+    anterior = np.cross(superior, lateral)  # right-handed: lateral x anterior = superior in a right ear
+    ahead = np.asarray(cochlea_centre, float) - vest
+    # The cochlea lies anterior to the vestibule in every ear; whichever way the frame turns out
+    # to point there tells the side.
+    side = "right" if ahead @ anterior > 0 else "left"
     if side == "left":
-        superior = -superior
+        anterior = -anterior
     return Frame(lateral, anterior, superior, side, umbo)
 
 
