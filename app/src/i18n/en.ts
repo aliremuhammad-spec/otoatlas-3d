@@ -65,13 +65,14 @@ export const en = {
   'viewer.measurement.stapes_footplate_length': 'Footplate length (extent of the footplate part)',
   'viewer.measurement.stapes_footplate_width': 'Footplate width (extent of the footplate part)',
   'viewer.card.division': 'Division',
-  'viewer.card.division.computed':
-    'One part of this specimen\'s label, divided by a stated rule from the bone\'s or membrane\'s own shape. Boundaries are approximate and await review.',
+  'viewer.card.division.computed': 'Divided from a larger label by a stated rule. Boundaries are approximate and await review.',
   'viewer.card.division.reviewed':
     'One part of this specimen\'s label, divided by a stated rule from the bone\'s own shape. Boundaries checked by eye by {by} on {on}.',
   'viewer.group.parts': '{count} parts',
   'viewer.group.expand': 'Show the parts of {name}',
   'viewer.group.collapse': 'Hide the parts of {name}',
+  'viewer.measurement.tympanic_cavity_volume': 'Volume of the computed tympanic cavity',
+  'viewer.measurement.air_cells_volume': 'Volume of the computed antrum and air cells, inside the cut specimen block',
   'viewer.measurement.cochlear_a_value': 'Cochlear A value (round window through the modiolus to the far wall)',
   'viewer.measurement.cdl_estimate': 'Estimated cochlear duct length (organ of Corti, full length)',
   'viewer.measurement.cdl_method':
@@ -128,6 +129,7 @@ export const en = {
   'phantom.sphereB': 'Phantom sphere B (radius 2 mm)',
   'phantom.torus': 'Phantom ring (radii 4 and 0.5 mm)',
 
+  'units.ml': 'mL',
   'units.mm': 'mm',
 } as const;
 

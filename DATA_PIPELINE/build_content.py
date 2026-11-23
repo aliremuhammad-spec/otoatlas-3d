@@ -18,13 +18,13 @@ import nibabel as nib
 import numpy as np
 
 from otopipe import (
-    airspace,
     cochlea,
     fetch,
     frames,
     openear,
     ossicles,
     package,
+    pneumatization,
     scan,
     split,
     tm,
@@ -167,14 +167,17 @@ def build_openear(specimen: str, out: Path) -> dict:
         extra["scala_vestibuli_split"] = report
         print("scala vestibuli split:", json.dumps(report))
     cbct = load_openear_cbct(specimen)
-    # The derived tympanic cavity is not shipped: three rule-based attempts did not
-    # converge (otopipe/airspace.py; 1.5 to 3.2 mL filling a ball around the ossicles,
-    # because the embedded CBCT separates epoxy from bone poorly). Set to True to rebuild it.
-    if BUILD_DERIVED_AIR:
-        air = openear_air(specimen, segments, cbct)
-        if air is not None:
-            labels.append(package.LabelInput(AIR_LABEL, air.mask, air_spacing(segments), air.origin))
-            extra["middle_ear_air"] = air.report
+    air = openear_air_spaces(specimen, segments, labels, cbct)
+    if air is not None:
+        labels.append(package.LabelInput(AIR_LABEL, air.tympanic[0], (pneumatization.GRID_MM,) * 3, air.tympanic[1], part="tympanic"))
+        labels.append(package.LabelInput(AIR_LABEL, air.cells[0], (pneumatization.GRID_MM,) * 3, air.cells[1], part="cells"))
+        extra["air_spaces"] = air.report
+        extra["measurements"] = extra.get("measurements", []) + [
+            {"id": "tympanic_cavity_volume", "value_ml": air.report["tympanic_cavity_ml"], "structures": ["middle_ear_air_space"],
+             "method": "computed air space within 4 mm of the ossicles and membrane"},
+            {"id": "air_cells_volume", "value_ml": air.report["air_cells_ml"], "structures": ["temporal_bone_air_cells"],
+             "method": "the rest of the computed air space, inside the cut specimen block"},
+        ]
     scan_entry = openear_scan(specimen, labels, out, cbct)
     del cbct
     if scan_entry:
@@ -190,7 +193,7 @@ def build_openear(specimen: str, out: Path) -> dict:
 
 
 # Structures that frame the CBCT crop: the middle and inner ear, not the large enclosing labels.
-SCAN_FRAME_EXCLUDE = {"Bone", "Sinus Dura", "External Auditory Canal", "Middle Ear Air (derived)"}
+SCAN_FRAME_EXCLUDE = {"Bone", "Sinus Dura", "External Auditory Canal", "Air Spaces (computed)"}
 
 def centroid(mask, spacing, origin) -> np.ndarray:
     return np.asarray(origin) + np.argwhere(mask).mean(axis=0) * np.asarray(spacing)
@@ -274,44 +277,39 @@ def ossicle_labels(specimen, segments, missing, vestibular, vestibule_centre, re
     return out
 
 
-AIR_LABEL = "Middle Ear Air (derived)"
-BUILD_DERIVED_AIR = False
+AIR_LABEL = "Air Spaces (computed)"
 OSSICLES = ("Malleus", "Incus", "Stapes")
+AIR_WALLS = ("External Auditory Canal", "Scala Tympani", "Scala Vestibuli", "Carotis Interna", "Facial Nerve", "Chorda Tympani",
+             "Cochleovestibular nerve")
 
 
-def _air_factor(spacing) -> tuple[int, int, int]:
-    return tuple(max(1, round(COARSEN_TO_MM / float(s))) if float(s) < COARSEN_BELOW_MM else 1 for s in spacing)
-
-
-def air_spacing(segments: dict) -> tuple[float, float, float]:
-    sp = segments["Bone"].spacing
-    return tuple(float(s) * k for s, k in zip(sp, _air_factor(sp)))
-
-
-def openear_air(specimen: str, segments: dict, cbct):
-    """The middle ear cleft's air (otopipe/airspace.py), or None when it cannot be derived.
-
-    Fine specimens (BETA, DELTA) are worked at about 0.125 mm: every label is resampled
-    by the same per-axis factor first (majority of each block)."""
-    if "Bone" not in segments or not any(o in segments for o in OSSICLES):
-        print(f"{specimen}: warning: no middle ear air space: bone or ossicles missing")
+def openear_air_spaces(specimen: str, segments: dict, labels: list, cbct):
+    """Tympanic cavity and air cells (otopipe/pneumatization.py), or None when they cannot be computed."""
+    if cbct is None or "Bone" not in segments:
+        print(f"{specimen}: warning: no air spaces: needs the bone label and a registered CBCT")
         return None
     try:
-        factor = _air_factor(segments["Bone"].spacing)
-
-        def prep(seg):
-            return coarsen(seg.mask, seg.spacing, seg.origin, factor)
-
-        bone = prep(segments["Bone"])
-        soft = [prep(s) for n, s in segments.items() if n != "Bone"]
-        seeds = [prep(segments[o]) for o in OSSICLES if o in segments]
-        # Bone is also taken from the registered CBCT (see otopipe/airspace.py).
-        air = airspace.middle_ear_air(bone, soft, seeds, ct=None if cbct is None else cbct[0])
-        print(f"{specimen}: middle ear air: {json.dumps(air.report)}")
+        # The bone and the sinus as meshed, already merged to 0.125 mm on the finest specimens.
+        by_label = {l.source_label: l for l in labels if l.part is None}
+        bone = by_label["Bone"]
+        others = [(segments[n].mask, segments[n].spacing, segments[n].origin) for n in AIR_WALLS if n in segments]
+        if "Sinus Dura" in by_label:
+            sd = by_label["Sinus Dura"]
+            others.append((sd.mask, sd.spacing, sd.origin))
+        anchors = [(segments[n].mask, segments[n].spacing, segments[n].origin)
+                   for n in (*OSSICLES, "Tympanic Membrane") if n in segments]
+        volume, _ = cbct
+        lo, hi = scan.box_around([(bone.mask, bone.spacing, bone.origin)], 1.0)
+        sub = scan.crop(volume, lo, hi)
+        u8, _, _ = scan.window(sub.data)
+        air = pneumatization.air_spaces((bone.mask, bone.spacing, bone.origin), others, anchors, (u8, sub.spacing, sub.origin))
+        print(f"{specimen}: air spaces: {json.dumps(air.report)}")
         return air
     except Exception as e:  # noqa: BLE001 - reported; the rest of the package still ships
-        print(f"{specimen}: warning: no middle ear air space: {e}")
+        print(f"{specimen}: warning: no air spaces: {e}")
         return None
+
+
 SCAN_MARGIN_MM = 3.0
 
 

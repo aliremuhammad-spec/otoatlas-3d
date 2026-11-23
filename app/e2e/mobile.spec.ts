@@ -223,7 +223,7 @@ test.describe('touch, phone, parts of a structure', () => {
     await page.touchscreen.tap(pt(at.malleus, 'malleus').x, pt(at.malleus, 'malleus').y);
     const card = page.getByTestId('structure-card');
     await expect(card).toContainText('Malleus');
-    await expect(card).toContainText('divided by a stated rule');
+    await expect(card).toContainText('by a stated rule');
     await expect(page.locator('[data-structure="malleus"] .structure-name')).toHaveAttribute('aria-pressed', 'true');
 
     await group.getByRole('button', { name: 'Hide the parts of Test bone' }).tap();

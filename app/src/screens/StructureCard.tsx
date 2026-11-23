@@ -1,7 +1,7 @@
 import { useI18n } from '../i18n/I18nProvider';
 import { localizeDigits } from '../i18n/numerals';
 import { estimateCdlOrganOfCorti } from '../measure/cdl';
-import { formatMillimetres, formatVoxelSize } from '../measure/format';
+import { formatMillilitres, formatMillimetres, formatVoxelSize } from '../measure/format';
 import type { SceneContent, SceneStructure } from '../viewer/content';
 import { MEASUREMENT_IDS, type MeasurementId } from '../viewer/manifest';
 import { displayName, latinLine } from '../viewer/names';
@@ -12,14 +12,15 @@ interface Props {
   onClose: () => void;
 }
 
-function MeasurementRow({ id, valueMm }: { id: string; valueMm: number }) {
+function MeasurementRow({ id, value, unit }: { id: string; value: number; unit: 'mm' | 'mL' }) {
   const { t, numerals } = useI18n();
   if (!(MEASUREMENT_IDS as readonly string[]).includes(id)) return null;
   return (
     <>
       <dt>{t(`viewer.measurement.${id as MeasurementId}`)}</dt>
       <dd>
-        {formatMillimetres(valueMm, numerals)} {t('units.mm')}
+        {unit === 'mm' ? formatMillimetres(value, numerals) : formatMillilitres(value, numerals)}{' '}
+        {t(unit === 'mm' ? 'units.mm' : 'units.ml')}
       </dd>
     </>
   );
@@ -119,12 +120,12 @@ export function StructureCard({ structure, content, onClose }: Props) {
           {(content.measurements ?? [])
             .filter((m) => m.structures.includes(structure.id))
             .map((m) => (
-              <MeasurementRow key={m.id} id={m.id} valueMm={m.valueMm} />
+              <MeasurementRow key={m.id} id={m.id} value={m.value} unit={m.unit} />
             ))}
           {(content.measurements ?? [])
             .filter((m) => m.id === 'cochlear_a_value' && m.structures.includes(structure.id))
             .map((m) => (
-              <CdlEstimateRow key="cdl" aMm={m.valueMm} />
+              <CdlEstimateRow key="cdl" aMm={m.value} />
             ))}
           <dt>{t('viewer.specimenSelect')}</dt>
           <dd>

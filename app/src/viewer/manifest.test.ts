@@ -126,7 +126,12 @@ describe('content manifest', () => {
         { id: 'something_new', value_mm: 1, structures: [] },
       ],
     });
-    expect(m.measurements).toEqual([{ id: 'cochlear_a_value', valueMm: 9.1, structures: ['bony_labyrinth'] }]);
+    expect(m.measurements).toEqual([{ id: 'cochlear_a_value', value: 9.1, unit: 'mm', structures: ['bony_labyrinth'] }]);
+    const v = parseManifest({
+      ...validManifest(),
+      measurements: [{ id: 'air_cells_volume', value_ml: 5.2, structures: ['temporal_bone_air_cells'] }],
+    });
+    expect(v.measurements[0]).toEqual({ id: 'air_cells_volume', value: 5.2, unit: 'mL', structures: ['temporal_bone_air_cells'] });
     expect(parseManifest(validManifest()).measurements).toEqual([]);
   });
 

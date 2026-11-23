@@ -41,12 +41,12 @@ Status: ✔ in the app now · ◐ partly · ○ planned.
 | Suspensory ligaments (anterior, lateral, superior malleal; posterior and superior incudal; incudomallear), annular ligament | D + T | ○ |
 | Joints: incudomallear, incudostapedial, stapediovestibular | A (contact zones) + T | ○ |
 | Stapedius (canal, pyramidal eminence, tendon) and tensor tympani (semicanal, cochleariform process, tendon) | S where the canals show on CBCT + D for muscle and tendon + T | ○ |
-| Middle ear cavity and its divisions: epi-, meso-, hypo-, pro- and posterior tympanum; dimensions | A (reviewer segments the cavity on the scan slices with a painting tool) + A (division planes) + measured. Computing it was tried and failed (see note below) | ○ |
+| Middle ear cavity and its divisions: epi-, meso-, hypo-, pro- and posterior tympanum; dimensions | Computed air space within 4 mm of the ossicles and membrane (otopipe/pneumatization.py) + division planes later + T | ◐ cavity computed on the four specimens with a CBCT (0.6 to 0.8 mL), volume shown; divisions ○ |
 | Walls: tegmen, jugular floor, carotid wall with tube opening, mastoid wall, lateral wall with scutum, labyrinthine wall | A on bone surface + T | ○ |
 | Eminences, ridges and recesses: promontory, ponticulus, subiculum, pyramidal, chordal and styloid eminences and ridges, sinus tympani, facial recess, oval and round window niches, cochleariform process, anterior epitympanic recess, cog, Prussak's space, pouches of von Tröltsch | A (points, regions, volumes) + S where the air space defines them + T | ○ |
 | Mucosal folds and their embryological sacs | D + T | ○ |
 | Eustachian tube: bony and cartilaginous parts, isthmus, orifice, palatal muscles, supply | S for the bony part inside the scan + D beyond it + T | ○ |
-| Pneumatization: regions, areas, tracts; antrum, aditus, Körner's septum; tegmental, sinodural, sinal, facial, tip and perilabyrinthine cells | S (air cells computed from CBCT) + A (region labels) + T | ○ |
+| Pneumatization: regions, areas, tracts; antrum, aditus, Körner's septum; tegmental, sinodural, sinal, facial, tip and perilabyrinthine cells | Computed air cells inside the cut block (otopipe/pneumatization.py) + tract regions later + T | ◐ antrum and air cells computed as one structure with their volume (4 to 5.5 mL inside the block); tracts ○ |
 | Blood supply and anomalies: tympanic arteries, persistent stapedial artery, aberrant internal carotid, high jugular bulb | D variants + T | ○ |
 | Nerves: tympanic (Jacobson's), auricular branch of vagus (Arnold's), tympanic plexus, lesser petrosal | D + T | ○ |
 
@@ -114,3 +114,12 @@ origin, and its colours in the cavity overlap bone. The code stays in
 `otopipe/airspace.py`, switched off. The cavity, the facial canal's mastoid segment and
 the air cells need segmentation drawn on the slices, by the reviewer or under his
 direction.
+
+**Air spaces from the block, 24 November 2026.** What failed above was the outer limit:
+closing the labels left the cavity open. The specimens are cut blocks, and inside a block
+every place that is neither bone nor another label held air. The new rule takes as walls
+the labelled bone that is also bright on the CBCT (so label beyond the cut faces does not
+count) plus every other label, fills what the walls enclose slice by slice in three
+directions, and keeps what is darker than bone. On ZETA, ALPHA and ETA this matched the
+cells on the scan by eye; the tympanic cavity came out 0.6 to 0.8 mL. The old
+`otopipe/airspace.py` has been removed. BETA has no CBCT, so no air spaces.

@@ -77,13 +77,14 @@ export const ar: Record<MessageKey, string> = {
   'viewer.measurement.stapes_footplate_length': 'طول صفيحة الركاب (امتداد جزء الصفيحة)',
   'viewer.measurement.stapes_footplate_width': 'عرض صفيحة الركاب (امتداد جزء الصفيحة)',
   'viewer.card.division': 'التقسيم',
-  'viewer.card.division.computed':
-    'جزء من تسمية هذه العيّنة، قُسِّم بقاعدة معلنة من شكل العظم أو الغشاء نفسه. الحدود تقريبية وبانتظار المراجعة.',
+  'viewer.card.division.computed': 'مقسوم من تسمية أكبر بقاعدة معلنة. الحدود تقريبية وبانتظار المراجعة.',
   'viewer.card.division.reviewed':
     'جزء من تسمية هذه العيّنة، قُسِّم بقاعدة معلنة من شكل العظم نفسه. راجع {by} الحدود بالنظر بتاريخ {on}.',
   'viewer.group.parts': '{count} أجزاء',
   'viewer.group.expand': 'إظهار أجزاء {name}',
   'viewer.group.collapse': 'إخفاء أجزاء {name}',
+  'viewer.measurement.tympanic_cavity_volume': 'حجم الجوف الطبلي المحسوب',
+  'viewer.measurement.air_cells_volume': 'حجم الغار والخلايا الهوائية المحسوبة، داخل كتلة العيّنة المقطوعة',
   'viewer.measurement.cochlear_a_value': 'قيمة A للقوقعة (من النافذة المستديرة عبر المحور إلى الجدار المقابل)',
   'viewer.measurement.cdl_estimate': 'الطول المقدَّر للقناة القوقعية (عضو كورتي، الطول الكامل)',
   'viewer.measurement.cdl_method':
@@ -130,5 +131,6 @@ export const ar: Record<MessageKey, string> = {
   'phantom.sphereB': 'كرة اختبارية ب (نصف القطر 2 مم)',
   'phantom.torus': 'حلقة اختبارية (نصفا القطرين 4 و0.5 مم)',
 
+  'units.ml': 'مل',
   'units.mm': 'مم',
 };

@@ -201,24 +201,51 @@
       "id": "middle_ear_air_space",
       "name_en": "Tympanic cavity (air space)",
       "name_ta_latin": "Cavitas tympani",
-      "name_ar": "الجوف الطبلي",
+      "name_ar": "الجوف الطبلي (الحيّز الهوائي)",
       "ar_status": "unverified",
       "parent": null,
-      "system": "soft_tissue",
+      "system": "air_spaces",
       "provenance_tier": "specimen-derived",
       "sources": [
         {
           "dataset": "openear",
-          "label": "Middle Ear Air (derived)",
+          "label": "Air Spaces (computed)",
+          "part": "tympanic",
           "derived": true
         }
       ],
       "content_status": "draft",
       "reviewed_by": null,
-      "note": "New segmentation computed by the pipeline (otopipe/airspace.py), not a dataset label: the empty space left inside the closed and filled solid labels, keeping the pieces that touch the ossicles and lie within 10 mm of them. Openings narrower than about 6 mm are bridged. The antrum and mastoid cells are a later, separate step. Awaits the reviewer's check on the scan.",
+      "note": "Computed by rule (otopipe/pneumatization.py): the space inside the cut specimen block that is neither bone nor another label and lies within 4 mm of the ossicles or the membrane. The boundary with the air cells is a distance rule, not the anatomical walls. Awaits the reviewer's check.",
       "color": "#9be7ff",
-      "mesh_error_limit_mm": 0.1,
-      "default_opacity": 0.35
+      "mesh_error_limit_mm": 0.15,
+      "default_opacity": 0.4,
+      "default_visible": false
+    },
+    {
+      "id": "temporal_bone_air_cells",
+      "name_en": "Antrum and air cells (mastoid and others)",
+      "name_ta_latin": "Antrum mastoideum et cellulae pneumaticae",
+      "name_ar": "الغار والخلايا الهوائية (الخشائية وغيرها)",
+      "ar_status": "unverified",
+      "parent": null,
+      "system": "air_spaces",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Air Spaces (computed)",
+          "part": "cells",
+          "derived": true
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Computed by rule (otopipe/pneumatization.py): the rest of the air space inside the cut specimen block, beyond 4 mm of the ossicles: antrum and mastoid, perilabyrinthine, petrous and zygomatic cells as far as the block reaches. Awaits the reviewer's check.",
+      "color": "#5fb8d8",
+      "mesh_error_limit_mm": 0.15,
+      "default_opacity": 0.35,
+      "default_visible": false
     },
     {
       "id": "malleus",

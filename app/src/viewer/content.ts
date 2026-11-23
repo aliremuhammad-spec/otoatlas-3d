@@ -63,7 +63,7 @@ export interface SceneContent {
   attribution: { dataDoi: string; license: string } | null;
   structures: readonly SceneStructure[];
   /** Measurements made on the specimen by the pipeline. Absent for synthetic content. */
-  measurements?: readonly { id: string; valueMm: number; structures: readonly string[] }[];
+  measurements?: readonly { id: string; value: number; unit: 'mm' | 'mL'; structures: readonly string[] }[];
   /** Lateral, anterior and superior of this ear, when the pipeline could work them out. */
   anatomicalFrame?: {
     lateral: readonly [number, number, number];

@@ -10,6 +10,12 @@ export function formatMillimetres(value: number, numerals: NumeralSystem = 'west
   return localizeDigits(value.toFixed(decimals), numerals);
 }
 
+/** Volumes in millilitres, to two decimals (the air spaces are worked on a 0.25 mm grid). */
+export function formatMillilitres(value: number, numerals: NumeralSystem = 'western'): string {
+  if (!Number.isFinite(value)) return '\u2014';
+  return localizeDigits(value.toFixed(2), numerals);
+}
+
 /**
  * Voxel sizes are shown exactly as the dataset states them (for example 0.125 or 0.0607),
  * never rounded to the two decimals used for measurements.

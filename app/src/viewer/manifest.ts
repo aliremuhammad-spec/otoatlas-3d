@@ -62,12 +62,16 @@ export const MEASUREMENT_IDS = [
   'malleus_length',
   'stapes_footplate_length',
   'stapes_footplate_width',
+  'tympanic_cavity_volume',
+  'air_cells_volume',
 ] as const;
 export type MeasurementId = (typeof MEASUREMENT_IDS)[number];
 
 export interface SpecimenMeasurement {
   id: MeasurementId;
-  valueMm: number;
+  /** In millimetres for lengths, millilitres for volumes (`unit`). */
+  value: number;
+  unit: 'mm' | 'mL';
   structures: readonly string[];
 }
 
@@ -272,7 +276,9 @@ function parseMeasurements(value: unknown): SpecimenMeasurement[] {
     return [
       {
         id: id as MeasurementId,
-        valueMm: num(o.value_mm, `measurements[${i}].value_mm`),
+        ...(o.value_ml !== undefined
+          ? { value: num(o.value_ml, `measurements[${i}].value_ml`), unit: 'mL' as const }
+          : { value: num(o.value_mm, `measurements[${i}].value_mm`), unit: 'mm' as const }),
         structures: o.structures.map((s, j) => str(s, `measurements[${i}].structures[${j}]`)),
       },
     ];

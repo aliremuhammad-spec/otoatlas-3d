@@ -66,8 +66,8 @@
       "ar": "المحفظة العظمية للأذن الداخلية في العظم الصخري: القوقعة والدهليز والقنوات نصف الهلالية الثلاث، مملوءة باللمف المحيطي حول التيه الغشائي. تظهره عيّنات Bern تسميةً واحدة بالتصوير المقطعي المجهري، وهذا مناسب لمقارنة شكله بين الأفراد."
     },
     "middle_ear_air_space": {
-      "en": "The air space of the tympanic cavity, with its epi-, meso-, hypo-, pro- and posterior tympanum and its recesses. It is about 15 mm from front to back and 15 mm high, but only about 2 mm wide at the umbo, 4 mm at the hypotympanum and 6 mm at the epitympanum. Here it is computed from the specimen's labels as the space they leave empty within 10 mm of the ossicles, so it shows this specimen's own cavity; the antrum and mastoid cells are not included yet.",
-      "ar": "الفراغ الهوائي للجوف الطبلي، بأقسامه العلوي والمتوسط والسفلي والأمامي والخلفي وتجاويفه. يبلغ نحو 15 مم من الأمام إلى الخلف و15 مم ارتفاعاً، لكن عرضه نحو 2 مم فقط عند السُّرّة، و4 مم في الجزء السفلي، و6 مم في العلّية. يُحسب هنا من تسميات العيّنة على أنه الفراغ الذي تتركه ضمن 10 مم من العظيمات، فيُظهر جوف هذه العيّنة نفسها، ولا يشمل الغار والخلايا الخشائية بعد."
+      "en": "The air-filled space of the middle ear between the tympanic membrane and the medial wall, divided clinically into epitympanum, mesotympanum and hypotympanum, with the protympanum leading to the Eustachian tube and the posterior recesses (sinus tympani, facial recess). In this specimen it is computed: the space around the ossicles and membrane that is neither bone nor another structure, so its outer limit towards the air cells is approximate. Typical adult volume is about 0.5 to 1 mL.",
+      "ar": "الحيّز الهوائي للأذن الوسطى بين الغشاء الطبلي والجدار الإنسي، ويُقسم سريرياً إلى العلّية الطبلية والطبلة المتوسطة والطبلة السفلية، مع الطبلة الأمامية المؤدية إلى نفير أوستاكي والردوب الخلفية (الجيب الطبلي والردب الوجهي). هنا هو محسوب: الحيّز المحيط بالعظيمات والغشاء الذي ليس عظماً ولا بنية أخرى، لذا فحدّه الخارجي نحو الخلايا الهوائية تقريبي. حجمه المعتاد عند البالغين نحو 0.5 إلى 1 مل."
     },
     "tympanic_membrane_anterosuperior": {
       "en": "Quadrant in front of the handle of the malleus and above the umbo. Its upper margin borders the anterior malleal fold; the anterior process of the malleus and the opening of the Eustachian tube lie medial to this region of the membrane.",
@@ -132,6 +132,10 @@
     "stapes_footplate": {
       "en": "Fits the oval window and is held there by the annular ligament, with the vestibule immediately medial to it. In adults it averages about 3.0 by 1.4 mm. Otosclerosis fixes it, usually from the anterior margin; stapedotomy places a small opening in it.",
       "ar": "تستقر في النافذة البيضية ويثبّتها الرباط الحلقي، ويقع الدهليز إنسيّها مباشرة. متوسط أبعادها عند البالغين نحو 3.0 × 1.4 مم. يثبّتها التصلب الأذني، عادةً بدءاً من حافتها الأمامية، ويُحدث فغر الركاب فتحة صغيرة فيها."
+    },
+    "temporal_bone_air_cells": {
+      "en": "The pneumatized spaces beyond the middle ear: the mastoid antrum, reached through the aditus from the epitympanum, and the air cells it leads to, grouped in tracts (mastoid, perilabyrinthine, petrous apex, zygomatic). Their extent decides how far a mastoidectomy is taken, and the cells carry infection towards the sigmoid sinus, the dura and the petrous apex. Here they are computed inside the cut specimen block, so cells beyond the cut faces are missing.",
+      "ar": "الأحياز المُهوّاة خارج الأذن الوسطى: الغار الخشائي الذي يُوصَل إليه من العلّية عبر المدخل، والخلايا الهوائية المتفرعة عنه، وتتجمع في مسالك (خشائية، حول التيه، قمة الصخرة، وجنية). يحدد امتدادها مدى استئصال الخشاء، وتنقل الخمج نحو الجيب السيني والأم الجافية وقمة الصخرة. هي هنا محسوبة داخل كتلة العيّنة المقطوعة، فالخلايا الواقعة خارج سطوح القطع غير موجودة."
     }
   }
 }
