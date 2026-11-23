@@ -45,4 +45,15 @@ describe('placeLabels', () => {
       expect(b.y + b.h).toBeLessThanOrEqual(bounds.height);
     }
   });
+
+  it('leaves out a label with no free spot in a bounded view, but never the selected one', () => {
+    const bounds = { width: 200, height: 60 };
+    const anchors = ['a', 'b', 'c', 'd', 'e', 'f'].map((id) => ({ id, x: 100, y: 30, w: 150, h: 18 }));
+    const boxes = placeLabels(anchors, { x: 100, y: 30 }, bounds, 'f');
+    expect(boxes.size).toBeLessThan(anchors.length);
+    expect(boxes.has('f')).toBe(true);
+    const placed = [...boxes.values()];
+    for (let i = 0; i < placed.length; i += 1)
+      for (let j = i + 1; j < placed.length; j += 1) expect(overlap(placed[i] as Box, placed[j] as Box)).toBe(false);
+  });
 });

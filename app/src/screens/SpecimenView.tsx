@@ -102,6 +102,7 @@ export function SpecimenView({ content }: Props) {
   function select(id: string | null): void {
     setSelected(id);
     coreRef.current?.setHighlight(id);
+    labelsRef.current?.setSelected(id);
   }
 
   useEffect(() => {

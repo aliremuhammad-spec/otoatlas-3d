@@ -43,6 +43,7 @@ export function placeLabels(
   anchors: readonly { id: string; x: number; y: number; w: number; h: number }[],
   centre: { x: number; y: number },
   bounds?: { width: number; height: number },
+  first?: string | null,
 ): Map<string, Box> {
   const MARGIN = 2;
   // On a narrow screen a label pushed outwards can leave the view; keep every label inside it.
@@ -59,8 +60,11 @@ export function placeLabels(
       : b;
   const placed = new Map<string, Box>();
   // Nearest the centre first: they have the least room.
+  // The selected structure, if any, is placed first so it always gets its label.
   const order = [...anchors].sort(
-    (a, b) => Math.hypot(a.x - centre.x, a.y - centre.y) - Math.hypot(b.x - centre.x, b.y - centre.y),
+    (a, b) =>
+      Number(b.id === first) - Number(a.id === first) ||
+      Math.hypot(a.x - centre.x, a.y - centre.y) - Math.hypot(b.x - centre.x, b.y - centre.y),
   );
   for (const a of order) {
     let dx = a.x - centre.x;
@@ -105,7 +109,10 @@ export function placeLabels(
         }
       }
     }
-    placed.set(a.id, box ?? clamp(fallback));
+    // Inside a bounded view a label with no free spot is left out rather than drawn over
+    // another; zooming in makes room and brings it back. The selected one is always drawn.
+    if (box) placed.set(a.id, box);
+    else if (!bounds || a.id === first) placed.set(a.id, clamp(fallback));
   }
   return placed;
 }
@@ -115,6 +122,7 @@ export class LabelLayer {
   private readonly svg: SVGSVGElement;
   private readonly items = new Map<string, { spec: LabelSpec; el: HTMLDivElement; line: SVGLineElement }>();
   private enabled = true;
+  private selected: string | null = null;
 
   constructor(
     container: HTMLElement,
@@ -149,6 +157,12 @@ export class LabelLayer {
     this.update();
   }
 
+  /** The selected structure's label is placed first and never left out. */
+  setSelected(id: string | null): void {
+    this.selected = id;
+    this.update();
+  }
+
   setEnabled(enabled: boolean): void {
     this.enabled = enabled;
     this.root.hidden = !enabled;
@@ -168,11 +182,16 @@ export class LabelLayer {
       line.style.display = shown ? '' : 'none';
       if (shown) anchors.push({ id: spec.id, x: p.x, y: p.y, w: el.offsetWidth, h: el.offsetHeight });
     }
-    const boxes = placeLabels(anchors, { x: width / 2, y: height / 2 }, { width, height });
+    const boxes = placeLabels(anchors, { x: width / 2, y: height / 2 }, { width, height }, this.selected);
     for (const a of anchors) {
       const item = this.items.get(a.id);
       const box = boxes.get(a.id);
-      if (!item || !box) continue;
+      if (!item) continue;
+      if (!box) {
+        item.el.hidden = true;
+        item.line.style.display = 'none';
+        continue;
+      }
       item.el.style.transform = `translate(${Math.round(box.x)}px, ${Math.round(box.y)}px)`;
       // The line ends at the label's near edge, at its middle height.
       const endX = box.x + box.w / 2 < a.x ? box.x + box.w : box.x;
