@@ -37,7 +37,7 @@ Status: ✔ in the app now · ◐ partly · ○ planned.
 |---|---|---|
 | Malleus: head, neck, anterior process, lateral process, manubrium | S (whole bone) + computed parts (otopipe/ossicles.py) | ◐ head, neck, lateral process and handle computed on all 8 OpenEar specimens; length measured; anterior process not resolved in the labels |
 | Incus: body, short, long and lenticular processes | S + computed parts | ◐ all four parts computed on all 8 OpenEar specimens |
-| Stapes: head, neck, crura, footplate (about 3.0 × 1.4 mm), obturator foramen | S + computed parts + measured footplate | ◐ head and neck, both crura and footplate computed; a bone whose result fails the checks ships whole; footplate 2.5 to 3.5 × 1.0 to 1.9 mm |
+| Stapes: head, neck, crura, footplate (about 3.0 × 1.4 mm), obturator foramen | S + computed parts + measured footplate | ◐ head and neck, both crura and footplate computed on all 8 OpenEar specimens (a bone whose result fails the checks would ship whole); footplate 2.5 to 3.5 × 1.0 to 1.9 mm |
 | Suspensory ligaments (anterior, lateral, superior malleal; posterior and superior incudal; incudomallear), annular ligament | D + T | ○ |
 | Joints: incudomallear, incudostapedial, stapediovestibular | A (contact zones) + T | ○ |
 | Stapedius (canal, pyramidal eminence, tendon) and tensor tympani (semicanal, cochleariform process, tendon) | S where the canals show on CBCT + D for muscle and tendon + T | ○ |
@@ -97,9 +97,12 @@ checks by looking, not by drawing.
 cross-section area along the malleus axis (handle, lateral-process swelling, neck,
 head), distance inside the incus from the tips of its two processes, and sections of the
 stapes parallel to the plane where it meets the vestibule (crura are the sections that
-fall into two pieces). Checks keep a bone whole when a result is implausible. Malleus lengths came out 7.9 to 9.1 mm. The same labels also give the side of each ear from the
-handedness of lateral, anterior and superior: ALPHA, BETA, DELTA, THETA and ZETA right;
-GAMMA, EPSILON and ETA left (ZETA matches the reviewer's call). The computed sides are not yet shown in the app.
+fall into two pieces). Checks keep a bone whole when a result is implausible. Malleus
+lengths came out 7.9 to 9.1 mm. The same labels give an approximate anatomical frame
+(lateral: vestibule to membrane; superior: the malleus's long axis; anterior: towards the
+cochlea), used for the first view of each specimen, and the side of each ear from its
+handedness: ALPHA, BETA, DELTA, THETA and ZETA right; GAMMA, EPSILON and ETA left (ZETA
+matches the reviewer's call). The computed sides are not yet shown in the app.
 
 **Tympanic cavity by rule (20 November 2026).** Three rule-based attempts to derive the
 air space from the labels did not converge: each filled a ball around the ossicles
