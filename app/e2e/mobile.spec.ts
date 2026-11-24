@@ -230,3 +230,46 @@ test.describe('touch, phone, parts of a structure', () => {
     await expect(page.locator('[data-structure="malleus"]')).toHaveCount(0);
   });
 });
+
+test.describe('touch, phone, view toolbar', () => {
+  test.use({ viewport: SCREENS.phone, isMobile: true, hasTouch: true, deviceScaleFactor: 2, locale: 'en-US' });
+
+  test('the slices open from above the view and fill it; the view can be enlarged', async ({ page }) => {
+    await serveFixtureContent(page);
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Open the viewer' }).tap({ timeout: 8000 });
+    const stage = page.locator('.viewer__stage');
+    const before = await stage.boundingBox();
+    await page.getByRole('button', { name: 'Enlarge the view' }).tap();
+    await expect(page.locator('.viewer__panel')).toBeHidden();
+    const after = await stage.boundingBox();
+    expect(after?.height ?? 0).toBeGreaterThan((before?.height ?? 0) * 1.3);
+    await page.getByRole('button', { name: 'Show scan slices' }).tap();
+    const pane = page.getByTestId('slice-pane');
+    await expect(pane.locator('canvas')).toBeVisible();
+    await expect(pane.getByRole('status')).toHaveCount(0, { timeout: 8000 });
+    const box = await pane.boundingBox();
+    expect(box?.width ?? 0).toBeGreaterThan(380);
+    expect(box?.height ?? 0).toBeGreaterThan(400);
+    await page.getByRole('button', { name: 'Show the panel' }).tap();
+    await expect(page.locator('.viewer__panel')).toBeVisible();
+  });
+
+  test('a scan that cannot be fetched says why and can be tried again', async ({ page }) => {
+    await serveFixtureContent(page);
+    let block = true;
+    await page.route('**/scan.u8.gz', async (route) => {
+      if (block) await route.fulfill({ status: 503, body: '' });
+      else await route.fallback();
+    });
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Open the viewer' }).tap({ timeout: 8000 });
+    await page.getByRole('button', { name: 'Show scan slices' }).tap();
+    const pane = page.getByTestId('slice-pane');
+    await expect(pane.getByRole('alert')).toContainText('HTTP 503');
+    block = false;
+    await pane.getByRole('button', { name: 'Try again' }).tap();
+    await expect(pane.getByRole('alert')).toHaveCount(0, { timeout: 8000 });
+    await expect(pane.getByRole('status')).toHaveCount(0, { timeout: 8000 });
+  });
+});

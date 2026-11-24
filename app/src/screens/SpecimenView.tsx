@@ -40,6 +40,7 @@ export function SpecimenView({ content }: Props) {
   const viewRef = useRef<HTMLDivElement>(null);
   const [core, setCore] = useState<ViewerCore | null>(null);
   const [slicesOpen, setSlicesOpen] = useState(false);
+  const [enlarged, setEnlarged] = useState(false);
   const [points, setPoints] = useState<readonly Vec3[]>([]);
   const measurable = content.structures.filter((s) => s.measurable !== false);
   const [pair, setPair] = useState<readonly [string, string]>(() => [
@@ -112,6 +113,20 @@ export function SpecimenView({ content }: Props) {
   useEffect(() => {
     labelsRef.current?.setEnabled(labelsOn);
   }, [labelsOn]);
+
+  // "Enlarge the view" hides the panel; the layout lives on the screen's grid, one level up.
+  useEffect(() => {
+    const viewer = stageRef.current?.closest('.viewer');
+    viewer?.classList.toggle('viewer--enlarged', enlarged);
+    return () => viewer?.classList.remove('viewer--enlarged');
+  }, [enlarged]);
+
+  function toggleSlices(): void {
+    const next = !slicesOpen;
+    setSlicesOpen(next);
+    // On a phone the panel scrolls on its own; make sure the stage, where the slices open, is on screen.
+    if (next) stageRef.current?.scrollIntoView({ block: 'nearest' });
+  }
 
   // The 3D view's tap handler is set up once per specimen; it calls the latest `select`.
   const selectRef = useRef<(id: string | null) => void>(() => undefined);
@@ -270,6 +285,16 @@ export function SpecimenView({ content }: Props) {
 
   return (
     <>
+      <div className="viewer__toolbar" role="toolbar" aria-label={t('viewer.view')}>
+        {content.scan && (
+          <button type="button" aria-pressed={slicesOpen} onClick={toggleSlices}>
+            {t('viewer.slices.open')}
+          </button>
+        )}
+        <button type="button" aria-pressed={enlarged} onClick={() => setEnlarged(!enlarged)}>
+          {t(enlarged ? 'viewer.showPanel' : 'viewer.enlarge')}
+        </button>
+      </div>
       <div className={`viewer__stage${slicesOpen ? ' viewer__stage--split' : ''}`} ref={stageRef}>
         <div ref={viewRef} className="viewer__view">
           <div ref={hostRef} className="viewer__canvas" />
@@ -386,13 +411,7 @@ export function SpecimenView({ content }: Props) {
         </section>
         <section>
           <h2>{t('viewer.slices.title')}</h2>
-          {content.scan ? (
-            <button type="button" aria-pressed={slicesOpen} onClick={() => setSlicesOpen(!slicesOpen)}>
-              {t('viewer.slices.open')}
-            </button>
-          ) : (
-            <p className="note">{t('viewer.slices.none')}</p>
-          )}
+          <p className="note">{t(content.scan ? 'viewer.slices.howToOpen' : 'viewer.slices.none')}</p>
         </section>
         <section className="panel__tools">
           <h2>{t('viewer.tools')}</h2>

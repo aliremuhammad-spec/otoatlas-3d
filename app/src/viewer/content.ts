@@ -72,7 +72,8 @@ export interface SceneContent {
   } | null;
   /** The specimen's scan for the slice view, or null when there is none. */
   scan: {
-    url: string;
+    /** Where to fetch the scan, in order: this site's copy, then the mirror. */
+    urls: readonly string[];
     shape: readonly [number, number, number];
     spacingMm: readonly [number, number, number];
     originMm: readonly [number, number, number];

@@ -3,8 +3,9 @@
 Run in the deploy job after the site is assembled, with HF_TOKEN set. For each package
 in the content folder, the scan file is uploaded under content/<package>/ in the dataset
 <user>/otoatlas-3d-content, the manifest gets an absolute "url" pinned to that upload's
-commit (so a cached copy never mixes versions), and the local file is removed so it is
-not also published on GitHub Pages. Files that did not change are not uploaded again.
+commit (so a cached copy never mixes versions). The local file stays on GitHub Pages: the
+app fetches that copy first and the Hugging Face copy only as a mirror, because some
+networks cannot reach Hugging Face. Files that did not change are not uploaded again.
 """
 from __future__ import annotations
 
@@ -90,8 +91,7 @@ def main(content: Path) -> None:
             f"https://huggingface.co/datasets/{repo}/resolve/{revision}/{package}/{manifest['scan']['file']}"
         )
         path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
-        local.unlink()
-    print(f"{len(moved)} scans published to https://huggingface.co/datasets/{repo} at {revision}")
+    print(f"{len(moved)} scans mirrored to https://huggingface.co/datasets/{repo} at {revision}")
 
 
 if __name__ == "__main__":

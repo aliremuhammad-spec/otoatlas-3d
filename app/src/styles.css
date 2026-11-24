@@ -201,10 +201,39 @@ fieldset {
   display: grid;
   overflow: hidden;
   grid-template-columns: minmax(0, 1fr) minmax(18rem, 22rem);
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto auto 1fr;
   grid-template-areas:
     'header header'
+    'toolbar panel'
     'stage panel';
+}
+
+/* Buttons that act on the view itself, always in reach above it. */
+.viewer__toolbar {
+  grid-area: toolbar;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  border-block-end: 1px solid var(--line);
+}
+
+.viewer__toolbar button {
+  min-block-size: 2.4rem;
+  padding-block: 0.25rem;
+}
+
+/* Enlarged: the panel steps aside and the view takes its room. */
+.viewer.viewer--enlarged {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'header'
+    'toolbar'
+    'stage';
+}
+
+.viewer.viewer--enlarged .viewer__panel {
+  display: none;
 }
 
 .viewer > .page__header {
@@ -434,7 +463,16 @@ fieldset {
   inset: 0;
   display: grid;
   place-items: center;
+  align-content: center;
+  gap: 0.4rem;
+  padding: 1rem;
+  text-align: center;
   color: var(--text-dim);
+  overflow-wrap: anywhere;
+}
+
+.slices__message p {
+  margin: 0;
 }
 
 .slices input[type='range'] {
@@ -562,11 +600,16 @@ fieldset {
   .viewer {
     block-size: 100dvh;
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, 3fr) minmax(0, 2fr);
+    grid-template-rows: auto auto minmax(0, 3fr) minmax(0, 2fr);
     grid-template-areas:
       'header'
+      'toolbar'
       'stage'
       'panel';
+  }
+
+  .viewer.viewer--enlarged {
+    grid-template-rows: auto auto minmax(0, 1fr);
   }
 
   .viewer__panel {

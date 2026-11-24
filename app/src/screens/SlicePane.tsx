@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useI18n } from '../i18n/I18nProvider';
+import { localizeDigits } from '../i18n/numerals';
 import { formatMillimetres, formatVoxelSize } from '../measure/format';
 import type { SceneContent } from '../viewer/content';
 import { placeLabels } from '../viewer/labels';
-import { loadScan } from '../viewer/loadPackage';
+import { loadScan, type ScanProgress } from '../viewer/loadPackage';
 import { displayName } from '../viewer/names';
 import {
   edgeLetters,
@@ -50,6 +51,9 @@ export function SlicePane({ content, core, hidden, selected, labelsOn, onSelect,
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [data, setData] = useState<Uint8Array | null>(null);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [progress, setProgress] = useState<ScanProgress | null>(null);
+  const [failure, setFailure] = useState('');
+  const [attempt, setAttempt] = useState(0);
   const [axis, setAxis] = useState<Axis>('z');
   const grid: ScanGrid | null = useMemo(
     () => (scan ? { shape: scan.shape, spacingMm: scan.spacingMm, originMm: scan.originMm } : null),
@@ -61,20 +65,25 @@ export function SlicePane({ content, core, hidden, selected, labelsOn, onSelect,
     if (!scan) return undefined;
     let cancelled = false;
     setStatus('loading');
-    loadScan(scan.url, scan.shape).then(
+    setProgress(null);
+    loadScan(scan.urls, scan.shape, (p) => {
+      if (!cancelled) setProgress(p);
+    }).then(
       (bytes) => {
         if (cancelled) return;
         setData(bytes);
         setStatus('ready');
       },
-      () => {
-        if (!cancelled) setStatus('error');
+      (e: unknown) => {
+        if (cancelled) return;
+        setFailure(e instanceof Error ? e.message : String(e));
+        setStatus('error');
       },
     );
     return () => {
       cancelled = true;
     };
-  }, [scan]);
+  }, [scan, attempt]);
 
   const position = grid ? slicePosition(grid, axis, index) : 0;
 
@@ -286,9 +295,28 @@ export function SlicePane({ content, core, hidden, selected, labelsOn, onSelect,
           onClick={onCanvasClick}
           aria-label={t('viewer.slices.tapHint')}
         />
-        {status !== 'ready' && (
+        {status === 'loading' && (
           <div className="slices__message" role="status">
-            {t(status === 'loading' ? 'viewer.slices.loading' : 'viewer.slices.error')}
+            <p>{t('viewer.slices.loading')}</p>
+            {progress && (
+              <p className="note">
+                {progress.total
+                  ? `${localizeDigits(String(Math.round((100 * progress.received) / progress.total)), numerals)}${locale === 'ar' ? '٪' : '%'}`
+                  : `${localizeDigits((progress.received / 1048576).toFixed(1), numerals)} MB`}
+                {progress.source > 0 && ` · ${t('viewer.slices.mirror')}`}
+              </p>
+            )}
+          </div>
+        )}
+        {status === 'error' && (
+          <div className="slices__message" role="alert">
+            <p>{t('viewer.slices.error')}</p>
+            <p className="note" dir="ltr">
+              {failure}
+            </p>
+            <button type="button" onClick={() => setAttempt(attempt + 1)}>
+              {t('viewer.slices.retry')}
+            </button>
           </div>
         )}
       </div>

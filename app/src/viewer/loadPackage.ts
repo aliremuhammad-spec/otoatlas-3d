@@ -76,7 +76,9 @@ export function sceneFromManifest(
     anatomicalFrame: manifest.anatomicalFrame,
     scan: manifest.scan
       ? {
-          url: manifest.scan.url ?? `${root}/${manifest.scan.file}`,
+          // This site's copy first; the pinned Hugging Face copy only if that fails. Some
+          // networks cannot reach Hugging Face, and the scans then never arrived.
+          urls: [`${root}/${manifest.scan.file}`, ...(manifest.scan.url ? [manifest.scan.url] : [])],
           shape: manifest.scan.shape,
           spacingMm: manifest.scan.spacingMm,
           originMm: manifest.scan.originMm,
@@ -86,23 +88,86 @@ export function sceneFromManifest(
   };
 }
 
-/**
- * Downloads and unpacks a scan (gzip, 8-bit). Uses the browser's DecompressionStream where
- * there is one, and a bundled decoder on older browsers (iPadOS and iOS before 16.4).
- */
-export async function loadScan(url: string, shape: readonly [number, number, number]): Promise<Uint8Array> {
-  const response = await fetch(url);
-  if (!response.ok || !response.body) throw new Error(`${url}: HTTP ${response.status}`);
-  let bytes: Uint8Array;
-  if (typeof DecompressionStream === 'function') {
-    const stream = response.body.pipeThrough(new DecompressionStream('gzip'));
-    bytes = new Uint8Array(await new Response(stream).arrayBuffer());
-  } else {
-    const { gunzipSync } = await import('three/examples/jsm/libs/fflate.module.js');
-    bytes = gunzipSync(new Uint8Array(await response.arrayBuffer()));
+/** A download that stops receiving data for this long is given up and the next source tried. */
+const STALL_MS = 20_000;
+
+export interface ScanProgress {
+  received: number;
+  total: number | null;
+  source: number;
+}
+
+/** Fetches one URL, giving up when no data arrives for STALL_MS. */
+async function fetchBytes(
+  url: string,
+  onBytes: (received: number, total: number | null) => void,
+): Promise<Uint8Array<ArrayBuffer>> {
+  const abort = new AbortController();
+  let timer = setTimeout(() => abort.abort(), STALL_MS);
+  const restart = () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => abort.abort(), STALL_MS);
+  };
+  try {
+    const response = await fetch(url, { signal: abort.signal });
+    if (!response.ok || !response.body) throw new Error(`HTTP ${response.status}`);
+    const length = Number(response.headers.get('content-length'));
+    const total = Number.isFinite(length) && length > 0 ? length : null;
+    const reader = response.body.getReader();
+    const chunks: Uint8Array[] = [];
+    let received = 0;
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      restart();
+      chunks.push(value);
+      received += value.length;
+      onBytes(received, total);
+    }
+    const out = new Uint8Array(received);
+    let at = 0;
+    for (const c of chunks) {
+      out.set(c, at);
+      at += c.length;
+    }
+    return out;
+  } finally {
+    clearTimeout(timer);
   }
-  if (bytes.length !== shape[0] * shape[1] * shape[2]) throw new Error(`${url}: size does not match its shape`);
-  return bytes;
+}
+
+async function gunzip(compressed: Uint8Array<ArrayBuffer>): Promise<Uint8Array> {
+  if (typeof DecompressionStream === 'function') {
+    const stream = new Blob([compressed]).stream().pipeThrough(new DecompressionStream('gzip'));
+    return new Uint8Array(await new Response(stream).arrayBuffer());
+  }
+  // iPadOS and iOS before 16.4 have no DecompressionStream.
+  const { gunzipSync } = await import('three/examples/jsm/libs/fflate.module.js');
+  return gunzipSync(compressed);
+}
+
+/**
+ * Downloads and unpacks a scan (gzip, 8-bit), trying each source in turn. Throws an error
+ * naming every source that failed and why.
+ */
+export async function loadScan(
+  urls: readonly string[],
+  shape: readonly [number, number, number],
+  onProgress?: (p: ScanProgress) => void,
+): Promise<Uint8Array> {
+  const failures: string[] = [];
+  for (const [source, url] of urls.entries()) {
+    try {
+      const compressed = await fetchBytes(url, (received, total) => onProgress?.({ received, total, source }));
+      const bytes = await gunzip(compressed);
+      if (bytes.length !== shape[0] * shape[1] * shape[2]) throw new Error('size does not match its shape');
+      return bytes;
+    } catch (e) {
+      const why = e instanceof DOMException && e.name === 'AbortError' ? 'no data for 20 s' : String(e);
+      failures.push(`${new URL(url, window.location.href).host}: ${why}`);
+    }
+  }
+  throw new Error(failures.join('; '));
 }
 
 /**
