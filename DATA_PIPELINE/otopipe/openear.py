@@ -82,8 +82,11 @@ def _plane_chunks(path: str, header: dict, data_start: int, plane_bytes: int, dt
             z += want // plane_bytes
 
 
-def read_segmentation(path: str) -> dict[str, Segment]:
+def read_segmentation(path: str, wanted=None) -> dict[str, Segment]:
     """Read every segment as a cropped boolean mask in the specimen frame (RAS, mm).
+
+    With `wanted` (names as given to match_segments), only the segments that match one of
+    them are read: on the finest specimens the unused ones would hold gigabytes.
 
     Handles both Slicer layouts: one layer per segment (4D, as in ZETA) and segments
     sharing layers with a label value each. The data is streamed twice, once for each
@@ -131,6 +134,11 @@ def read_segmentation(path: str) -> dict[str, Segment]:
             raise ValueError(f"segment {name!r} names layer {layer}, which does not exist")
         specs.append((name, layer, None if value is None else int(value)))
 
+    if wanted is not None:
+        _, source, _ = match_segments({name: None for name, _, _ in specs}, wanted)
+        keep = set(source.values())
+        specs = [s for s in specs if s[0] in keep]
+
     plane_bytes = layers * nx * ny * dtype.itemsize
 
     def masks_of(block: np.ndarray):
@@ -169,6 +177,17 @@ def read_segmentation(path: str) -> dict[str, Segment]:
         for name, _, _ in specs
         if name in crops
     }
+
+
+def segment_names(path: str) -> list[str]:
+    """The segment names in a segmentation file's header, without reading its data."""
+    with open(path, "rb") as fh:
+        header = nrrd.read_header(fh)
+    names, n = [], 0
+    while f"Segment{n}_Name" in header:
+        names.append(str(header[f"Segment{n}_Name"]).strip())
+        n += 1
+    return names
 
 
 def _letters(name: str) -> str:

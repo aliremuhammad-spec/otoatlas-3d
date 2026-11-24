@@ -170,3 +170,14 @@ def test_coarsen_per_axis_leaves_a_coarse_axis_alone():
     spec.loader.exec_module(bc)
     out, sp, org = bc.coarsen(np.ones((4, 4, 3), bool), (0.05, 0.05, 0.15), (0.0, 0.0, 0.0), (2, 2, 1))
     assert out.shape == (2, 2, 3) and sp == pytest.approx((0.1, 0.1, 0.15)) and org == pytest.approx((0.025, 0.025, 0.0))
+
+
+
+def test_only_wanted_segments_are_read(tmp_path):
+    from otopipe.openear import segment_names
+
+    shape = (60, 50, 40)
+    path = tmp_path / "Segmentation.seg.nrrd"
+    write_seg(path, [ball(shape, (20, 25, 20), 8), ball(shape, (45, 20, 15), 4)], ["Malleus", "Incus"])
+    assert list(read_segmentation(str(path), ["Incus"])) == ["Incus"]
+    assert segment_names(str(path)) == ["Malleus", "Incus"]

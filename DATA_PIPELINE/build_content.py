@@ -89,12 +89,15 @@ def peak_memory_gb() -> float:
 def build_openear(specimen: str, out: Path) -> dict:
     with tempfile.TemporaryDirectory() as tmp:
         seg_path = fetch.fetch_openear_member(specimen, "06_Segmentation/Segmentation.seg.nrrd", tmp)
-        found = openear.read_segmentation(str(seg_path))
-    print(f"{specimen}: segments in file: {sorted(found)}")
+        names = openear.segment_names(str(seg_path))
+        # Only the labels used are read: DELTA's unused ones took its runner to its 16 GB limit.
+        found = openear.read_segmentation(str(seg_path), OPENEAR_PHASE1)
+    print(f"{specimen}: segments in file: {sorted(names)}")
     # Specimens spell some names differently ("Facial nerve", "Facial Nerve"); match on
     # letters only, and refuse two file segments that would match one name.
-    segments, source_names, unmatched = openear.match_segments(found, OPENEAR_PHASE1)
-    del found  # labels not asked for are dropped; the large ones are a gigabyte or more on fine specimens
+    segments, source_names, _ = openear.match_segments(found, OPENEAR_PHASE1)
+    unmatched = sorted(set(names) - set(source_names.values()))
+    del found
     print(f"{specimen}: peak memory after reading the labels: {peak_memory_gb():.1f} GB", flush=True)
     if unmatched:
         print(f"{specimen}: segments not used: {unmatched}")
