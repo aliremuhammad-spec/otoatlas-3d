@@ -72,10 +72,18 @@ def _plane_chunks(path: str, header: dict, data_start: int, plane_bytes: int, dt
         while z < planes:
             want = min(per, planes - z) * plane_bytes
             while len(pending) < want:
-                raw = fh.read(16 * 1024 * 1024)
-                if not raw:
+                if inflate is None:
+                    raw = fh.read(min(16 * 1024 * 1024, want - len(pending)))
+                    if not raw:
+                        raise ValueError("segmentation data ends early")
+                    pending.extend(raw)
+                    continue
+                # A label volume compresses a thousandfold: unbounded, 16 MB of input once
+                # inflated to most of DELTA's runner memory. Inflate only what this block needs.
+                source = inflate.unconsumed_tail or fh.read(4 * 1024 * 1024)
+                if not source:
                     raise ValueError("segmentation data ends early")
-                pending.extend(inflate.decompress(raw) if inflate else raw)
+                pending.extend(inflate.decompress(source, want - len(pending)))
             block = bytes(pending[:want])
             del pending[:want]
             yield z, np.frombuffer(block, dtype=dtype)
