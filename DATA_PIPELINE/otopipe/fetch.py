@@ -14,13 +14,14 @@ BERN_RECORD = 3355272
 
 
 def _get(url: str, timeout: int, attempts: int = 4) -> requests.Response:
-    """GET with retries: Zenodo answers 5xx now and then, and a deploy should not fail on one blip."""
+    """GET with retries: Zenodo answers 5xx, and when busy 403 or 429, now and then; a deploy
+    should not fail on one blip."""
     import time
 
     for attempt in range(attempts):
         try:
             r = requests.get(url, timeout=timeout)
-            if r.status_code < 500:
+            if r.status_code < 500 and r.status_code not in (403, 429):
                 return r
         except (requests.ConnectionError, requests.Timeout):
             if attempt == attempts - 1:
