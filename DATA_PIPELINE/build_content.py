@@ -9,7 +9,9 @@ builds measured meshes and writes a package folder. Prints the error table.
 """
 from __future__ import annotations
 
+import gc
 import json
+import resource
 import sys
 import tempfile
 from pathlib import Path
@@ -79,6 +81,11 @@ def coarsen(mask: np.ndarray, spacing, origin, factor):
 OPENEAR_SIDES = {"ZETA": ("right", "Dr. Ali R. Muhammad", "2026-11-17")}
 
 
+def peak_memory_gb() -> float:
+    """Peak resident memory of this process so far (Linux reports kilobytes)."""
+    return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1048576
+
+
 def build_openear(specimen: str, out: Path) -> dict:
     with tempfile.TemporaryDirectory() as tmp:
         seg_path = fetch.fetch_openear_member(specimen, "06_Segmentation/Segmentation.seg.nrrd", tmp)
@@ -88,6 +95,7 @@ def build_openear(specimen: str, out: Path) -> dict:
     # letters only, and refuse two file segments that would match one name.
     segments, source_names, unmatched = openear.match_segments(found, OPENEAR_PHASE1)
     del found  # labels not asked for are dropped; the large ones are a gigabyte or more on fine specimens
+    print(f"{specimen}: peak memory after reading the labels: {peak_memory_gb():.1f} GB", flush=True)
     if unmatched:
         print(f"{specimen}: segments not used: {unmatched}")
     # A specimen may lack a label; build the rest and record the gap rather than failing.
@@ -154,7 +162,7 @@ def build_openear(specimen: str, out: Path) -> dict:
             "lateral": [round(float(v), 5) for v in frame.lateral],
             "anterior": [round(float(v), 5) for v in frame.anterior],
             "superior": [round(float(v), 5) for v in frame.superior],
-            "basis": "vestibule to membrane, vestibule to cochlea, and their cross product (otopipe/ossicles.py)",
+            "basis": "lateral: vestibule to membrane; superior: malleus long axis; anterior: towards the cochlea (otopipe/ossicles.py)",
         }
     if ossicle_report:
         extra["ossicle_parts"] = ossicle_report
@@ -178,7 +186,7 @@ def build_openear(specimen: str, out: Path) -> dict:
     if air is not None:
         grid = (pneumatization.GRID_MM,) * 3
         cells = air.cells
-        report = dict(air.report)
+        air_report = dict(air.report)
         measurements = [
             {"id": "tympanic_cavity_volume", "value_ml": air.report["tympanic_cavity_ml"], "structures": ["middle_ear_air_space"],
              "method": "computed air space within 4 mm of the ossicles and membrane"},
@@ -186,7 +194,7 @@ def build_openear(specimen: str, out: Path) -> dict:
         if short_tip is not None:
             try:
                 antrum, cells, antrum_report = pneumatization.split_antrum(cells, short_tip)
-                report.update(antrum_report)
+                air_report.update(antrum_report)
                 labels.append(package.LabelInput(AIR_LABEL, antrum[0], grid, antrum[1], part="antrum"))
                 measurements.append({"id": "antrum_volume", "value_ml": antrum_report["antrum_ml"], "structures": ["mastoid_antrum"],
                                      "method": "largest cavity within 6 mm of the incus short process, after opening the cells with a 1 mm ball"})
@@ -198,20 +206,27 @@ def build_openear(specimen: str, out: Path) -> dict:
         labels.append(package.LabelInput(AIR_LABEL, cells[0], grid, cells[1], part="cells"))
         measurements.append({"id": "air_cells_volume", "value_ml": cells_ml, "structures": ["temporal_bone_air_cells"],
                              "method": "the rest of the computed air space, inside the cut specimen block"})
-        extra["air_spaces"] = report
+        extra["air_spaces"] = air_report
         extra["measurements"] = extra.get("measurements", []) + measurements
+    print(f"{specimen}: peak memory before the scan: {peak_memory_gb():.1f} GB", flush=True)
     scan_entry = openear_scan(specimen, labels, out, cbct)
     del cbct
+    # Meshing is the most memory-hungry step; nothing but the labels is needed for it.
+    segments.clear()
+    gc.collect()
+    print(f"{specimen}: peak memory before meshing: {peak_memory_gb():.1f} GB", flush=True)
     if scan_entry:
         extra["scan"] = scan_entry
     side = None
     if specimen.upper() in OPENEAR_SIDES:
         side, by, on = OPENEAR_SIDES[specimen.upper()]
         extra["side_determined_by"] = {"reviewer": by, "date": on}
-    return package.build_package(
+    manifest = package.build_package(
         out, f"OPENEAR-{specimen.upper()}", "openear", labels, package.load_ontology(ONTOLOGY), side=side, extra=extra,
         publish_shown_only=True,
     )
+    print(f"{specimen}: peak memory after meshing: {peak_memory_gb():.1f} GB", flush=True)
+    return manifest
 
 
 # Structures that frame the CBCT crop: the middle and inner ear, not the large enclosing labels.
