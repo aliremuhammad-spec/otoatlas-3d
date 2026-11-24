@@ -195,7 +195,13 @@ export function SlicePane({ content, core, hidden, selected, labelsOn, onSelect,
         const w = ctx.measureText(text).width + 2 * pad;
         return [{ id, text, x: toX(a[0]), y: toY(a[1]), w, h: fontPx + 2 * pad }];
       });
-      const boxes = placeLabels(anchors, { x: canvas.width / 2, y: canvas.height / 2 });
+      // Kept inside the canvas, the selected outline's name first; crowded names wait for another slice.
+      const boxes = placeLabels(
+        anchors,
+        { x: canvas.width / 2, y: canvas.height / 2 },
+        { width: canvas.width, height: canvas.height },
+        selected,
+      );
       for (const a of anchors) {
         const b = boxes.get(a.id);
         if (!b) continue;
