@@ -64,6 +64,7 @@ export const MEASUREMENT_IDS = [
   'stapes_footplate_width',
   'tympanic_cavity_volume',
   'air_cells_volume',
+  'antrum_volume',
 ] as const;
 export type MeasurementId = (typeof MEASUREMENT_IDS)[number];
 

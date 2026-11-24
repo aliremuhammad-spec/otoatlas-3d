@@ -72,7 +72,8 @@ export const en = {
   'viewer.group.expand': 'Show the parts of {name}',
   'viewer.group.collapse': 'Hide the parts of {name}',
   'viewer.measurement.tympanic_cavity_volume': 'Volume of the computed tympanic cavity',
-  'viewer.measurement.air_cells_volume': 'Volume of the computed antrum and air cells, inside the cut specimen block',
+  'viewer.measurement.air_cells_volume': 'Volume of the computed air cells (without the antrum), inside the cut specimen block',
+  'viewer.measurement.antrum_volume': 'Volume of the computed antrum',
   'viewer.measurement.cochlear_a_value': 'Cochlear A value (round window through the modiolus to the far wall)',
   'viewer.measurement.cdl_estimate': 'Estimated cochlear duct length (organ of Corti, full length)',
   'viewer.measurement.cdl_method':

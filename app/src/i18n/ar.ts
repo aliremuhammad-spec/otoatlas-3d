@@ -84,7 +84,8 @@ export const ar: Record<MessageKey, string> = {
   'viewer.group.expand': 'إظهار أجزاء {name}',
   'viewer.group.collapse': 'إخفاء أجزاء {name}',
   'viewer.measurement.tympanic_cavity_volume': 'حجم الجوف الطبلي المحسوب',
-  'viewer.measurement.air_cells_volume': 'حجم الغار والخلايا الهوائية المحسوبة، داخل كتلة العيّنة المقطوعة',
+  'viewer.measurement.air_cells_volume': 'حجم الخلايا الهوائية المحسوبة (دون الغار)، داخل كتلة العيّنة المقطوعة',
+  'viewer.measurement.antrum_volume': 'حجم الغار المحسوب',
   'viewer.measurement.cochlear_a_value': 'قيمة A للقوقعة (من النافذة المستديرة عبر المحور إلى الجدار المقابل)',
   'viewer.measurement.cdl_estimate': 'الطول المقدَّر للقناة القوقعية (عضو كورتي، الطول الكامل)',
   'viewer.measurement.cdl_method':

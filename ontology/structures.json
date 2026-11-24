@@ -223,10 +223,35 @@
       "default_visible": false
     },
     {
+      "id": "mastoid_antrum",
+      "name_en": "Mastoid antrum",
+      "name_ta_latin": "Antrum mastoideum",
+      "name_ar": "الغار الخشائي",
+      "ar_status": "unverified",
+      "parent": null,
+      "system": "air_spaces",
+      "provenance_tier": "specimen-derived",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Air Spaces (computed)",
+          "part": "antrum",
+          "derived": true
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Computed by rule (otopipe/pneumatization.py): the largest cavity within 6 mm of the tip of the incus's short process once the air cells are opened with a 1 mm ball. Awaits the reviewer's check.",
+      "color": "#ff9f80",
+      "mesh_error_limit_mm": 0.15,
+      "default_opacity": 0.5,
+      "default_visible": false
+    },
+    {
       "id": "temporal_bone_air_cells",
-      "name_en": "Antrum and air cells (mastoid and others)",
-      "name_ta_latin": "Antrum mastoideum et cellulae pneumaticae",
-      "name_ar": "الغار والخلايا الهوائية (الخشائية وغيرها)",
+      "name_en": "Air cells (mastoid and others)",
+      "name_ta_latin": "Cellulae pneumaticae ossis temporalis",
+      "name_ar": "الخلايا الهوائية (الخشائية وغيرها)",
       "ar_status": "unverified",
       "parent": null,
       "system": "air_spaces",
@@ -241,7 +266,7 @@
       ],
       "content_status": "draft",
       "reviewed_by": null,
-      "note": "Computed by rule (otopipe/pneumatization.py): the rest of the air space inside the cut specimen block, beyond 4 mm of the ossicles: antrum and mastoid, perilabyrinthine, petrous and zygomatic cells as far as the block reaches. Awaits the reviewer's check.",
+      "note": "Computed by rule (otopipe/pneumatization.py): the air space inside the cut specimen block beyond 4 mm of the ossicles, without the antrum: mastoid, perilabyrinthine, petrous and zygomatic cells as far as the block reaches. Awaits the reviewer's check.",
       "color": "#5fb8d8",
       "mesh_error_limit_mm": 0.15,
       "default_opacity": 0.35,

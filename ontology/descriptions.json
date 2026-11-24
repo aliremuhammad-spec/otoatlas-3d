@@ -134,8 +134,12 @@
       "ar": "تستقر في النافذة البيضية ويثبّتها الرباط الحلقي، ويقع الدهليز إنسيّها مباشرة. متوسط أبعادها عند البالغين نحو 3.0 × 1.4 مم. يثبّتها التصلب الأذني، عادةً بدءاً من حافتها الأمامية، ويُحدث فغر الركاب فتحة صغيرة فيها."
     },
     "temporal_bone_air_cells": {
-      "en": "The pneumatized spaces beyond the middle ear: the mastoid antrum, reached through the aditus from the epitympanum, and the air cells it leads to, grouped in tracts (mastoid, perilabyrinthine, petrous apex, zygomatic). Their extent decides how far a mastoidectomy is taken, and the cells carry infection towards the sigmoid sinus, the dura and the petrous apex. Here they are computed inside the cut specimen block, so cells beyond the cut faces are missing.",
-      "ar": "الأحياز المُهوّاة خارج الأذن الوسطى: الغار الخشائي الذي يُوصَل إليه من العلّية عبر المدخل، والخلايا الهوائية المتفرعة عنه، وتتجمع في مسالك (خشائية، حول التيه، قمة الصخرة، وجنية). يحدد امتدادها مدى استئصال الخشاء، وتنقل الخمج نحو الجيب السيني والأم الجافية وقمة الصخرة. هي هنا محسوبة داخل كتلة العيّنة المقطوعة، فالخلايا الواقعة خارج سطوح القطع غير موجودة."
+      "en": "The pneumatized cells beyond the middle ear and the antrum, grouped in tracts (mastoid, perilabyrinthine, petrous apex, zygomatic and squamous). Their extent decides how far a mastoidectomy is taken, and they carry infection towards the sigmoid sinus, the dura and the petrous apex. Here they are computed inside the cut specimen block, so cells beyond the cut faces are missing; they are not yet divided into tracts.",
+      "ar": "الخلايا المُهوّاة خارج الأذن الوسطى والغار، وتتجمع في مسالك (خشائية، حول التيه، قمة الصخرة، وجنية وحرشفية). يحدد امتدادها مدى استئصال الخشاء، وتنقل الخمج نحو الجيب السيني والأم الجافية وقمة الصخرة. هي هنا محسوبة داخل كتلة العيّنة المقطوعة، فالخلايا الواقعة خارج سطوح القطع غير موجودة، ولم تُقسَّم إلى مسالك بعد."
+    },
+    "mastoid_antrum": {
+      "en": "The largest and most constant air cell of the mastoid, opening forwards into the epitympanum through the aditus. In adults it lies about 12 to 15 mm deep to MacEwen's (suprameatal) triangle, with the tegmen above, the lateral semicircular canal and the second genu of the facial nerve on its medial and anterior side. It is the first goal of a cortical mastoidectomy. Here it is computed: the boundary with the neighbouring cells is approximate.",
+      "ar": "أكبر الخلايا الهوائية الخشائية وأثبتها، ينفتح أمامياً إلى العلّية الطبلية عبر المدخل. يقع عند البالغين على عمق نحو 12 إلى 15 مم من مثلث ماك إيوين (فوق الصماخ)، ويعلوه السقف الطبلي، ويجاوره إنسياً وأمامياً بروز القناة نصف الهلالية الوحشية والمرفق الثاني للعصب الوجهي. هو الهدف الأول في استئصال الخشاء القشري. هنا هو محسوب، وحدّه مع الخلايا المجاورة تقريبي."
     }
   }
 }

@@ -148,6 +148,7 @@ def build_openear(specimen: str, out: Path) -> dict:
              "method": "extent of the membrane label at right angles to the handle"},
         ]
     frame = ossicle_report.pop("_frame", None)
+    short_tip = ossicle_report.pop("_short_process_tip", None)
     if frame is not None:
         extra["anatomical_frame"] = {
             "lateral": [round(float(v), 5) for v in frame.lateral],
@@ -175,15 +176,30 @@ def build_openear(specimen: str, out: Path) -> dict:
     cbct = load_openear_cbct(specimen)
     air = openear_air_spaces(specimen, segments, labels, cbct)
     if air is not None:
-        labels.append(package.LabelInput(AIR_LABEL, air.tympanic[0], (pneumatization.GRID_MM,) * 3, air.tympanic[1], part="tympanic"))
-        labels.append(package.LabelInput(AIR_LABEL, air.cells[0], (pneumatization.GRID_MM,) * 3, air.cells[1], part="cells"))
-        extra["air_spaces"] = air.report
-        extra["measurements"] = extra.get("measurements", []) + [
+        grid = (pneumatization.GRID_MM,) * 3
+        cells = air.cells
+        report = dict(air.report)
+        measurements = [
             {"id": "tympanic_cavity_volume", "value_ml": air.report["tympanic_cavity_ml"], "structures": ["middle_ear_air_space"],
              "method": "computed air space within 4 mm of the ossicles and membrane"},
-            {"id": "air_cells_volume", "value_ml": air.report["air_cells_ml"], "structures": ["temporal_bone_air_cells"],
-             "method": "the rest of the computed air space, inside the cut specimen block"},
         ]
+        if short_tip is not None:
+            try:
+                antrum, cells, antrum_report = pneumatization.split_antrum(cells, short_tip)
+                report.update(antrum_report)
+                labels.append(package.LabelInput(AIR_LABEL, antrum[0], grid, antrum[1], part="antrum"))
+                measurements.append({"id": "antrum_volume", "value_ml": antrum_report["antrum_ml"], "structures": ["mastoid_antrum"],
+                                     "method": "largest cavity within 6 mm of the incus short process, after opening the cells with a 1 mm ball"})
+                print(f"{specimen}: antrum: {json.dumps(antrum_report)}")
+            except ValueError as e:
+                print(f"{specimen}: warning: no antrum: {e}")
+        cells_ml = round(float(cells[0].sum()) * pneumatization.GRID_MM**3 / 1000.0, 2)
+        labels.append(package.LabelInput(AIR_LABEL, air.tympanic[0], grid, air.tympanic[1], part="tympanic"))
+        labels.append(package.LabelInput(AIR_LABEL, cells[0], grid, cells[1], part="cells"))
+        measurements.append({"id": "air_cells_volume", "value_ml": cells_ml, "structures": ["temporal_bone_air_cells"],
+                             "method": "the rest of the computed air space, inside the cut specimen block"})
+        extra["air_spaces"] = report
+        extra["measurements"] = extra.get("measurements", []) + measurements
     scan_entry = openear_scan(specimen, labels, out, cbct)
     del cbct
     if scan_entry:
@@ -248,6 +264,8 @@ def ossicle_labels(specimen, segments, missing, vestibular, vestibule_centre, re
         )
         report_out["side_from_anatomy"] = frame.side
         report_out["_frame"] = frame
+        incus_pts = ossicles.points(lab("Incus"))
+        report_out["_short_process_tip"] = incus_pts[np.argmin((incus_pts - frame.umbo) @ frame.anterior)]
         print(f"{specimen}: side from the labels' anatomy: {frame.side}")
     except Exception as e:  # noqa: BLE001 - the whole bones still ship
         print(f"{specimen}: warning: ossicles kept whole: {e}")

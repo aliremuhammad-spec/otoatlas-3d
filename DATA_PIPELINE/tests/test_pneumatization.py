@@ -44,3 +44,22 @@ def test_no_scan_overlap_is_an_error():
     bone, ossicle, ct, *_ = _phantom()
     with pytest.raises(ValueError):
         PN.air_spaces((bone, SP, (0, 0, 0)), [], [(ossicle, SP, (0, 0, 0))], (np.zeros_like(ct), SP, (0, 0, 0)))
+
+
+def test_antrum_is_the_large_cavity_near_the_short_process():
+    n = 120
+    x, y, z = np.meshgrid(*(np.arange(n) * 0.25,) * 3, indexing="ij")
+
+    def ball(c, r):
+        return (x - c[0]) ** 2 + (y - c[1]) ** 2 + (z - c[2]) ** 2 <= r * r
+
+    big = ball((10, 10, 10), 3.0)
+    small_near = ball((10, 15, 10), 0.6)
+    big_far = ball((24, 24, 24), 3.0)
+    neck = (np.abs(x - 10) < 0.3) & (np.abs(z - 10) < 0.3) & (y > 12) & (y < 15)  # a narrow passage
+    cells = big | small_near | big_far | neck
+    antrum, rest, report = PN.split_antrum((cells, (0.0, 0.0, 0.0)), (10.0, 16.5, 10.0))
+    assert report["antrum_ml"] == pytest.approx(big.sum() * 0.25**3 / 1000, rel=0.1)
+    assert report["air_cells_without_antrum_ml"] > big_far.sum() * 0.25**3 / 1000 * 0.9
+    with pytest.raises(ValueError):
+        PN.split_antrum((cells, (0.0, 0.0, 0.0)), (100.0, 100.0, 100.0))

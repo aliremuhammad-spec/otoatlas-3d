@@ -14,8 +14,12 @@ Rules, on a 0.25 mm grid:
   bone on the scan (the spaces hold epoxy in these specimens); pieces under
   1 cubic millimetre are dropped;
 - tympanic cavity: the part of that space within 4 mm of the ossicles or the membrane;
-- air cells: the rest, which includes the antrum and the mastoid, perilabyrinthine,
-  petrous and zygomatic cells as far as the block reaches.
+- air cells: the rest: mastoid, perilabyrinthine, petrous and zygomatic cells as far as
+  the block reaches;
+- antrum (when the short process of the incus is known): the cells are opened with a
+  1 mm ball, which removes small cells and the narrow passages between them; of the
+  pieces left, the largest one within 6 mm of the tip of the short process is the
+  antrum, grown back by the same ball inside the cells.
 
 The division between the two is a distance rule, not the anatomical walls; it is shown as
 computed and awaits review. Where the block was cut, the cells beyond the cut are missing,
@@ -167,3 +171,42 @@ def air_spaces(bone, others: list, ossicles_and_membrane: list, ct_u8) -> AirSpa
     t = _crop(tympanic, grid_origin)
     c = _crop(cells, grid_origin)
     return AirSpaces(t, c, report)
+
+
+ANTRUM_BALL_MM = 1.0
+ANTRUM_NEAR_MM = 6.0
+
+
+def _ball(radius_voxels: int) -> np.ndarray:
+    g = np.arange(-radius_voxels, radius_voxels + 1)
+    x, y, z = np.meshgrid(g, g, g, indexing="ij")
+    return x * x + y * y + z * z <= radius_voxels * radius_voxels
+
+
+def split_antrum(cells, short_process_tip) -> tuple:
+    """(antrum, other cells, report) from the air cells (mask, origin on the GRID_MM grid);
+    raises ValueError when no large cavity lies near the short process."""
+    mask, origin = cells
+    origin = np.asarray(origin, float)
+    r = round(ANTRUM_BALL_MM / GRID_MM)
+    ball = _ball(r)
+    opened = ndimage.binary_opening(mask, structure=ball)
+    lab, n = ndimage.label(opened)
+    tip = np.asarray(short_process_tip, float)
+    best = None
+    for k in range(1, n + 1):
+        idx = np.argwhere(lab == k)
+        near = float(np.linalg.norm(origin + idx * GRID_MM - tip, axis=1).min())
+        if near <= ANTRUM_NEAR_MM and (best is None or len(idx) > best[1]):
+            best = (k, len(idx), near)
+    if best is None:
+        raise ValueError("no large cavity within 6 mm of the short process")
+    antrum = ndimage.binary_dilation(lab == best[0], structure=ball) & mask
+    rest = mask & ~antrum
+    v = GRID_MM**3 / 1000.0
+    report = {
+        "antrum_ml": round(float(antrum.sum() * v), 2),
+        "antrum_to_short_process_mm": round(best[2], 1),
+        "air_cells_without_antrum_ml": round(float(rest.sum() * v), 2),
+    }
+    return _crop(antrum, origin), _crop(rest, origin), report
