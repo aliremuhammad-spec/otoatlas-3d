@@ -23,26 +23,13 @@ jobs:
       - id: list
         shell: python
         run: |
-          import json, os, time, urllib.request
-          def keys(record):
-              for attempt in range(5):
-                  try:
-                      with urllib.request.urlopen(f"https://zenodo.org/api/records/{record}", timeout=60) as r:
-                          return [f["key"] for f in json.load(r)["files"]]
-                  except Exception as e:
-                      print("retrying:", e)
-                      time.sleep(15 * (attempt + 1))
-              raise SystemExit(f"could not list record {record}")
-          items = [{"kind": "openear", "id": k[:-4].upper(), "pkg": "OPENEAR-" + k[:-4].upper()}
-                   for k in keys(1473724) if k.lower().endswith(".zip")]
-          items += [{"kind": "bern", "id": k[:-4], "pkg": "BERN-" + k[:-4]}
-                    for k in keys(3355272) if k.lower().endswith(".zip")]
-          # Only the specimens chosen for the app (.github/specimens.json) are built.
-          chosen = [e["pkg"] for e in json.load(open(".github/specimens.json"))["specimens"]]
-          absent = sorted(set(chosen) - {i["pkg"] for i in items})
-          if absent:
-              raise SystemExit(f"chosen specimens not in the Zenodo records: {absent}")
-          items = [i for i in items if i["pkg"] in chosen]
+          import json, os
+          # The chosen specimens (.github/specimens.json) are built; the list does not depend
+          # on Zenodo answering, which it sometimes refuses to GitHub's runners (HTTP 403).
+          items = []
+          for e in json.load(open(".github/specimens.json"))["specimens"]:
+              kind, _, ident = e["pkg"].partition("-")
+              items.append({"kind": kind.lower(), "id": ident, "pkg": e["pkg"]})
           print(json.dumps(items, indent=1))
           with open(os.environ["GITHUB_OUTPUT"], "a") as out:
               out.write("specimens=" + json.dumps(items) + "\n")
