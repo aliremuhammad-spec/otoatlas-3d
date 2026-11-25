@@ -769,3 +769,7 @@ fieldset {
   display: inline-block;
   inline-size: 1em;
 }
+
+.structure-name__note--schematic {
+  color: #ff9ccb;
+}

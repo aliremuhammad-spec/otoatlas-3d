@@ -91,20 +91,25 @@ export function StructureCard({ structure, content, onClose }: Props) {
           <dd>{t(`viewer.card.tier.${info.provenanceTier}`)}</dd>
           <dt>{t('viewer.card.status')}</dt>
           <dd>{t(`viewer.card.status.${info.contentStatus}`)}</dd>
-          <dt>{t('viewer.card.voxel')}</dt>
-          <dd>
-            {voxel} {t('units.mm')}
-          </dd>
-          <dt>{t('viewer.card.meshError')}</dt>
-          <dd>
-            {structure.measurable === false
-              ? t('viewer.card.meshErrorDisplay', { value: formatMillimetres(info.shownErrorMm, numerals) })
-              : t('viewer.card.meshErrorValue', {
-                  value: formatMillimetres(info.shownErrorMm, numerals),
-                  limit: formatMillimetres(info.meshErrorLimitMm, numerals),
-                })}
-          </dd>
-          {info.computedPart && (
+          {/* A schematic shape has no source voxels and no accuracy to report. */}
+          {info.provenanceTier !== 'schematic' && (
+            <>
+              <dt>{t('viewer.card.voxel')}</dt>
+              <dd>
+                {voxel} {t('units.mm')}
+              </dd>
+              <dt>{t('viewer.card.meshError')}</dt>
+              <dd>
+                {structure.measurable === false
+                  ? t('viewer.card.meshErrorDisplay', { value: formatMillimetres(info.shownErrorMm, numerals) })
+                  : t('viewer.card.meshErrorValue', {
+                      value: formatMillimetres(info.shownErrorMm, numerals),
+                      limit: formatMillimetres(info.meshErrorLimitMm, numerals),
+                    })}
+              </dd>
+            </>
+          )}
+          {info.computedPart && info.provenanceTier !== 'schematic' && (
             <>
               <dt>{t('viewer.card.division')}</dt>
               <dd>

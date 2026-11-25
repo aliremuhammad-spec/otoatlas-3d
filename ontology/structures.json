@@ -839,6 +839,118 @@
       "ar_reviewed_on": "2026-11-17"
     },
     {
+      "id": "membranous_labyrinth",
+      "name_en": "Membranous labyrinth",
+      "name_ta_latin": "Labyrinthus membranaceus",
+      "name_ar": "التيه الغشائي",
+      "ar_status": "unverified",
+      "parent": null,
+      "system": "inner_ear",
+      "provenance_tier": "schematic",
+      "sources": [],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Group of the schematic membranous parts below; not built on its own.",
+      "color": "#ff7eb6",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "cochlear_duct",
+      "name_en": "Cochlear duct (scala media)",
+      "name_ta_latin": "Ductus cochlearis",
+      "name_ar": "القناة القوقعية (السقالة الوسطى)",
+      "ar_status": "unverified",
+      "parent": "membranous_labyrinth",
+      "system": "inner_ear",
+      "provenance_tier": "schematic",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Membranous Labyrinth (schematic)",
+          "part": "cochlear_duct",
+          "derived": true
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Schematic shape placed on this specimen's bony labyrinth by rule (otopipe/membranous.py); no dataset labels the membranous labyrinth. Not for measurement.",
+      "color": "#ff5c9e",
+      "mesh_error_limit_mm": 0.1,
+      "default_visible": false
+    },
+    {
+      "id": "semicircular_ducts",
+      "name_en": "Semicircular ducts",
+      "name_ta_latin": "Ductus semicirculares",
+      "name_ar": "القنوات نصف الهلالية الغشائية",
+      "ar_status": "unverified",
+      "parent": "membranous_labyrinth",
+      "system": "inner_ear",
+      "provenance_tier": "schematic",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Membranous Labyrinth (schematic)",
+          "part": "semicircular_ducts",
+          "derived": true
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Schematic shape placed on this specimen's bony labyrinth by rule (otopipe/membranous.py); no dataset labels the membranous labyrinth. Not for measurement.",
+      "color": "#ff9ccb",
+      "mesh_error_limit_mm": 0.1,
+      "default_visible": false
+    },
+    {
+      "id": "utricle",
+      "name_en": "Utricle",
+      "name_ta_latin": "Utriculus",
+      "name_ar": "القُرَيبة",
+      "ar_status": "unverified",
+      "parent": "membranous_labyrinth",
+      "system": "inner_ear",
+      "provenance_tier": "schematic",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Membranous Labyrinth (schematic)",
+          "part": "utricle",
+          "derived": true
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Schematic shape placed on this specimen's bony labyrinth by rule (otopipe/membranous.py); no dataset labels the membranous labyrinth. Not for measurement.",
+      "color": "#e0529a",
+      "mesh_error_limit_mm": 0.1,
+      "default_visible": false
+    },
+    {
+      "id": "saccule",
+      "name_en": "Saccule",
+      "name_ta_latin": "Sacculus",
+      "name_ar": "الكُيَيس",
+      "ar_status": "unverified",
+      "parent": "membranous_labyrinth",
+      "system": "inner_ear",
+      "provenance_tier": "schematic",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Membranous Labyrinth (schematic)",
+          "part": "saccule",
+          "derived": true
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Schematic shape placed on this specimen's bony labyrinth by rule (otopipe/membranous.py); no dataset labels the membranous labyrinth. Not for measurement.",
+      "color": "#b8407c",
+      "mesh_error_limit_mm": 0.1,
+      "default_visible": false
+    },
+    {
       "id": "round_window",
       "name_en": "Round window",
       "name_ta_latin": "Fenestra cochleae",

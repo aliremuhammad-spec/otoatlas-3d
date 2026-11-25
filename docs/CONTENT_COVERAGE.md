@@ -59,7 +59,7 @@ Status: ✔ in the app now · ◐ partly · ○ planned.
 | Cochlea: about 32 mm, two and a half turns, height, modiolus, osseous spiral lamina, helicotrema, scalae | S (scalae in OpenEar) + A and B values on every Bern specimen (live) + duct length once the reviewer picks a method + D for lamina | ◐ |
 | Semicircular canals: planes, arc, ampullae, common crus, lengths and diameters | S (split label, Bern) + measured on each specimen | ◐ shape only |
 | Aqueducts (vestibular, cochlear), paravestibular canaliculi, fissula ante fenestram, fossula post fenestram, Hyrtl's fissure | A on micro-CT where visible + D otherwise + T | ○ |
-| Membranous labyrinth: cochlear duct, utricle, saccule, semicircular ducts, endolymphatic duct and sac | D fitted inside the bony labyrinth + T | ○ |
+| Membranous labyrinth: cochlear duct, utricle, saccule, semicircular ducts, endolymphatic duct and sac | Schematic shapes placed by rule on each OpenEar specimen's bony labyrinth (otopipe/membranous.py) + T | ◐ cochlear duct, semicircular ducts, utricle, saccule (schematic, badged, not measurable); endolymphatic duct and sac ○ (no vestibular aqueduct label) |
 | Internal auditory canal: porus, fundus, falciform and vertical crests, nerve quadrants, dimensions | S (canal from bone) + A (crests) + D (nerves) + measured | ○ |
 | Inner ear blood supply: labyrinthine artery and branches, AICA loop variants, veins | D + T | ○ |
 

@@ -140,6 +140,26 @@
     "mastoid_antrum": {
       "en": "The largest and most constant air cell of the mastoid, opening forwards into the epitympanum through the aditus. In adults it lies about 12 to 15 mm deep to MacEwen's (suprameatal) triangle, with the tegmen above, the lateral semicircular canal and the second genu of the facial nerve on its medial and anterior side. It is the first goal of a cortical mastoidectomy. Here it is computed: the boundary with the neighbouring cells is approximate.",
       "ar": "أكبر الخلايا الهوائية الخشائية وأثبتها، ينفتح أمامياً إلى العلّية الطبلية عبر المدخل. يقع عند البالغين على عمق نحو 12 إلى 15 مم من مثلث ماك إيوين (فوق الصماخ)، ويعلوه السقف الطبلي، ويجاوره إنسياً وأمامياً بروز القناة نصف الهلالية الوحشية والمرفق الثاني للعصب الوجهي. هو الهدف الأول في استئصال الخشاء القشري. هنا هو محسوب، وحدّه مع الخلايا المجاورة تقريبي."
+    },
+    "membranous_labyrinth": {
+      "en": "The membranous labyrinth.",
+      "ar": "التيه الغشائي."
+    },
+    "cochlear_duct": {
+      "en": "The endolymph-filled duct between the scala vestibuli and the scala tympani, bounded by Reissner's membrane, the basilar membrane carrying the organ of Corti, and the stria vascularis on the lateral wall. It is about 32 to 35 mm long along the organ of Corti in adults and joins the saccule through the ductus reuniens. Its length guides the choice of cochlear implant electrode. Shown here as a schematic tube along the outer edge of this specimen's scala tympani–scala vestibuli boundary, not as measured anatomy.",
+      "ar": "قناة مملوءة باللمف الباطن بين السقالة الدهليزية والسقالة الطبلية، يحدها غشاء رايسنر والغشاء القاعدي الذي يحمل عضو كورتي، والسطر الوعائي على الجدار الوحشي. طولها نحو 32 إلى 35 مم على امتداد عضو كورتي عند البالغين، وتتصل بالكُيَيس عبر القناة الواصلة. يوجّه طولها اختيار إلكترود الزرع القوقعي. تظهر هنا أنبوباً تخطيطياً على الحافة الخارجية للحد بين السقالة الطبلية والسقالة الدهليزية في هذه العيّنة، لا تشريحاً مقيساً."
+    },
+    "semicircular_ducts": {
+      "en": "Three membranous ducts, about a quarter of the bony canal's diameter, lying against the outer wall of the lateral, superior and posterior canals. Each widens into an ampulla carrying a crista, and all open into the utricle; the superior and posterior ducts share the crus commune. Shown here as schematic tubes along the centre lines of this specimen's bony canals.",
+      "ar": "ثلاث قنوات غشائية بقطر نحو ربع قطر القناة العظمية، تستند إلى الجدار الخارجي للقنوات الوحشية والعلوية والخلفية. تتسع كل منها في أمبولة تحمل العُرف الأمبولي، وتنفتح جميعها في القُرَيبة، وتشترك العلوية والخلفية في الساق المشتركة. تظهر هنا أنابيب تخطيطية على خطوط مراكز القنوات العظمية في هذه العيّنة."
+    },
+    "utricle": {
+      "en": "The larger of the two otolith organs, in the elliptical recess of the posterosuperior vestibule. Its macula lies roughly horizontal and senses linear acceleration in the horizontal plane; the five openings of the semicircular ducts enter it. Shown as a schematic ellipsoid of average adult size, placed in this specimen's vestibule towards the canals.",
+      "ar": "أكبر عضوي الحصيات الأذنية، في الردب الإهليلجي من الجزء الخلفي العلوي للدهليز. تتوضع لطختها أفقياً تقريباً وتستشعر التسارع الخطي في المستوى الأفقي، وتنفتح فيها فتحات القنوات نصف الهلالية الخمس. تظهر بيضاوياً تخطيطياً بحجم البالغ الوسطي، موضوعاً في دهليز هذه العيّنة نحو القنوات."
+    },
+    "saccule": {
+      "en": "The smaller otolith organ, in the spherical recess of the anteroinferior vestibule on its medial wall. Its macula lies roughly vertical and senses vertical linear acceleration. It joins the cochlear duct by the ductus reuniens and the endolymphatic duct by the utriculosaccular duct. Its position beneath the footplate matters in stapes surgery. Shown as a schematic ellipsoid of average adult size, placed in this specimen's vestibule towards the cochlea.",
+      "ar": "العضو الأصغر للحصيات الأذنية، في الردب الكروي من الجزء الأمامي السفلي للدهليز على جداره الإنسي. تتوضع لطخته عمودياً تقريباً وتستشعر التسارع الخطي العمودي. يتصل بالقناة القوقعية عبر القناة الواصلة، وبالقناة اللمفية الباطنة عبر القناة القريبية الكييسية. لموضعه تحت صفيحة الركاب أهمية في جراحة الركاب. يظهر بيضاوياً تخطيطياً بحجم البالغ الوسطي، موضوعاً في دهليز هذه العيّنة نحو القوقعة."
     }
   }
 }

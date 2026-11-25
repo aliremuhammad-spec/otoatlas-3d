@@ -42,7 +42,11 @@ export function SpecimenView({ content }: Props) {
   const [slicesOpen, setSlicesOpen] = useState(false);
   const [enlarged, setEnlarged] = useState(false);
   const [points, setPoints] = useState<readonly Vec3[]>([]);
-  const measurable = content.structures.filter((s) => s.measurable !== false);
+  // Schematic models are for looking at, never for measuring.
+  const measurable = content.structures.filter((s) => s.measurable !== false && s.info?.provenanceTier !== 'schematic');
+  const schematicIds = new Set(content.structures.filter((s) => s.info?.provenanceTier === 'schematic').map((s) => s.id));
+  const schematicRef = useRef(schematicIds);
+  schematicRef.current = schematicIds;
   const [pair, setPair] = useState<readonly [string, string]>(() => [
     measurable[0]?.id ?? '',
     measurable[1]?.id ?? measurable[0]?.id ?? '',
@@ -70,7 +74,8 @@ export function SpecimenView({ content }: Props) {
     core.onContextLost(() => setLost(true));
     core.onPick((pick) => {
       if (modeRef.current === 'explore') selectRef.current(pick.structureId);
-      else if (modeRef.current === 'p2p') setPoints((prev) => (prev.length >= 2 ? [pick.point] : [...prev, pick.point]));
+      else if (modeRef.current === 'p2p' && !schematicRef.current.has(pick.structureId))
+        setPoints((prev) => (prev.length >= 2 ? [pick.point] : [...prev, pick.point]));
     });
     const view = viewRef.current;
     const layer = view ? new LabelLayer(view, core) : null;
@@ -262,7 +267,11 @@ export function SpecimenView({ content }: Props) {
                 {latin}
               </span>
             )}
-            {s.measurable === false && <span className="structure-name__note">{t('viewer.displayOnly')}</span>}
+            {s.info?.provenanceTier === 'schematic' ? (
+              <span className="structure-name__note structure-name__note--schematic">{t('viewer.schematic')}</span>
+            ) : (
+              s.measurable === false && <span className="structure-name__note">{t('viewer.displayOnly')}</span>
+            )}
           </button>
         </div>
         <div className="structures__row">

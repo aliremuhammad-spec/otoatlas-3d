@@ -23,6 +23,7 @@ from otopipe import (
     cochlea,
     fetch,
     frames,
+    membranous,
     openear,
     ossicles,
     package,
@@ -169,6 +170,13 @@ def build_openear(specimen: str, out: Path) -> dict:
         }
     if ossicle_report:
         extra["ossicle_parts"] = ossicle_report
+    if frame is not None and vestibular is not None and not {"Scala Tympani", "Scala Vestibuli"} & set(missing):
+        lab_of = {n: (segments[n].mask, segments[n].spacing, segments[n].origin) for n in ("Scala Tympani", "Scala Vestibuli")}
+        mem = membranous.build(lab_of["Scala Tympani"], lab_of["Scala Vestibuli"], vestibular, frame)
+        for part, (mask, origin) in mem.parts.items():
+            labels.append(package.LabelInput(MEMBRANOUS_LABEL, mask, (membranous.GRID_MM,) * 3, origin, part=part))
+        extra["membranous_labyrinth"] = mem.report
+        print(f"{specimen}: membranous labyrinth (schematic): {json.dumps(mem.report)}")
     if ossicle_measurements:
         extra["measurements"] = extra.get("measurements", []) + ossicle_measurements
     extra["segment_names_in_file"] = source_names
@@ -320,6 +328,7 @@ def ossicle_labels(specimen, segments, missing, vestibular, vestibule_centre, re
 
 
 AIR_LABEL = "Air Spaces (computed)"
+MEMBRANOUS_LABEL = "Membranous Labyrinth (schematic)"
 OSSICLES = ("Malleus", "Incus", "Stapes")
 AIR_WALLS = ("External Auditory Canal", "Scala Tympani", "Scala Vestibuli", "Carotis Interna", "Facial Nerve", "Chorda Tympani",
              "Cochleovestibular nerve")
