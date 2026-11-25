@@ -138,21 +138,30 @@ def build(parts: dict, spacings: dict, facial_nerve, bone, frame, labyrinth_poin
         out["tensor_tympani_tendon"] = _band(start, end, 0.15)
         # Forwards along its semicanal, above and parallel to the Eustachian tube, sloping
         # down as it goes forwards; textbook direction first, then the clearest nearby one.
+        # The semicanal runs above the cochlea's basal turn: the muscle may start up to 1.5 mm
+        # above the tendon's medial end, the least lift that keeps it off the labyrinth wins.
+        wall = end
         best = None
-        for a in (-0.35, -0.2, -0.05):  # never lateral: the semicanal runs forwards and medially
-            for b in (-0.5, -0.3, -0.7, -0.15, -0.9):
-                tip = end + 12.0 * _unit(A + a * L + b * S)
-                path = _densify(np.array([end, tip]), 0.2)
-                radii = np.clip(0.2 + np.linalg.norm(path - end, axis=1) * 0.15, 0.2, 0.6)
-                near = np.minimum(nerve.query(path)[0], labyrinth.query(path)[0])
-                crossing = float(np.mean(near[3:] < radii[3:] + 0.15))
-                if best is None or crossing < best[0] - 0.02:
-                    best = (crossing, tip)
+        for lift in (0.0, 0.5, 1.0, 1.5):
+            origin_pt = end + lift * S
+            for a in (-0.35, -0.2, -0.05):  # never lateral: the semicanal runs forwards and medially
+                for b in (-0.5, -0.3, -0.15, 0.0):
+                    tip = origin_pt + 12.0 * _unit(A + a * L + b * S)
+                    path = _densify(np.array([origin_pt, tip]), 0.2)
+                    radii = np.clip(0.2 + np.linalg.norm(path - origin_pt, axis=1) * 0.1, 0.2, 0.45)
+                    near = np.minimum(nerve.query(path)[0], labyrinth.query(path)[0])
+                    crossing = float(np.mean(near < radii + 0.1)) + 0.05 * lift
+                    if best is None or crossing < best[0] - 0.02:
+                        best = (crossing, tip, origin_pt)
+        end = best[2]
         tip = best[1]
-        # Thin where it leaves the cochleariform process, the belly about 1.2 mm across.
+        if np.linalg.norm(end - wall) > 1e-6:  # the tendon turns up at the wall to the muscle's start
+            out["tensor_tympani_tendon"] = _tube(_densify(np.array([start, wall, end]), GRID_MM / 2), 0.15)
+        # Thin where it leaves the cochleariform process, the belly about 0.9 mm across (drawn
+        # slimmer than life, about 2 mm, so it stays in its narrow corridor).
         path = _densify(np.array([end, tip]), GRID_MM / 2)
         along = np.linalg.norm(path - end, axis=1)
-        out["tensor_tympani_muscle"] = _tube_tapered(path, np.clip(0.2 + along * 0.15, 0.2, 0.6))
+        out["tensor_tympani_muscle"] = _tube_tapered(path, np.clip(0.2 + along * 0.1, 0.2, 0.45))
         report["tensor_tympani"] = {"tendon_mm": round(float(np.linalg.norm(end - start)), 2), "reached_bone": met}
         report["tensor_tympani"]["muscle_path_touching"] = round(best[0], 2)
     if "incus" in parts:
@@ -206,7 +215,9 @@ def build(parts: dict, spacings: dict, facial_nerve, bone, frame, labyrinth_poin
     for name, (mask, origin) in list(out.items()):
         idx = np.argwhere(mask)
         pts = np.asarray(origin) + idx * GRID_MM
-        clash = (nerve.query(pts)[0] < 0.1) | (labyrinth.query(pts)[0] < 0.1)
+        clash = nerve.query(pts)[0] < 0.1
+        if name != "annular_ligament":  # the ring sits on the vestibule by design
+            clash |= labyrinth.query(pts)[0] < 0.1
         if clash.any():
             mask = mask.copy()
             mask[tuple(idx[clash].T)] = False
