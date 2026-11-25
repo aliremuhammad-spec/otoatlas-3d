@@ -29,6 +29,7 @@ from otopipe import (
     package,
     pneumatization,
     scan,
+    softtissue,
     split,
     tm,
 )
@@ -161,6 +162,7 @@ def build_openear(specimen: str, out: Path) -> dict:
         ]
     frame = ossicle_report.pop("_frame", None)
     short_tip = ossicle_report.pop("_short_process_tip", None)
+    ossicle_parts = ossicle_report.pop("_parts", {})
     if frame is not None:
         extra["anatomical_frame"] = {
             "lateral": [round(float(v), 5) for v in frame.lateral],
@@ -182,6 +184,23 @@ def build_openear(specimen: str, out: Path) -> dict:
              "method": "diameter of the largest sphere that fits in the vestibular label"}
         ]
         print(f"{specimen}: membranous labyrinth (schematic): {json.dumps(mem.report)}")
+        if ossicle_parts and "Facial Nerve" in segments:
+            fn = segments["Facial Nerve"]
+            bone = next(l for l in labels if l.source_label == "Bone" and l.part is None)
+            labyrinth = np.vstack([ossicles.points(lab_of[n]) for n in lab_of])
+            soft = softtissue.build(
+                {k: v[0] for k, v in ossicle_parts.items()},
+                {k: v[1] for k, v in ossicle_parts.items()},
+                (fn.mask, fn.spacing, fn.origin),
+                (bone.mask, bone.spacing, bone.origin),
+                frame,
+                labyrinth,
+            )
+            for part, (mask, origin) in soft.parts.items():
+                if mask.any():
+                    labels.append(package.LabelInput(SOFT_TISSUE_LABEL, mask, (softtissue.GRID_MM,) * 3, origin, part=part))
+            extra["muscles_and_ligaments"] = soft.report
+            print(f"{specimen}: muscles and ligaments (schematic): {json.dumps(soft.report)}")
     if ossicle_measurements:
         extra["measurements"] = extra.get("measurements", []) + ossicle_measurements
     extra["segment_names_in_file"] = source_names
@@ -316,6 +335,7 @@ def ossicle_labels(specimen, segments, missing, vestibular, vestibule_centre, re
             out.append(whole[name])
             continue
         seg = segments[name]
+        report_out.setdefault("_parts", {})[name.lower()] = (result.parts, seg.spacing)
         report_out[name.lower()] = {"divided": True, **result.report}
         print(f"{specimen}: {name.lower()} parts: {json.dumps(result.report)}")
         ids = [f"{name.lower()}_{p}" for p in result.parts]
@@ -334,6 +354,7 @@ def ossicle_labels(specimen, segments, missing, vestibular, vestibule_centre, re
 
 AIR_LABEL = "Air Spaces (computed)"
 MEMBRANOUS_LABEL = "Membranous Labyrinth (schematic)"
+SOFT_TISSUE_LABEL = "Muscles and Ligaments (schematic)"
 OSSICLES = ("Malleus", "Incus", "Stapes")
 AIR_WALLS = ("External Auditory Canal", "Scala Tympani", "Scala Vestibuli", "Carotis Interna", "Facial Nerve", "Chorda Tympani",
              "Cochleovestibular nerve")

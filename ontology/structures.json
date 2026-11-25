@@ -651,6 +651,278 @@
       "division_reviewed_on": "2026-11-24"
     },
     {
+      "id": "middle_ear_muscles",
+      "name_en": "Muscles of the middle ear",
+      "name_ta_latin": "Musculi ossiculorum auditus",
+      "name_ar": "عضلات الأذن الوسطى",
+      "ar_status": "unverified",
+      "parent": null,
+      "system": "middle_ear",
+      "provenance_tier": "schematic",
+      "sources": [],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Group of the schematic parts below; not built on its own.",
+      "color": "#c0504d",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "ossicular_ligaments",
+      "name_en": "Ligaments of the ossicles",
+      "name_ta_latin": "Ligamenta ossiculorum auditus",
+      "name_ar": "أربطة العظيمات",
+      "ar_status": "unverified",
+      "parent": null,
+      "system": "middle_ear",
+      "provenance_tier": "schematic",
+      "sources": [],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Group of the schematic parts below; not built on its own.",
+      "color": "#d9c27a",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "tensor_tympani_muscle",
+      "name_en": "Tensor tympani muscle",
+      "name_ta_latin": "Musculus tensor tympani",
+      "name_ar": "العضلة الموترة للطبلة",
+      "ar_status": "unverified",
+      "parent": "middle_ear_muscles",
+      "system": "middle_ear",
+      "provenance_tier": "schematic",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Muscles and Ligaments (schematic)",
+          "part": "tensor_tympani_muscle",
+          "derived": true
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Schematic tube placed on this specimen by rule (otopipe/softtissue.py); no dataset labels the middle ear's soft tissues. Not for measurement.",
+      "color": "#c0504d",
+      "mesh_error_limit_mm": 0.1,
+      "default_visible": false
+    },
+    {
+      "id": "tensor_tympani_tendon",
+      "name_en": "Tensor tympani tendon",
+      "name_ta_latin": "Tendo musculi tensoris tympani",
+      "name_ar": "وتر العضلة الموترة للطبلة",
+      "ar_status": "unverified",
+      "parent": "middle_ear_muscles",
+      "system": "middle_ear",
+      "provenance_tier": "schematic",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Muscles and Ligaments (schematic)",
+          "part": "tensor_tympani_tendon",
+          "derived": true
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Schematic tube placed on this specimen by rule (otopipe/softtissue.py); no dataset labels the middle ear's soft tissues. Not for measurement.",
+      "color": "#e8a3a1",
+      "mesh_error_limit_mm": 0.1,
+      "default_visible": false
+    },
+    {
+      "id": "stapedius_muscle",
+      "name_en": "Stapedius muscle",
+      "name_ta_latin": "Musculus stapedius",
+      "name_ar": "العضلة الركابية",
+      "ar_status": "unverified",
+      "parent": "middle_ear_muscles",
+      "system": "middle_ear",
+      "provenance_tier": "schematic",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Muscles and Ligaments (schematic)",
+          "part": "stapedius_muscle",
+          "derived": true
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Schematic tube placed on this specimen by rule (otopipe/softtissue.py); no dataset labels the middle ear's soft tissues. Not for measurement.",
+      "color": "#a8403e",
+      "mesh_error_limit_mm": 0.1,
+      "default_visible": false
+    },
+    {
+      "id": "stapedius_tendon",
+      "name_en": "Stapedius tendon",
+      "name_ta_latin": "Tendo musculi stapedii",
+      "name_ar": "وتر العضلة الركابية",
+      "ar_status": "unverified",
+      "parent": "middle_ear_muscles",
+      "system": "middle_ear",
+      "provenance_tier": "schematic",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Muscles and Ligaments (schematic)",
+          "part": "stapedius_tendon",
+          "derived": true
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Schematic tube placed on this specimen by rule (otopipe/softtissue.py); no dataset labels the middle ear's soft tissues. Not for measurement.",
+      "color": "#e3b0ae",
+      "mesh_error_limit_mm": 0.1,
+      "default_visible": false
+    },
+    {
+      "id": "superior_malleal_ligament",
+      "name_en": "Superior ligament of the malleus",
+      "name_ta_latin": "Ligamentum mallei superius",
+      "name_ar": "الرباط المطرقي العلوي",
+      "ar_status": "unverified",
+      "parent": "ossicular_ligaments",
+      "system": "middle_ear",
+      "provenance_tier": "schematic",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Muscles and Ligaments (schematic)",
+          "part": "superior_malleal_ligament",
+          "derived": true
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Schematic tube placed on this specimen by rule (otopipe/softtissue.py); no dataset labels the middle ear's soft tissues. Not for measurement.",
+      "color": "#d9c27a",
+      "mesh_error_limit_mm": 0.1,
+      "default_visible": false
+    },
+    {
+      "id": "anterior_malleal_ligament",
+      "name_en": "Anterior ligament of the malleus",
+      "name_ta_latin": "Ligamentum mallei anterius",
+      "name_ar": "الرباط المطرقي الأمامي",
+      "ar_status": "unverified",
+      "parent": "ossicular_ligaments",
+      "system": "middle_ear",
+      "provenance_tier": "schematic",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Muscles and Ligaments (schematic)",
+          "part": "anterior_malleal_ligament",
+          "derived": true
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Schematic tube placed on this specimen by rule (otopipe/softtissue.py); no dataset labels the middle ear's soft tissues. Not for measurement.",
+      "color": "#cdb35e",
+      "mesh_error_limit_mm": 0.1,
+      "default_visible": false
+    },
+    {
+      "id": "lateral_malleal_ligament",
+      "name_en": "Lateral ligament of the malleus",
+      "name_ta_latin": "Ligamentum mallei laterale",
+      "name_ar": "الرباط المطرقي الوحشي",
+      "ar_status": "unverified",
+      "parent": "ossicular_ligaments",
+      "system": "middle_ear",
+      "provenance_tier": "schematic",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Muscles and Ligaments (schematic)",
+          "part": "lateral_malleal_ligament",
+          "derived": true
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Schematic tube placed on this specimen by rule (otopipe/softtissue.py); no dataset labels the middle ear's soft tissues. Not for measurement.",
+      "color": "#e6d49a",
+      "mesh_error_limit_mm": 0.1,
+      "default_visible": false
+    },
+    {
+      "id": "superior_incudal_ligament",
+      "name_en": "Superior ligament of the incus",
+      "name_ta_latin": "Ligamentum incudis superius",
+      "name_ar": "الرباط السنداني العلوي",
+      "ar_status": "unverified",
+      "parent": "ossicular_ligaments",
+      "system": "middle_ear",
+      "provenance_tier": "schematic",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Muscles and Ligaments (schematic)",
+          "part": "superior_incudal_ligament",
+          "derived": true
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Schematic tube placed on this specimen by rule (otopipe/softtissue.py); no dataset labels the middle ear's soft tissues. Not for measurement.",
+      "color": "#bfa552",
+      "mesh_error_limit_mm": 0.1,
+      "default_visible": false
+    },
+    {
+      "id": "posterior_incudal_ligament",
+      "name_en": "Posterior ligament of the incus",
+      "name_ta_latin": "Ligamentum incudis posterius",
+      "name_ar": "الرباط السنداني الخلفي",
+      "ar_status": "unverified",
+      "parent": "ossicular_ligaments",
+      "system": "middle_ear",
+      "provenance_tier": "schematic",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Muscles and Ligaments (schematic)",
+          "part": "posterior_incudal_ligament",
+          "derived": true
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Schematic tube placed on this specimen by rule (otopipe/softtissue.py); no dataset labels the middle ear's soft tissues. Not for measurement.",
+      "color": "#d4bd6e",
+      "mesh_error_limit_mm": 0.1,
+      "default_visible": false
+    },
+    {
+      "id": "annular_ligament",
+      "name_en": "Annular ligament of the stapes",
+      "name_ta_latin": "Ligamentum anulare stapediale",
+      "name_ar": "الرباط الحلقي الركابي",
+      "ar_status": "unverified",
+      "parent": "ossicular_ligaments",
+      "system": "middle_ear",
+      "provenance_tier": "schematic",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Muscles and Ligaments (schematic)",
+          "part": "annular_ligament",
+          "derived": true
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Schematic tube placed on this specimen by rule (otopipe/softtissue.py); no dataset labels the middle ear's soft tissues. Not for measurement.",
+      "color": "#f0e2b0",
+      "mesh_error_limit_mm": 0.1,
+      "default_visible": false
+    },
+    {
       "id": "facial_nerve",
       "name_en": "Facial nerve",
       "name_ta_latin": "Nervus facialis",

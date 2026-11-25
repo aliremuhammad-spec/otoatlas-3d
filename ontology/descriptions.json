@@ -160,6 +160,54 @@
     "saccule": {
       "en": "The smaller otolith organ, in the spherical recess of the anteroinferior vestibule on its medial wall. Its macula lies roughly vertical and senses vertical linear acceleration. It joins the cochlear duct by the ductus reuniens and the endolymphatic duct by the utriculosaccular duct. Its position beneath the footplate matters in stapes surgery. Shown as a schematic ellipsoid of average adult size, placed in this specimen's vestibule towards the cochlea.",
       "ar": "العضو الأصغر للحصيات الأذنية، في الردب الكروي من الجزء الأمامي السفلي للدهليز على جداره الإنسي. تتوضع لطخته عمودياً تقريباً وتستشعر التسارع الخطي العمودي. يتصل بالقناة القوقعية عبر القناة الواصلة، وبالقناة اللمفية الباطنة عبر القناة القريبية الكييسية. لموضعه تحت صفيحة الركاب أهمية في جراحة الركاب. يظهر بيضاوياً تخطيطياً بحجم البالغ الوسطي، موضوعاً في دهليز هذه العيّنة نحو القوقعة."
+    },
+    "middle_ear_muscles": {
+      "en": "Muscles of the middle ear.",
+      "ar": "عضلات الأذن الوسطى."
+    },
+    "ossicular_ligaments": {
+      "en": "Ligaments of the ossicles.",
+      "ar": "أربطة العظيمات."
+    },
+    "tensor_tympani_muscle": {
+      "en": "Arises from the cartilaginous Eustachian tube and the walls of its own semicanal, which lies above the bony tube; supplied by the nerve to the medial pterygoid (mandibular nerve). It tenses the drum by pulling the handle medially. Shown as a schematic tube placed on this specimen by rule; its thickness is a textbook value.",
+      "ar": "تنشأ من الجزء الغضروفي لنفير أوستاكي ومن جدران قناتها النصفية الواقعة فوق النفير العظمي، ويعصبها عصب الجناحية الإنسية (من العصب الفكي السفلي). تشدّ الغشاء الطبلي بسحب القبضة إنسياً. يظهر أنبوباً تخطيطياً موضوعاً على هذه العيّنة بقاعدة، وثخانته قيمة مرجعية."
+    },
+    "tensor_tympani_tendon": {
+      "en": "Turns round the cochleariform process on the medial wall and crosses the cavity laterally to the medial side of the upper handle of the malleus. The cochleariform process is a landmark: the tympanic segment of the facial nerve lies just above and behind it. Shown as a schematic tube placed on this specimen by rule; its thickness is a textbook value.",
+      "ar": "ينعطف حول الناتئ الملعقي على الجدار الإنسي، ويعبر الجوف وحشياً إلى الوجه الإنسي لأعلى قبضة المطرقة. الناتئ الملعقي علامة جراحية: تقع القطعة الطبلية للعصب الوجهي فوقه وخلفه مباشرة. يظهر أنبوباً تخطيطياً موضوعاً على هذه العيّنة بقاعدة، وثخانته قيمة مرجعية."
+    },
+    "stapedius_muscle": {
+      "en": "Lies in a bony canal in front of the descending (mastoid) part of the facial nerve, which supplies it. It damps loud sound by tilting the stapes; its paralysis explains hyperacusis in facial palsy and the absent stapedial reflex. Shown as a schematic tube placed on this specimen by rule; its thickness is a textbook value.",
+      "ar": "تقع في قناة عظمية أمام الجزء النازل (الخشائي) من العصب الوجهي الذي يعصبها. تخمّد الأصوات العالية بإمالة الركاب، ويفسّر شللها فرط السمع في شلل الوجه وغياب المنعكس الركابي. يظهر أنبوباً تخطيطياً موضوعاً على هذه العيّنة بقاعدة، وثخانته قيمة مرجعية."
+    },
+    "stapedius_tendon": {
+      "en": "Leaves the apex of the pyramidal eminence on the posterior wall and inserts on the posterior neck of the stapes. It is cut in stapedectomy and is a landmark for the facial recess and the sinus tympani. Shown as a schematic tube placed on this specimen by rule; its thickness is a textbook value.",
+      "ar": "يخرج من قمة البارزة الهرمية على الجدار الخلفي ويرتكز على الوجه الخلفي لعنق الركاب. يُقطع في استئصال الركاب، وهو علامة للردب الوجهي والجيب الطبلي. يظهر أنبوباً تخطيطياً موضوعاً على هذه العيّنة بقاعدة، وثخانته قيمة مرجعية."
+    },
+    "superior_malleal_ligament": {
+      "en": "From the head of the malleus up to the tegmen tympani, in the epitympanum. Shown as a schematic tube placed on this specimen by rule; its thickness is a textbook value.",
+      "ar": "من رأس المطرقة صعوداً إلى السقف الطبلي، في العلّية الطبلية. يظهر أنبوباً تخطيطياً موضوعاً على هذه العيّنة بقاعدة، وثخانته قيمة مرجعية."
+    },
+    "anterior_malleal_ligament": {
+      "en": "From the neck and anterior process of the malleus forwards to the petrotympanic fissure; with the posterior incudal ligament it forms the axis about which the malleus and incus rotate. Shown as a schematic tube placed on this specimen by rule; its thickness is a textbook value.",
+      "ar": "من عنق المطرقة وناتئها الأمامي أماماً إلى الشق الصخري الطبلي، ويشكّل مع الرباط السنداني الخلفي المحور الذي تدور حوله المطرقة والسندان. يظهر أنبوباً تخطيطياً موضوعاً على هذه العيّنة بقاعدة، وثخانته قيمة مرجعية."
+    },
+    "lateral_malleal_ligament": {
+      "en": "From the neck of the malleus outwards to the margin of the tympanic notch (scutum); it forms the roof of Prussak's space. Shown as a schematic tube placed on this specimen by rule; its thickness is a textbook value.",
+      "ar": "من عنق المطرقة وحشياً إلى حافة الثلمة الطبلية (الدرع)، ويشكّل سقف حيّز بروساك. يظهر أنبوباً تخطيطياً موضوعاً على هذه العيّنة بقاعدة، وثخانته قيمة مرجعية."
+    },
+    "superior_incudal_ligament": {
+      "en": "From the body of the incus up to the tegmen tympani. Shown as a schematic tube placed on this specimen by rule; its thickness is a textbook value.",
+      "ar": "من جسم السندان صعوداً إلى السقف الطبلي. يظهر أنبوباً تخطيطياً موضوعاً على هذه العيّنة بقاعدة، وثخانته قيمة مرجعية."
+    },
+    "posterior_incudal_ligament": {
+      "en": "From the tip of the short process of the incus to the fossa incudis at the entrance of the aditus. Shown as a schematic tube placed on this specimen by rule; its thickness is a textbook value.",
+      "ar": "من ذروة الساق القصيرة للسندان إلى الحفرة السندانية عند مدخل المدخل إلى الغار. يظهر أنبوباً تخطيطياً موضوعاً على هذه العيّنة بقاعدة، وثخانته قيمة مرجعية."
+    },
+    "annular_ligament": {
+      "en": "Holds the footplate in the oval window, wider at the posterior end. Otosclerosis replaces it with new bone, usually starting at the anterior end (fissula ante fenestram). Shown as a schematic tube placed on this specimen by rule; its thickness is a textbook value.",
+      "ar": "يثبّت صفيحة الركاب في النافذة البيضية، وهو أعرض عند طرفها الخلفي. يستبدله التصلب الأذني بعظم جديد، يبدأ عادةً من الطرف الأمامي (الشُّقَيق أمام النافذة). يظهر أنبوباً تخطيطياً موضوعاً على هذه العيّنة بقاعدة، وثخانته قيمة مرجعية."
     }
   }
 }
