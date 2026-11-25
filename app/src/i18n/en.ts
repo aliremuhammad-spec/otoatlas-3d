@@ -75,6 +75,7 @@ export const en = {
   'viewer.measurement.tympanic_cavity_volume': 'Volume of the computed tympanic cavity',
   'viewer.measurement.air_cells_volume': 'Volume of the computed air cells (without the antrum), inside the cut specimen block',
   'viewer.measurement.antrum_volume': 'Volume of the computed antrum',
+  'viewer.measurement.vestibule_width': 'Vestibule width (largest sphere that fits in it)',
   'viewer.measurement.cochlear_a_value': 'Cochlear A value (round window through the modiolus to the far wall)',
   'viewer.measurement.cdl_estimate': 'Estimated cochlear duct length (organ of Corti, full length)',
   'viewer.measurement.cdl_method':

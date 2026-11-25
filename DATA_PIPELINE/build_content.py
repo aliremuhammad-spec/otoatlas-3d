@@ -176,6 +176,11 @@ def build_openear(specimen: str, out: Path) -> dict:
         for part, (mask, origin) in mem.parts.items():
             labels.append(package.LabelInput(MEMBRANOUS_LABEL, mask, (membranous.GRID_MM,) * 3, origin, part=part))
         extra["membranous_labyrinth"] = mem.report
+        width, _ = membranous.vestibule_width(vestibular)
+        extra["measurements"] = extra.get("measurements", []) + [
+            {"id": "vestibule_width", "value_mm": round(width, 2), "structures": ["vestibule_and_semicircular_canals"],
+             "method": "diameter of the largest sphere that fits in the vestibular label"}
+        ]
         print(f"{specimen}: membranous labyrinth (schematic): {json.dumps(mem.report)}")
     if ossicle_measurements:
         extra["measurements"] = extra.get("measurements", []) + ossicle_measurements
@@ -458,6 +463,18 @@ def build_bern(specimen: str, out: Path) -> dict:
         print(f"{specimen}: A {ab['cochlear_a_value']} mm, B {ab['cochlear_b_value']} mm")
     except Exception as e:  # noqa: BLE001
         print(f"{specimen}: warning: no A and B values: {e}")
+    # Vestibule width: the widest place in the labyrinth, if it lies away from the cochlear axis.
+    width, at = membranous.vestibule_width((mask, spacing, origin))
+    rel = at - frame.origin
+    off_axis = float(np.linalg.norm(rel - (rel @ frame.z) * frame.z))
+    if off_axis > 3.0 and 2.0 <= width <= 4.5:
+        extra.setdefault("measurements", []).append(
+            {"id": "vestibule_width", "value_mm": round(width, 2), "structures": ["bony_labyrinth"],
+             "method": "diameter of the largest sphere that fits in the labyrinth (it lies in the vestibule)"}
+        )
+        print(f"{specimen}: vestibule width {width:.2f} mm, {off_axis:.1f} mm from the cochlear axis")
+    else:
+        print(f"{specimen}: warning: widest place {width:.2f} mm, {off_axis:.1f} mm from the cochlear axis: not shipped")
     labels = [package.LabelInput("bony labyrinth (single label)", mask, spacing, origin)]
     if raw is not None and np.allclose(raw_affine[:3, :3], np.diag(np.diag(raw_affine[:3, :3]))):
         volume = scan.to_positive_axes(raw, np.diag(raw_affine[:3, :3]), raw_affine[:3, 3])

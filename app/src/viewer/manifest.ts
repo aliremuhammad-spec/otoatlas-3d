@@ -65,6 +65,7 @@ export const MEASUREMENT_IDS = [
   'tympanic_cavity_volume',
   'air_cells_volume',
   'antrum_volume',
+  'vestibule_width',
 ] as const;
 export type MeasurementId = (typeof MEASUREMENT_IDS)[number];
 

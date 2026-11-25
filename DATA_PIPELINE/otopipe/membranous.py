@@ -253,3 +253,13 @@ def build(st, sv, vestibular, frame) -> Membranous:
     except ValueError as e:
         report["sacs"] = {"left_out": str(e)}
     return Membranous(parts, report)
+
+
+def vestibule_width(label) -> tuple[float, np.ndarray]:
+    """Diameter of the largest sphere that fits in the label, and its centre. In a labyrinth
+    the widest place is the vestibule, so this approximates the vestibule's width as read on
+    an axial CT (normally about 3 mm)."""
+    mask, spacing, origin = label
+    depth = ndimage.distance_transform_edt(mask, sampling=spacing)
+    at = np.unravel_index(np.argmax(depth), depth.shape)
+    return 2.0 * float(depth[at]), np.asarray(origin, float) + np.array(at) * np.asarray(spacing, float)

@@ -42,3 +42,10 @@ def test_sacs_sit_inside_the_vestibule_and_the_saccule_nearer_the_cochlea():
         return (np.asarray(origin) + np.argwhere(mask) * M.GRID_MM).mean(axis=0)
 
     assert np.linalg.norm(mid("saccule") - cochlea) < np.linalg.norm(mid("utricle") - cochlea)
+
+
+def test_vestibule_width_is_about_three_millimetres():
+    _, _, vestibular, _ = _setup()
+    width, centre = M.vestibule_width(vestibular)
+    assert 2.4 <= width <= 3.8
+    assert np.allclose(centre, M.vestibule_centre(vestibular))
