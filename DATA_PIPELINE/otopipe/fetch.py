@@ -13,7 +13,7 @@ OPENEAR_RECORD = 1473724
 BERN_RECORD = 3355272
 
 
-def _get(url: str, timeout: int, attempts: int = 4) -> requests.Response:
+def _get(url: str, timeout: int, attempts: int = 6) -> requests.Response:
     """GET with retries: Zenodo answers 5xx, and when busy 403 or 429, now and then; a deploy
     should not fail on one blip."""
     import time
@@ -26,7 +26,8 @@ def _get(url: str, timeout: int, attempts: int = 4) -> requests.Response:
         except (requests.ConnectionError, requests.Timeout):
             if attempt == attempts - 1:
                 raise
-        time.sleep(10 * (attempt + 1))
+        # Zenodo throttles bursts from shared runners: back off to about four minutes.
+        time.sleep(min(240, 15 * 2**attempt))
     return r
 
 

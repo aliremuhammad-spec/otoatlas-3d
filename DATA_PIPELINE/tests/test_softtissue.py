@@ -8,7 +8,7 @@ from tests.test_membranous import _setup
 from tests.test_ossicles import _labels
 
 
-def test_all_ten_are_placed_and_none_runs_through_the_nerve_or_labyrinth():  # noqa: C901
+def test_all_ten_are_placed_and_none_runs_through_the_nerve_or_labyrinth():
     d = _labels()
     st, sv, vestibular, frame = _setup()
     parts = {
