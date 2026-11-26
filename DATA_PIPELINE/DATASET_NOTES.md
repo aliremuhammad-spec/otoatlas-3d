@@ -37,7 +37,9 @@ Checked on specimen ZETA (3.87 GB archive, read remotely without downloading it 
   pipeline splits the "Scala Vestibuli" label (otopipe/split.py): the part within 1 mm of scala tympani, largest
   connected piece, is scala vestibuli; the rest is "vestibule and semicircular canals". That boundary is a computed
   first pass, accepted by the reviewer the same day.
-- Facial nerve label: covers the labyrinthine and tympanic segments (reviewer, 2026-11-17).
+- Facial nerve label: runs from the geniculate region through the tympanic segment and down the mastoid segment to
+  within a few millimetres of the stylomastoid foramen (checked 2026-11-26 against the CBCT; corrects the note of
+  2026-11-17, which listed only the labyrinthine and tympanic segments).
 
 ## Not usable yet
 
