@@ -77,7 +77,7 @@ ontology names (for example الناتئ الوحشي, الساق القصيرة
 
 | Topic | Plan | Status |
 |---|---|---|
-| Course: meatal, labyrinthine, geniculate, tympanic, second genu, mastoid segments; stylomastoid foramen | S (OpenEar label covers labyrinthine and tympanic) + new segmentation of the mastoid segment's canal from CBCT + A (segment boundaries) | ◐ |
+| Course: meatal, labyrinthine, geniculate, tympanic, second genu, mastoid segments; stylomastoid foramen | S: the OpenEar label runs from the geniculate region (in some specimens a little of the labyrinthine segment) through the tympanic segment and down the mastoid segment to within a few millimetres of the foramen (checked 26 November on ALPHA, ETA, ZETA by straightening the CBCT along it; the earlier note that it stops at the tympanic segment was wrong) + division at the second genu by rule (otopipe/facialnerve.py) + A (mastoid segment length) | ◐ tympanic and mastoid parts, the mastoid part in its own light colour that the user can switch off; meatal segment not in the label |
 | Branches: greater superficial petrosal, nerve to stapedius, chorda tympani | S (chorda label) + D + T | ◐ |
 | Dehiscence, hiatus, anomalies | A where seen + T | ○ |
 | Components, nuclei, central connections | T only (outside the temporal bone) | ◐ text |
@@ -93,7 +93,7 @@ checks by looking, not by drawing.
 ## Order of work proposed
 
 1. Middle ear air space and its recesses (sinus tympani, facial recess, niches), with measurements.
-2. Full facial canal course, including the mastoid segment.
+2. Full facial canal course, including the mastoid segment. ✔ 26 November: already in the label; divided at the second genu.
 3. Ossicle parts on the finest specimens, with the annotation tool the reviewer will use.
 4. Tympanic membrane parts and quadrants.
 5. Mastoid air cell system and pneumatization tracts.

@@ -185,3 +185,27 @@ test.describe('chapter topics', () => {
     await expect(card).toBeVisible();
   });
 });
+
+test.describe('a part in its own colour', () => {
+  test.use({ locale: 'en-US' });
+
+  test('the switch gives the part its structure colour back, and is remembered', async ({ page }) => {
+    await serveFixtureContent(page);
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Open the viewer' }).click({ timeout: 8000 });
+    const own = page.getByTestId('own-colour-scala_tympani');
+    const swatch = page.locator('[data-structure="scala_tympani"] .swatch');
+    await expect(own).toBeChecked();
+    await expect(page.getByText('Show Scala tympani in its own colour')).toBeVisible();
+    await expect(swatch).toHaveCSS('background-color', 'rgb(0, 114, 178)');
+    await own.uncheck();
+    await expect(swatch).toHaveCSS('background-color', 'rgb(136, 136, 136)');
+    // A reload would hand the content requests to the service worker, past the fixture routes,
+    // so the choice is checked by leaving the viewer and coming back, and in storage.
+    expect(await page.evaluate(() => window.localStorage.getItem('otoatlas.plainColours'))).toBe('["scala_tympani"]');
+    await page.getByRole('button', { name: 'Back' }).click();
+    await page.getByRole('button', { name: 'Open the viewer' }).click({ timeout: 8000 });
+    await expect(page.getByTestId('own-colour-scala_tympani')).not.toBeChecked();
+    await expect(swatch).toHaveCSS('background-color', 'rgb(136, 136, 136)');
+  });
+});

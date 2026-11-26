@@ -224,6 +224,14 @@
     "tympanic_plexus": {
       "en": "The tympanic branch of the glossopharyngeal nerve (Jacobson's nerve) enters through the inferior tympanic canaliculus, runs up over the promontory and forms the tympanic plexus, which supplies the middle ear mucosa; its continuation, the lesser petrosal nerve, carries parasympathetic fibres to the parotid gland. Referred otalgia from the throat travels this way. Shown as a schematic shape placed on this specimen by rule.",
       "ar": "الفرع الطبلي للعصب اللساني البلعومي (عصب جاكوبسون) يدخل عبر القُنيّة الطبلية السفلية، ويصعد فوق الرعن مشكّلاً الضفيرة الطبلية التي تعصب مخاطية الأذن الوسطى، ويتابع كعصب صخري صغير يحمل الألياف نظيرة الودية إلى الغدة النكفية. عبره ينتقل ألم الأذن المحوَّل من البلعوم. يظهر شكلاً تخطيطياً موضوعاً على هذه العيّنة بقاعدة."
+    },
+    "facial_nerve_tympanic": {
+      "en": "The facial nerve from the geniculate region to the second genu. It runs backwards along the medial wall of the tympanic cavity, just above the oval window and below the prominence of the lateral semicircular canal, starting above the cochleariform process. Its bony canal is often open here, most often above the oval window, so the nerve can lie bare in stapes and cholesteatoma surgery. Here it is the part of the specimen's nerve label above the second genu, divided by rule.",
+      "ar": "العصب الوجهي من منطقة العقدة الركبية حتى الركبة الثانية. يسير إلى الخلف على الجدار الأنسي للجوف الطبلي، فوق النافذة البيضية مباشرة وتحت بروز القناة نصف الهلالية الوحشية، بدءاً من فوق الناتئ الملعقي. كثيراً ما تكون قناته العظمية مفتوحة هنا، وأكثر ذلك فوق النافذة البيضية، فقد يكون العصب مكشوفاً في جراحة الركاب والورم الكوليستيرولي. وهو هنا جزء تسمية العصب في العينة الواقع فوق الركبة الثانية، مقسوماً بقاعدة."
+    },
+    "facial_nerve_mastoid": {
+      "en": "The facial nerve from the second genu, behind the oval window and below the lateral semicircular canal, down through the mastoid to the stylomastoid foramen. On the way it gives the nerve to stapedius and, usually a few millimetres above the foramen, the chorda tympani. It is the segment exposed in mastoidectomy and posterior tympanotomy, where the facial recess lies between it and the chorda. Here it is the part of the specimen's nerve label below the second genu, divided by rule and shown in its own light colour, which can be switched off.",
+      "ar": "العصب الوجهي من الركبة الثانية، خلف النافذة البيضية وتحت القناة نصف الهلالية الوحشية، نزولاً عبر الخشاء حتى الثقبة الإبرية الخشائية. يعطي في طريقه عصبَ الركابية، ثم حبلَ الطبل عادةً قبل الثقبة ببضعة ملليمترات. هذه هي القطعة التي تنكشف في استئصال الخشاء وفتح الطبلة الخلفي، حيث يقع الردب الوجهي بينها وبين حبل الطبل. وهي هنا جزء تسمية العصب في العينة الواقع تحت الركبة الثانية، مقسوماً بقاعدة ومعروضاً بلون فاتح خاص يمكن إيقافه."
     }
   }
 }

@@ -1031,11 +1031,57 @@
       "mesh_error_limit_mm": 0.1,
       "ar_reviewed_by": "Dr. Ali R. Muhammad",
       "ar_reviewed_on": "2026-11-17",
-      "note": "Reviewer (Dr. Ali R. Muhammad, 2026-11-17): in OpenEar the label covers the labyrinthine and tympanic segments.",
+      "note": "The OpenEar label covers the geniculate region (in some specimens a little of the labyrinthine segment), the tympanic segment, the second genu and the mastoid segment to within a few millimetres of the stylomastoid foramen: checked on 2026-11-26 on ALPHA, ETA and ZETA by straightening the registered CBCT along the label, whose lower part runs in the dark canal through the mastoid. This corrects the note of 2026-11-17, which listed only the labyrinthine and tympanic segments. Shipped divided at the second genu (otopipe/facialnerve.py); whole when the rule fails.",
       "segments_covered": [
-        "labyrinthine",
-        "tympanic"
+        "geniculate",
+        "tympanic",
+        "mastoid"
       ]
+    },
+    {
+      "id": "facial_nerve_tympanic",
+      "name_en": "Facial nerve: tympanic segment",
+      "name_ta_latin": "Nervus facialis, pars tympanica",
+      "name_ar": "العصب الوجهي: القطعة الطبلية",
+      "parent": "facial_nerve",
+      "system": "nerves",
+      "provenance_tier": "specimen-derived",
+      "content_status": "draft",
+      "reviewed_by": null,
+      "mesh_error_limit_mm": 0.1,
+      "ar_status": "unverified",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Facial Nerve",
+          "part": "tympanic"
+        }
+      ],
+      "note": "Part of the specimen's facial nerve label above the second genu, divided by rule (otopipe/facialnerve.py). Includes the geniculate region and, where the label has it, a little of the labyrinthine segment.",
+      "color": "#F0E442"
+    },
+    {
+      "id": "facial_nerve_mastoid",
+      "name_en": "Facial nerve: mastoid segment",
+      "name_ta_latin": "Nervus facialis, pars mastoidea",
+      "name_ar": "العصب الوجهي: القطعة الخشائية",
+      "parent": "facial_nerve",
+      "system": "nerves",
+      "provenance_tier": "specimen-derived",
+      "content_status": "draft",
+      "reviewed_by": null,
+      "mesh_error_limit_mm": 0.1,
+      "ar_status": "unverified",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Facial Nerve",
+          "part": "mastoid"
+        }
+      ],
+      "note": "Part of the specimen's facial nerve label from the second genu down, divided by rule (otopipe/facialnerve.py). Shown in its own light colour, which the viewer can switch off.",
+      "color": "#9EE89A",
+      "plain_color": "#F0E442"
     },
     {
       "id": "chorda_tympani",

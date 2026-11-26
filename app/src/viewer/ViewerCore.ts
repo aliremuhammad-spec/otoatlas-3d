@@ -294,6 +294,11 @@ export class ViewerCore {
     this.requestRender();
   }
 
+  setColor(id: string, color: number): void {
+    this.meshes.get(id)?.material.color.setHex(color);
+    this.requestRender();
+  }
+
   setVisible(id: string, visible: boolean): void {
     const mesh = this.meshes.get(id);
     if (mesh) mesh.visible = visible;

@@ -16,9 +16,9 @@ def test_every_openear_label_is_mapped_and_no_label_part_twice():
     ]
     assert len(keys) == len(set(keys))
     assert {label for label, _ in keys} == set(EXPECTED_SEGMENTS) | set(OPTIONAL_SEGMENTS)
-    # A split label maps by parts only, never also as a whole, except the tympanic
-    # membrane and the ossicles, which ship whole when their parts cannot be computed.
-    for label in {label for label, part in keys if part} - {"Tympanic Membrane", "Malleus", "Incus", "Stapes"}:
+    # A split label maps by parts only, never also as a whole, except the tympanic membrane,
+    # the ossicles and the facial nerve, which ship whole when their parts cannot be computed.
+    for label in {label for label, part in keys if part} - {"Tympanic Membrane", "Malleus", "Incus", "Stapes", "Facial Nerve"}:
         assert (label, None) not in keys, label
 
 
@@ -64,3 +64,11 @@ def test_division_reviews_are_complete():
             assert s["division_reviewed_by"], s["id"]
             assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", s["division_reviewed_on"]), s["id"]
             assert any(src.get("part") for src in s["sources"]), s["id"]
+
+
+def test_a_switchable_colour_names_a_plain_colour():
+    for s in ONTOLOGY["structures"]:
+        if "plain_color" in s:
+            assert s["plain_color"].startswith("#") and s["plain_color"] != s["color"], s["id"]
+            parent = next(p for p in ONTOLOGY["structures"] if p["id"] == s["parent"])
+            assert s["plain_color"] == parent["color"], s["id"]

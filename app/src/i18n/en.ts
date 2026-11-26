@@ -74,6 +74,8 @@ export const en = {
   'viewer.group.collapse': 'Hide the parts of {name}',
   'viewer.measurement.tympanic_cavity_volume': 'Volume of the computed tympanic cavity',
   'viewer.measurement.air_cells_volume': 'Volume of the computed air cells (without the antrum), inside the cut specimen block',
+  'viewer.ownColour': 'Show {name} in its own colour',
+  'viewer.measurement.facial_mastoid_segment_length': 'Mastoid segment length (along the centre of the nerve label, from the second genu)',
   'viewer.measurement.antrum_volume': 'Volume of the computed antrum',
   'viewer.measurement.vestibule_width': 'Vestibule width (largest sphere that fits in it)',
   'viewer.measurement.cochlear_a_value': 'Cochlear A value (round window through the modiolus to the far wall)',

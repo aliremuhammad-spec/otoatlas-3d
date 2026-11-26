@@ -20,7 +20,7 @@
       "source_label": "Malleus",
       "names": {
         "en": "Malleus",
-        "ar": "\u0627\u0644\u0645\u0637\u0631\u0642\u0629",
+        "ar": "المطرقة",
         "latin": "Malleus"
       },
       "ar_status": "unverified",
@@ -65,7 +65,7 @@
       "source_label": "Scala Tympani",
       "names": {
         "en": "Scala tympani",
-        "ar": "\u0627\u0644\u0633\u0642\u0627\u0644\u0629 \u0627\u0644\u0637\u0628\u0644\u064a\u0629",
+        "ar": "السقالة الطبلية",
         "latin": "Scala tympani"
       },
       "ar_status": "unverified",
@@ -103,7 +103,8 @@
           "mean_mm": 0.01055,
           "samples": 10364
         }
-      ]
+      ],
+      "plain_color": "#888888"
     }
   ],
   "scan": {

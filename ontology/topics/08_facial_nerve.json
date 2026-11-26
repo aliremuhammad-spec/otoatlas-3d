@@ -33,6 +33,8 @@
       },
       "structures": [
         "facial_nerve",
+        "facial_nerve_tympanic",
+        "facial_nerve_mastoid",
         "vestibule_and_semicircular_canals",
         "stapes_footplate",
         "chorda_tympani"
@@ -42,8 +44,8 @@
         "ar": "من الجسر يعبر العصب الزاوية المخيخية الجسرية مع العصب الثامن ويدخل القناة الباطنة (القطعة الصماخية)، حيث ينضم إليه العصب المتوسط بشكل حلزوني قرب القعر. وتسير القطعة التيهية، وهي أقصر أجزاء القناة وأضيقها، إلى الأمام بين القوقعة والدهليز حتى العقدة الركبية، حيث ينعطف العصب بحدة إلى الخلف (الركبة الأولى). وتسير القطعة الطبلية إلى الخلف على الجدار الأنسي فوق النافذة البيضية وتحت القناة الجانبية، بدءاً من فوق الناتئ الملعقي مباشرة. وتحت القناة الجانبية، بجانب الساق القصيرة للسندان، ينحني نزولاً (الركبة الثانية) إلى القطعة الخشائية التي تنزل حتى الثقبة الإبرية الخشائية، وتعطي في طريقها عصبَ الركابية وحبلَ الطبل."
       },
       "surgical": {
-        "en": "The labyrinthine segment is where the canal is tightest, so swelling there (Bell's palsy, fracture) compresses the nerve most. In this app the specimens' facial nerve label covers the labyrinthine and tympanic segments; the mastoid segment is not yet shown.",
-        "ar": "القطعة التيهية هي أضيق جزء في القناة، لذا تضغط الوذمة هناك (شلل بل، الكسر) على العصب أكثر من أي موضع آخر. في هذا التطبيق تغطي تسمية العصب الوجهي في العينات القطعتين التيهية والطبلية؛ ولا تُعرض القطعة الخشائية بعد."
+        "en": "The labyrinthine segment is where the canal is tightest, so swelling there (Bell's palsy, fracture) compresses the nerve most. In this app the specimens' facial nerve label runs from the geniculate region (in some specimens a little of the labyrinthine segment) through the tympanic segment and down the mastoid segment to within a few millimetres of the stylomastoid foramen. It is divided by rule at the middle of the second genu, and the mastoid segment is shown in its own light colour, which can be switched off in the structure list.",
+        "ar": "القطعة التيهية هي أضيق جزء في القناة، لذا تضغط الوذمة هناك (شلل بل، الكسر) على العصب أكثر من أي موضع آخر. في هذا التطبيق تمتد تسمية العصب الوجهي في العينات من منطقة العقدة الركبية (وفي بعض العينات قليلاً من القطعة التيهية) عبر القطعة الطبلية ونزولاً في القطعة الخشائية حتى بضعة ملليمترات من الثقبة الإبرية الخشائية. تُقسم بقاعدة عند منتصف الركبة الثانية، وتظهر القطعة الخشائية بلون فاتح خاص يمكن إيقافه من قائمة البنى."
       },
       "numbers": [
         {
@@ -105,6 +107,17 @@
             "ref": "janfaza",
             "page": 475
           }
+        },
+        {
+          "label": {
+            "en": "Mastoid segment in this app's specimens (second genu to the label's lower end)",
+            "ar": "القطعة الخشائية في عينات هذا التطبيق (من الركبة الثانية حتى نهاية التسمية السفلية)"
+          },
+          "value": "14–16",
+          "unit": "mm",
+          "source": {
+            "ref": "app"
+          }
         }
       ]
     },
@@ -139,7 +152,8 @@
         "facial_nerve",
         "stapes_footplate",
         "tensor_tympani_tendon",
-        "middle_ear_air_space"
+        "middle_ear_air_space",
+        "facial_nerve_tympanic"
       ],
       "overview": {
         "en": "Gaps in the bony facial canal are common. They are found most often in the tympanic segment above the oval window, and also near the tensor tendon, in the facial recess and in the medial wall of the anterior epitympanic recess; many bones have more than one.",
@@ -260,7 +274,8 @@
         "malleus_neck",
         "incus_long_process",
         "posterior_malleal_fold",
-        "anterior_malleal_fold"
+        "anterior_malleal_fold",
+        "facial_nerve_mastoid"
       ],
       "overview": {
         "en": "Its fibres travel inside the facial trunk, in front and lateral in the tympanic segment and behind and lateral in the mastoid segment, and usually leave it a few millimetres above the stylomastoid foramen. The nerve runs back up in its own small canal and enters the cavity through the iter chordae posterius, at about the level of the round window, with the posterior tympanic artery. It crosses the medial face of the membrane in the posterior malleal fold, passes between the long process of the incus and the handle and medial to the malleus neck, and leaves through the iter chordae anterius (canal of Huguier) into the petrotympanic fissure with the anterior tympanic artery, then joins the lingual nerve below the skull base.",

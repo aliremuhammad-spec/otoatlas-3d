@@ -189,7 +189,8 @@
       "structures": [
         "stapedius_muscle",
         "stapedius_tendon",
-        "facial_nerve"
+        "facial_nerve",
+        "facial_nerve_mastoid"
       ],
       "overview": {
         "en": "The muscle lies in its own bony canal in the posterior wall, alongside and in front of the descending facial nerve, which supplies it. Its fibres gather into a tendon that leaves through the tip of the pyramidal eminence and runs forwards to the stapes. Contraction tips the front of the footplate outwards and its back inwards, stiffening the chain against loud sound; this is the stapedial reflex.",
@@ -395,7 +396,8 @@
         "middle_ear_air_space",
         "stapedius_tendon",
         "chorda_tympani",
-        "facial_nerve"
+        "facial_nerve",
+        "facial_nerve_mastoid"
       ],
       "overview": {
         "en": "Three small eminences stand on the posterior wall: the pyramidal eminence, from whose tip the stapedius tendon emerges; the chordal eminence, lateral to it and just inside the posterior annulus, pierced by the opening (iter chordae posterius) through which the chorda tympani enters; and the styloid eminence below, over the root of the styloid process. Ridges join them: chordal (pyramidal to chordal), styloid (styloid to chordal) and pyramidal (styloid to pyramidal). Together with the eminences these come from the upper end of the second arch, the styloid complex. The wall's two recesses, the sinus tympani medial to the facial nerve and the facial recess lateral to it, have their own entries.",
@@ -413,7 +415,8 @@
         "middle_ear_air_space",
         "facial_nerve",
         "vestibule_and_semicircular_canals",
-        "round_window"
+        "round_window",
+        "facial_nerve_mastoid"
       ],
       "overview": {
         "en": "An air pocket of the posterior tympanum that reaches back medial to the facial nerve. Its limits: above, the ponticulus and lateral canal; behind, the posterior canal; below, the subiculum, styloid eminence and jugular wall; medially the labyrinth; laterally the pyramidal eminence and the facial nerve. Its depth backwards varies a great deal. It pneumatises from the middle ear, so a bony partition usually separates it from the mastoid cells, which pneumatise by another route.",
@@ -435,7 +438,8 @@
         "middle_ear_air_space",
         "facial_nerve",
         "chorda_tympani",
-        "incus_short_process"
+        "incus_short_process",
+        "facial_nerve_mastoid"
       ],
       "overview": {
         "en": "The facial recess is the part of the posterior tympanum lateral to the facial nerve: the descending facial canal and the styloid complex bound it medially, the tympanic bone and the chorda tympani laterally, and the short process of the incus sits above it.",
@@ -456,7 +460,8 @@
       "structures": [
         "middle_ear_air_space",
         "malleus_head",
-        "facial_nerve"
+        "facial_nerve",
+        "facial_nerve_tympanic"
       ],
       "overview": {
         "en": "A space of variable size in front of the malleus head: the tegmen above, tympanic bone laterally and below, the facial nerve and geniculate ganglion medially. It opens backwards into the epitympanum, sometimes only through a perforated bony septum, the cog, that hangs from the tegmen in front of the malleus head.",
@@ -478,7 +483,8 @@
         "stapes_footplate",
         "annular_ligament",
         "facial_nerve",
-        "middle_ear_air_space"
+        "middle_ear_air_space",
+        "facial_nerve_tympanic"
       ],
       "overview": {
         "en": "The niche leading to the oval window is bounded above by the tympanic facial nerve, below by the promontory, in front by the cochleariform process and behind by the ponticulus, sinus tympani and pyramidal eminence. In front of the window a small cleft in the capsule, the fissula ante fenestram, holds cartilage or fibrous tissue; behind it a smaller pocket, the fossula post fenestram, may be present.",

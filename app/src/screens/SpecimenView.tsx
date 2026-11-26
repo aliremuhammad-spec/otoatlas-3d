@@ -6,7 +6,7 @@ import { localizeDigits, type NumeralSystem } from '../i18n/numerals';
 import { formatMillimetres, formatVoxelSize } from '../measure/format';
 import { distance, type Vec3 } from '../measure/geometry';
 import { minSurfaceDistance } from '../measure/surfaceDistance';
-import type { SceneContent } from '../viewer/content';
+import type { SceneContent, SceneStructure } from '../viewer/content';
 import { LabelLayer } from '../viewer/labels';
 import { displayName, latinLine } from '../viewer/names';
 import { ViewerCore } from '../viewer/ViewerCore';
@@ -64,7 +64,10 @@ export function SpecimenView({ content, focus = null }: Props) {
   const entries = listEntries(content.structures);
   const [topicId, setTopicId] = useState<string | null>(null);
   const [focusMissing, setFocusMissing] = useState<string | null>(null);
-  const presentIds = new Set(content.structures.map((s) => s.id));
+  // A topic may name a whole structure that this specimen ships in parts (the facial nerve).
+  const presentIds = new Set(content.structures.flatMap((s) => (s.group ? [s.id, s.group.id] : [s.id])));
+  const ownColour = content.structures.filter((s) => s.plainColor !== undefined);
+  const [plain, setPlain] = useState<ReadonlySet<string>>(() => readPlainColours());
 
   useEffect(() => {
     const host = hostRef.current;
@@ -148,8 +151,17 @@ export function SpecimenView({ content, focus = null }: Props) {
   const showRef = useRef<(ids: readonly string[]) => void>(() => undefined);
   showRef.current = show;
 
+  /** The given ids that this specimen has, with a whole structure replaced by its parts. */
+  function expand(ids: readonly string[]): string[] {
+    return ids.flatMap((id) =>
+      content.structures.some((s) => s.id === id)
+        ? [id]
+        : content.structures.filter((s) => s.group?.id === id).map((s) => s.id),
+    );
+  }
+
   function show(ids: readonly string[]): void {
-    const present = ids.filter((id) => content.structures.some((s) => s.id === id));
+    const present = [...new Set(expand(ids))];
     if (present.length === 0) return;
     setGroupVisible(present, true);
     selectRef.current(present[0] ?? null);
@@ -157,13 +169,37 @@ export function SpecimenView({ content, focus = null }: Props) {
 
   useEffect(() => {
     if (!core || !focus || focus.length === 0) return;
-    if (focus.some((id) => content.structures.some((s) => s.id === id))) {
+    if (focus.some((id) => presentIds.has(id))) {
       setFocusMissing(null);
       showRef.current(focus);
     } else {
       setFocusMissing(focus[0] ?? null);
     }
+    // presentIds follows content, which is in the list.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [core, focus, content]);
+
+  // Parts shown in their own colour, or in their structure's colour when the user turns that off.
+  useEffect(() => {
+    if (!core) return;
+    for (const s of content.structures) {
+      if (s.plainColor !== undefined) core.setColor(s.id, plain.has(s.id) ? s.plainColor : s.color);
+    }
+  }, [core, content, plain]);
+
+  function toggleOwnColour(id: string): void {
+    setPlain((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      writePlainColours(next);
+      return next;
+    });
+  }
+
+  function shownColour(s: SceneStructure): number {
+    return s.plainColor !== undefined && plain.has(s.id) ? s.plainColor : s.color;
+  }
 
   function select(id: string | null): void {
     const group = content.structures.find((s) => s.id === id)?.group;
@@ -288,7 +324,7 @@ export function SpecimenView({ content, focus = null }: Props) {
             onChange={() => toggleVisible(s.id)}
             aria-label={`${t('viewer.show')}: ${name}`}
           />
-          <span className="swatch" style={{ background: `#${s.color.toString(16).padStart(6, '0')}` }} />
+          <span className="swatch" style={{ background: `#${shownColour(s).toString(16).padStart(6, '0')}` }} />
           <button
             type="button"
             className="structure-name"
@@ -407,6 +443,18 @@ export function SpecimenView({ content, focus = null }: Props) {
       <aside className="viewer__panel">
         <section>
           <h2>{t('viewer.structures')}</h2>
+          {ownColour.map((s) => (
+            <label key={s.id} className="own-colour">
+              <input
+                type="checkbox"
+                checked={!plain.has(s.id)}
+                onChange={() => toggleOwnColour(s.id)}
+                data-testid={`own-colour-${s.id}`}
+              />
+              <span className="swatch" style={{ background: `#${s.color.toString(16).padStart(6, '0')}` }} />
+              <span>{t('viewer.ownColour', { name: displayName(s.names, locale) })}</span>
+            </label>
+          ))}
           <ul className="structures">
             {entries.map((entry) => {
               if (entry.kind === 'single') return structureRow(entry.structure);
@@ -431,7 +479,7 @@ export function SpecimenView({ content, focus = null }: Props) {
                     />
                     <span
                       className="swatch"
-                      style={{ background: `#${(first?.color ?? 0).toString(16).padStart(6, '0')}` }}
+                      style={{ background: `#${(first ? shownColour(first) : 0).toString(16).padStart(6, '0')}` }}
                     />
                     <button
                       type="button"
@@ -599,4 +647,25 @@ function listEntries(structures: SceneContent['structures']): ListEntry[] {
 
 function formatCount(n: number, numerals: NumeralSystem): string {
   return localizeDigits(String(n), numerals);
+}
+
+const PLAIN_COLOURS_KEY = 'otoatlas.plainColours';
+
+/** Parts the user has switched back to their structure's colour; remembered on this device. */
+function readPlainColours(): ReadonlySet<string> {
+  try {
+    const raw = window.localStorage.getItem(PLAIN_COLOURS_KEY);
+    const list: unknown = raw ? JSON.parse(raw) : [];
+    return new Set(Array.isArray(list) ? list.filter((x): x is string => typeof x === 'string') : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function writePlainColours(ids: ReadonlySet<string>): void {
+  try {
+    window.localStorage.setItem(PLAIN_COLOURS_KEY, JSON.stringify([...ids]));
+  } catch {
+    // Storage can be unavailable (private browsing); the choice then lasts for this visit only.
+  }
 }

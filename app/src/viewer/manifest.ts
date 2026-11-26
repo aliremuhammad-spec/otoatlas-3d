@@ -25,6 +25,8 @@ export interface ManifestStructure {
   contentStatus: 'draft' | 'expert-reviewed';
   provenanceTier: 'specimen-derived' | 'expert-annotated' | 'schematic';
   color: number;
+  /** The parent's colour, for a part shown in its own colour that the viewer can switch back (`plain_color`). */
+  plainColor: number | null;
   meshErrorLimitMm: number;
   /** Opacity the structure starts at, 0 to 1. Large enclosing structures start faded. */
   defaultOpacity: number;
@@ -66,6 +68,7 @@ export const MEASUREMENT_IDS = [
   'air_cells_volume',
   'antrum_volume',
   'vestibule_width',
+  'facial_mastoid_segment_length',
 ] as const;
 export type MeasurementId = (typeof MEASUREMENT_IDS)[number];
 
@@ -203,6 +206,7 @@ function parseStructure(value: unknown, index: number): ManifestStructure {
       `${what}.provenance_tier`,
     ),
     color: parseColor(o.color, `${what}.color`),
+    plainColor: o.plain_color === undefined || o.plain_color === null ? null : parseColor(o.plain_color, `${what}.plain_color`),
     meshErrorLimitMm: num(o.mesh_error_limit_mm, `${what}.mesh_error_limit_mm`),
     defaultOpacity: parseOpacity(o.default_opacity, `${what}.default_opacity`),
     displayLevel,

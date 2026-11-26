@@ -44,6 +44,7 @@ export function sceneFromManifest(
       id: s.id,
       names: s.names,
       color: s.color,
+      ...(s.plainColor !== null ? { plainColor: s.plainColor } : {}),
       geometry,
       position: [0, 0, 0],
       defaultOpacity: s.defaultOpacity,

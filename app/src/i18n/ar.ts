@@ -86,6 +86,8 @@ export const ar: Record<MessageKey, string> = {
   'viewer.group.collapse': 'إخفاء أجزاء {name}',
   'viewer.measurement.tympanic_cavity_volume': 'حجم الجوف الطبلي المحسوب',
   'viewer.measurement.air_cells_volume': 'حجم الخلايا الهوائية المحسوبة (دون الغار)، داخل كتلة العيّنة المقطوعة',
+  'viewer.ownColour': 'إظهار {name} بلون مميز',
+  'viewer.measurement.facial_mastoid_segment_length': 'طول القطعة الخشائية (على منتصف تسمية العصب، من الركبة الثانية)',
   'viewer.measurement.antrum_volume': 'حجم الغار المحسوب',
   'viewer.measurement.vestibule_width': 'عرض الدهليز (قطر أكبر كرة تتسع فيه)',
   'viewer.measurement.cochlear_a_value': 'قيمة A للقوقعة (من النافذة المستديرة عبر المحور إلى الجدار المقابل)',

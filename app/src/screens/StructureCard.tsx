@@ -59,7 +59,12 @@ export function StructureCard({ structure, content, onClose, onOpenTopic }: Prop
   const latin = latinLine(structure.names, locale);
   const other = locale === 'ar' ? structure.names.en : structure.names.ar;
   const info = structure.info;
-  const topics = onOpenTopic ? topicsForStructure(structure.id) : [];
+  // A part also reads its whole structure's topics (the mastoid segment, the facial nerve's).
+  const topics = onOpenTopic
+    ? [...topicsForStructure(structure.id), ...(structure.group ? topicsForStructure(structure.group.id) : [])].filter(
+        (topic, i, all) => all.findIndex((x) => x.id === topic.id) === i,
+      )
+    : [];
   const voxel = info
     ? [...new Set(info.sourceVoxelMm.map((v) => formatVoxelSize(v, numerals)))].join(' × ')
     : null;

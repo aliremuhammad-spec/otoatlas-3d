@@ -137,6 +137,8 @@ def build_package(
                 "provenance_tier": entry["provenance_tier"],
                 "system": entry["system"],
                 "color": entry["color"],
+                # A part shown in its own colour that the viewer can switch back to its parent's.
+                **({"plain_color": entry["plain_color"]} if "plain_color" in entry else {}),
                 "mesh_error_limit_mm": limit,
                 "default_opacity": float(entry.get("default_opacity", 1.0)),
                 "default_visible": bool(entry.get("default_visible", True)),

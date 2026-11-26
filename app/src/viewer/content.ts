@@ -28,6 +28,11 @@ export interface SceneStructure {
   id: string;
   names: StructureNames;
   color: number;
+  /**
+   * For a part shown in its own colour (the mastoid segment of the facial nerve): the colour
+   * it takes when the user switches that colour off, so it matches the rest of its structure.
+   */
+  plainColor?: number;
   geometry: BufferGeometry;
   /** Position of the geometry in the specimen frame, in millimetres. */
   position: readonly [number, number, number];

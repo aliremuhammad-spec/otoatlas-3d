@@ -21,6 +21,7 @@ import numpy as np
 
 from otopipe import (
     cochlea,
+    facialnerve,
     fetch,
     frames,
     membranous,
@@ -172,6 +173,8 @@ def build_openear(specimen: str, out: Path) -> dict:
         }
     if ossicle_report:
         extra["ossicle_parts"] = ossicle_report
+    if frame is not None:
+        facial_nerve_parts(specimen, labels, frame, extra)
     if frame is not None and vestibular is not None and not {"Scala Tympani", "Scala Vestibuli"} & set(missing):
         lab_of = {n: (segments[n].mask, segments[n].spacing, segments[n].origin) for n in ("Scala Tympani", "Scala Vestibuli")}
         mem = membranous.build(lab_of["Scala Tympani"], lab_of["Scala Vestibuli"], vestibular, frame)
@@ -356,6 +359,28 @@ def ossicle_labels(specimen, segments, missing, vestibular, vestibule_centre, re
             measurements_out.append({"id": "stapes_footplate_width", "value_mm": r["footplate_width_mm"],
                                      "structures": ["stapes_footplate"], "method": "extent of the footplate part across its long axis"})
     return out
+
+
+def facial_nerve_parts(specimen, labels: list, frame, extra: dict) -> None:
+    """The facial nerve divided at the second genu (otopipe/facialnerve.py), in place of the whole label."""
+    whole = next((l for l in labels if l.source_label == "Facial Nerve" and l.part is None), None)
+    if whole is None:
+        return
+    try:
+        division = facialnerve.divide((whole.mask, whole.spacing, whole.origin), frame)
+    except ValueError as e:
+        print(f"{specimen}: warning: facial nerve kept whole: {e}")
+        extra["facial_nerve_division"] = {"divided": False, "reason": str(e)}
+        return
+    labels.remove(whole)
+    labels.extend(package.LabelInput("Facial Nerve", mask, whole.spacing, origin, part=p) for p, (mask, origin) in division.parts.items())
+    extra["facial_nerve_division"] = {"divided": True, **division.report}
+    extra["measurements"] = extra.get("measurements", []) + [
+        {"id": "facial_mastoid_segment_length", "value_mm": division.report["mastoid_segment_mm"],
+         "structures": ["facial_nerve_mastoid"],
+         "method": "length of the label's centreline from the second genu (by rule) to the label's lower end"}
+    ]
+    print(f"{specimen}: facial nerve divided: {json.dumps(division.report)}")
 
 
 AIR_LABEL = "Air Spaces (computed)"
