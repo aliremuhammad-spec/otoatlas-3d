@@ -3,9 +3,10 @@ import { About } from './screens/About';
 import { Home } from './screens/Home';
 import { Settings } from './screens/Settings';
 import { Splash } from './screens/Splash';
+import { TopicsScreen } from './screens/TopicsScreen';
 import { ViewerScreen } from './screens/ViewerScreen';
 
-export type ScreenId = 'splash' | 'home' | 'viewer' | 'about' | 'settings';
+export type ScreenId = 'splash' | 'home' | 'viewer' | 'about' | 'settings' | 'topics';
 
 interface Props {
   /** First screen to show. Tests start on a specific screen. */
@@ -14,13 +15,24 @@ interface Props {
 
 export function App({ initialScreen = 'splash' }: Props) {
   const [screen, setScreen] = useState<ScreenId>(initialScreen);
-  const goHome = useCallback(() => setScreen('home'), []);
+  // Structures a topic asked to show; the viewer selects the first one on the open specimen.
+  const [focus, setFocus] = useState<readonly string[] | null>(null);
+  const goHome = useCallback(() => {
+    setFocus(null);
+    setScreen('home');
+  }, []);
+  const showIn3d = useCallback((ids: readonly string[]) => {
+    setFocus(ids);
+    setScreen('viewer');
+  }, []);
 
   switch (screen) {
     case 'splash':
       return <Splash onDone={goHome} />;
     case 'viewer':
-      return <ViewerScreen onBack={goHome} />;
+      return <ViewerScreen onBack={goHome} focus={focus} />;
+    case 'topics':
+      return <TopicsScreen onBack={goHome} onShowIn3d={showIn3d} />;
     case 'about':
       return <About onBack={goHome} />;
     case 'settings':

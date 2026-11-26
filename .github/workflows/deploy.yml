@@ -54,7 +54,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: content-out
-          key: content-v2-${{ matrix.specimen.pkg }}-${{ hashFiles('DATA_PIPELINE/**', 'ontology/**') }}
+          key: content-v2-${{ matrix.specimen.pkg }}-${{ hashFiles('DATA_PIPELINE/**', 'ontology/**', '!ontology/topics/**') }}
       # `shell: bash` turns on pipefail, so a failed build cannot hide behind `tee`.
       - if: steps.cache.outputs.cache-hit != 'true'
         working-directory: DATA_PIPELINE

@@ -1,0 +1,436 @@
+{
+  "section": "inner_ear",
+  "title": {
+    "en": "Inner ear",
+    "ar": "الأذن الداخلية"
+  },
+  "topics": [
+    {
+      "id": "otic_capsule",
+      "title": {
+        "en": "Otic capsule",
+        "ar": "المحفظة الأذنية"
+      },
+      "structures": [
+        "bony_labyrinth",
+        "vestibule_and_semicircular_canals",
+        "scala_tympani",
+        "scala_vestibuli"
+      ],
+      "overview": {
+        "en": "The bony labyrinth is the ossified otic capsule, built in three layers: an inner endosteal and an outer periosteal layer, from the inner and outer perichondrium of the cartilage model, and between them an endochondral middle layer that keeps islands of calcified cartilage (globuli interossei) throughout life. Unlike the rest of the skeleton the capsule barely remodels once formed.",
+        "ar": "التيه العظمي هو المحفظة الأذنية المتعظمة، ويتألف من ثلاث طبقات: طبقة داخلية بطانية وطبقة خارجية سمحاقية، مشتقتان من السمحاق الغضروفي الداخلي والخارجي للنموذج الغضروفي، وبينهما طبقة وسطى داخل غضروفية تحتفظ مدى الحياة بجزر من الغضروف المتكلس (الكريات بين العظمية). وخلافاً لبقية الهيكل العظمي لا تكاد المحفظة تُعاد قولبتها بعد تكوّنها."
+      },
+      "surgical": {
+        "en": "Fractures through the endochondral layer heal with fibrous tissue rather than bone, so a labyrinthine fracture line stays visible and can remain a path for infection into the inner ear years later.",
+        "ar": "تلتئم الكسور عبر الطبقة داخل الغضروفية بنسيج ليفي لا بعظم، فيبقى خط كسر التيه ظاهراً وقد يبقى طريقاً لدخول العدوى إلى الأذن الداخلية بعد سنوات."
+      },
+      "numbers": []
+    },
+    {
+      "id": "bony_labyrinth",
+      "title": {
+        "en": "Bony labyrinth as a whole",
+        "ar": "التيه العظمي ككل"
+      },
+      "structures": [
+        "bony_labyrinth",
+        "vestibule_and_semicircular_canals",
+        "scala_tympani",
+        "scala_vestibuli",
+        "round_window"
+      ],
+      "overview": {
+        "en": "The bony labyrinth is a set of connected cavities lying roughly parallel to the posterior surface of the petrous pyramid: the vestibule in the middle, the cochlea in front and medially, the three semicircular canals behind and above. The windows of the medial tympanic wall open into it: the oval window into the vestibule, the round window into the scala tympani.",
+        "ar": "التيه العظمي مجموعة من الأجواف المتصلة تمتد موازية تقريباً للسطح الخلفي للهرم الصخري: الدهليز في الوسط، والقوقعة في الأمام والأنسي، والقنوات نصف الهلالية الثلاث في الخلف والأعلى. وتنفتح عليه نافذتا الجدار الطبلي الأنسي: النافذة البيضية على الدهليز، والنافذة المستديرة على السقالة الطبلية."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Long axis of the bony labyrinth",
+            "ar": "المحور الطويل للتيه العظمي"
+          },
+          "value": "20",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 465
+          }
+        }
+      ]
+    },
+    {
+      "id": "vestibule",
+      "title": {
+        "en": "Vestibule",
+        "ar": "الدهليز"
+      },
+      "structures": [
+        "vestibule_and_semicircular_canals",
+        "utricle",
+        "saccule",
+        "stapes_footplate"
+      ],
+      "overview": {
+        "en": "The central chamber of the labyrinth, with the footplate in its lateral wall. Its medial wall has an elliptical recess above and behind for the utricle and a spherical recess below and in front for the saccule, separated by the oblique vestibular crest; the crest splits behind to frame the cochlear recess, which receives the blind basal end of the cochlear duct. The vestibular aqueduct opens on the lower back of the vestibule. The spaces of the medial wall are perforated by nerve fibres from the internal auditory canal.",
+        "ar": "الحجرة المركزية للتيه، وتقع صفيحة الركاب في جداره الوحشي. في جداره الأنسي ردب إهليلجي في الأعلى والخلف للقُريبة وردب كروي في الأسفل والأمام للكييس، يفصلهما العرف الدهليزي المائل؛ وينقسم العرف في الخلف ليحيط بالردب القوقعي الذي يستقبل النهاية القاعدية العمياء للقناة القوقعية. وينفتح المسال الدهليزي على الجزء السفلي الخلفي من الدهليز. وتخترق جدارَه الأنسي أليافٌ عصبية قادمة من القناة السمعية الباطنة."
+      },
+      "surgical": {
+        "en": "The utricle and saccule lie only a millimetre or two inside the footplate, which is why a stapes prosthesis must not reach far into the vestibule.",
+        "ar": "تقع القُريبة والكييس على بعد ملليمتر أو اثنين فقط داخل صفيحة الركاب، ولهذا يجب ألا يتوغل طرف الركاب الاصطناعي بعيداً في الدهليز."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Diameter",
+            "ar": "القطر"
+          },
+          "value": "4",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 466
+          }
+        }
+      ]
+    },
+    {
+      "id": "cochlea",
+      "title": {
+        "en": "Cochlea",
+        "ar": "القوقعة"
+      },
+      "structures": [
+        "scala_tympani",
+        "scala_vestibuli",
+        "cochlear_duct",
+        "round_window",
+        "bony_labyrinth"
+      ],
+      "overview": {
+        "en": "A spiral canal of two and a half turns around a central bony core, the modiolus. Its base faces the front of the fundus of the internal auditory canal, where the cochlear nerve enters through the perforated area; its apex points forwards, down and laterally. A thin bony shelf, the osseous spiral lamina, winds out from the modiolus and with the basilar membrane divides the canal into the scala vestibuli and the scala tympani; the two meet at the apex through the helicotrema. The basal turn bulges into the middle ear as the promontory.",
+        "ar": "قناة حلزونية من لفتين ونصف حول محور عظمي مركزي هو العمود (المودِيولوس). تواجه قاعدتها مقدمة قعر القناة السمعية الباطنة حيث يدخل العصب القوقعي عبر الباحة المثقّبة؛ وتتجه قمتها إلى الأمام والأسفل والوحشي. وتلتف من العمود صفيحة عظمية رقيقة، هي الصفيحة الحلزونية العظمية، تقسم القناة مع الغشاء القاعدي إلى السقالة الدهليزية والسقالة الطبلية؛ وتلتقي السقالتان عند القمة عبر الثقب القمي (الهليكوتريما). وتبرز اللفة القاعدية في الأذن الوسطى على شكل الرعن."
+      },
+      "surgical": {
+        "en": "Cochlear size varies between people, which matters for choosing an implant electrode. In this app the A and B values of the basal turn are measured on each Bern specimen, with an estimated duct length from A; the scalae come from the OpenEar labels.",
+        "ar": "يتفاوت حجم القوقعة بين الأشخاص، وهذا مهم عند اختيار مسرى الغرسة. في هذا التطبيق تُقاس القيمتان A وB للفة القاعدية في كل عينة من عينات برن، مع تقدير طول القناة من A؛ أما السقالتان فمن تسميات OpenEar."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Length of the spiral canal",
+            "ar": "طول القناة الحلزونية"
+          },
+          "value": "32",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 466
+          }
+        },
+        {
+          "label": {
+            "en": "Turns",
+            "ar": "عدد اللفات"
+          },
+          "value": "2.5",
+          "unit": "count",
+          "source": {
+            "ref": "janfaza",
+            "page": 466
+          }
+        },
+        {
+          "label": {
+            "en": "Height",
+            "ar": "الارتفاع"
+          },
+          "value": "5",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 466
+          }
+        }
+      ]
+    },
+    {
+      "id": "semicircular_canals",
+      "title": {
+        "en": "Semicircular canals",
+        "ar": "القنوات نصف الهلالية"
+      },
+      "structures": [
+        "vestibule_and_semicircular_canals",
+        "semicircular_ducts"
+      ],
+      "overview": {
+        "en": "Three canals, lateral (horizontal), superior (anterior) and posterior, lie behind the vestibule in planes roughly at right angles to each other. Each describes about two thirds of a circle and widens at one end into an ampulla; the non-ampullated ends of the superior and posterior canals join as the common crus, so the three canals open into the vestibule by five openings. The lateral canal makes a prominence on the medial wall of the aditus and antrum, just above the second genu of the facial nerve.",
+        "ar": "ثلاث قنوات، وحشية (أفقية) وعلوية (أمامية) وخلفية، تقع خلف الدهليز في مستويات متعامدة تقريباً. ترسم كلٌّ منها نحو ثلثي دائرة وتتسع في أحد طرفيها إلى أمبولة؛ ويلتقي الطرفان غير الأمبوليين للقناتين العلوية والخلفية في الساق المشتركة، فتنفتح القنوات الثلاث على الدهليز بخمس فتحات. وتصنع القناة الوحشية بروزاً على الجدار الأنسي للمدخل والغار، فوق الركبة الثانية للعصب الوجهي مباشرة."
+      },
+      "surgical": {
+        "en": "The lateral canal is the key landmark of the mastoid: the facial nerve runs just below and in front of it, and cholesteatoma most often erodes it to cause a fistula. Dehiscence of the superior canal under the middle fossa causes sound- and pressure-induced vertigo.",
+        "ar": "القناة الوحشية هي المعلم الأهم في الخشاء: يسير العصب الوجهي تحتها وأمامها مباشرة، وهي أكثر ما يتآكل بالورم الكوليستيرولي فتتشكل ناسور. وتفزّر القناة العلوية تحت الحفرة الوسطى يسبب دواراً يثيره الصوت والضغط."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Arc of each canal",
+            "ar": "قوس كل قناة"
+          },
+          "value": "≈ 240",
+          "unit": "deg",
+          "source": {
+            "ref": "janfaza",
+            "page": 466
+          }
+        },
+        {
+          "label": {
+            "en": "Diameter mid-canal",
+            "ar": "القطر في منتصف القناة"
+          },
+          "value": "1",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 466
+          }
+        },
+        {
+          "label": {
+            "en": "Diameter at the ampulla",
+            "ar": "القطر عند الأمبولة"
+          },
+          "value": "2",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 466
+          }
+        },
+        {
+          "label": {
+            "en": "Superior canal length",
+            "ar": "طول القناة العلوية"
+          },
+          "value": "15–20",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 466
+          }
+        },
+        {
+          "label": {
+            "en": "Posterior canal length",
+            "ar": "طول القناة الخلفية"
+          },
+          "value": "18–22",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 466
+          }
+        },
+        {
+          "label": {
+            "en": "Lateral canal length",
+            "ar": "طول القناة الوحشية"
+          },
+          "value": "12–15",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 466
+          }
+        }
+      ]
+    },
+    {
+      "id": "labyrinth_fissures",
+      "title": {
+        "en": "Hyrtl's fissure, fissula ante fenestram, fossula post fenestram",
+        "ar": "شق هيرتل، الشُّقيق أمام النافذة، النُّقيرة خلف النافذة"
+      },
+      "structures": [
+        "bony_labyrinth",
+        "round_window",
+        "stapes_footplate"
+      ],
+      "overview": {
+        "en": "Three small gaps in the capsule have names. Hyrtl's (tympanomeningeal) fissure runs from below the round window niche towards the posterior fossa meninges, parallel to the cochlear aqueduct; it forms in development and may stay open in the adult. The fissula ante fenestram reaches from the vestibule in front of the oval window to the tympanic mucosa by the cochleariform process; it starts as resorbed precartilage and in adults holds cartilage, fibrous tissue or both. The fossula post fenestram is an inpocketing of periotic tissue behind the oval window, reaching part way towards the lateral canal.",
+        "ar": "لثلاث فجوات صغيرة في المحفظة أسماء. يمتد شق هيرتل (الطبلي السحائي) من تحت كوة النافذة المستديرة نحو سحايا الحفرة الخلفية، موازياً للمسال القوقعي؛ يتشكل أثناء النمو وقد يبقى مفتوحاً عند البالغ. ويصل الشُّقيق أمام النافذة من الدهليز أمام النافذة البيضية إلى المخاطية الطبلية عند الناتئ الملعقي؛ يبدأ كغضروف أولي مرتشف، ويحوي عند البالغ غضروفاً أو نسيجاً ليفياً أو كليهما. أما النُّقيرة خلف النافذة فهي انغماد للنسيج حول اللمفي خلف النافذة البيضية يمتد جزءاً من الطريق نحو القناة الوحشية."
+      },
+      "surgical": {
+        "en": "A patent Hyrtl's fissure is a route for CSF leak into the middle ear in children. The fissula ante fenestram is the usual first site of otosclerosis.",
+        "ar": "شق هيرتل المفتوح طريق لتسرب السائل الدماغي الشوكي إلى الأذن الوسطى عند الأطفال. والشُّقيق أمام النافذة هو الموضع الأول المعتاد لتصلب الأذن."
+      },
+      "numbers": []
+    },
+    {
+      "id": "membranous_labyrinth",
+      "title": {
+        "en": "Membranous labyrinth",
+        "ar": "التيه الغشائي"
+      },
+      "structures": [
+        "membranous_labyrinth",
+        "cochlear_duct",
+        "utricle",
+        "saccule",
+        "semicircular_ducts"
+      ],
+      "overview": {
+        "en": "Inside the bony labyrinth, bathed in perilymph, lies a closed system of endolymph-filled ducts and sacs. The cochlear duct (scala media) runs between the osseous spiral lamina and the outer wall, ends blindly at both ends, and joins the saccule through the ductus reuniens near its basal end. The utricle sits in the elliptical recess and the saccule, flatter, in the spherical recess, each held by its nerve filaments and connective tissue. The three semicircular ducts lie against the outer walls of their canals and open into the utricle. Small utricular and saccular ducts join to form the endolymphatic duct.",
+        "ar": "داخل التيه العظمي، مغموراً باللمف المحيطي، يقع جهاز مغلق من القنوات والأكياس المملوءة باللمف الداخلي. تسير القناة القوقعية (السقالة الوسطى) بين الصفيحة الحلزونية العظمية والجدار الخارجي، وتنتهي عمياء في طرفيها، وتتصل بالكييس عبر القناة الواصلة قرب طرفها القاعدي. وتستقر القُريبة في الردب الإهليلجي والكييس، وهو أكثر تسطحاً، في الردب الكروي، ويثبّت كلاً منهما خيوطُ عصبه ونسيج ضام. وتستند القنوات نصف الهلالية الغشائية الثلاث إلى الجدران الخارجية لقنواتها وتنفتح على القُريبة. وتلتقي القناتان القُريبية والكييسية الصغيرتان لتشكلا القناة اللمفية الداخلية."
+      },
+      "surgical": {
+        "en": "In this app the membranous labyrinth is schematic: shapes placed by rule inside each OpenEar specimen's bony labyrinth, badged and not measurable.",
+        "ar": "التيه الغشائي في هذا التطبيق تخطيطي: أشكال موضوعة بقاعدة داخل التيه العظمي لكل عينة من OpenEar، عليها شارة ولا تُقاس."
+      },
+      "numbers": []
+    },
+    {
+      "id": "endolymphatic_duct_sac",
+      "title": {
+        "en": "Endolymphatic duct and sac",
+        "ar": "القناة والكيس اللمفيان الداخليان"
+      },
+      "structures": [
+        "membranous_labyrinth",
+        "sigmoid_sinus_and_dura",
+        "temporal_bone"
+      ],
+      "overview": {
+        "en": "The duct leaves the back wall of the vestibule and runs through the vestibular aqueduct to the sac on the posterior surface of the pyramid, where it lies between layers of dura in a shallow fossa under the operculum. In the fetus the duct runs straight alongside the common crus; because the capsule stops growing early while the posterior fossa and sigmoid sinus keep moving, the outer end is drawn down, and the adult aqueduct curves laterally and downwards. Its vessels come from a posterior meningeal branch and a branch of the internal auditory artery; it drains through the vein of the vestibular aqueduct.",
+        "ar": "تخرج القناة من الجدار الخلفي للدهليز وتسير عبر المسال الدهليزي إلى الكيس على السطح الخلفي للهرم، حيث يقع بين طبقتي الأم الجافية في حفرة ضحلة تحت الغطاء العظمي. في الجنين تسير القناة مستقيمة بجانب الساق المشتركة؛ ولأن المحفظة تتوقف عن النمو باكراً بينما تستمر الحفرة الخلفية والجيب السيني في التحرك، تُسحب النهاية الخارجية إلى الأسفل، فينحني المسال عند البالغ إلى الوحشي والأسفل. تأتي أوعيته من فرع سحائي خلفي وفرع من الشريان السمعي الباطن، ويُصرَّف عبر وريد المسال الدهليزي."
+      },
+      "surgical": {
+        "en": "A poorly visible vestibular aqueduct on imaging is more common in Ménière's disease. The sac is approached behind the posterior canal and in front of the sigmoid sinus, below the line of the lateral canal (Donaldson's line), for sac surgery. An enlarged aqueduct is the commonest imaging finding in children with progressive hearing loss.",
+        "ar": "ضعف ظهور المسال الدهليزي في التصوير أشيع في داء منيير. ويُوصل إلى الكيس خلف القناة الخلفية وأمام الجيب السيني، تحت امتداد خط القناة الوحشية (خط دونالدسون)، في جراحة الكيس. والمسال المتسع هو أشيع موجودة تصويرية عند الأطفال المصابين بنقص سمع مترقٍّ."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Sac behind and lateral to the porus",
+            "ar": "بعد الكيس خلف فوهة القناة السمعية الباطنة ووحشيها"
+          },
+          "value": "≈ 10",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 469
+          }
+        },
+        {
+          "label": {
+            "en": "Sac below the superior petrosal sulcus",
+            "ar": "بعد الكيس تحت الثلم الصخري العلوي"
+          },
+          "value": "≈ 10",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 469
+          }
+        }
+      ]
+    },
+    {
+      "id": "perilymph_channels",
+      "title": {
+        "en": "Cochlear aqueduct, periotic duct and paravestibular canaliculi",
+        "ar": "المسال القوقعي والقناة حول الأذنية والقُنيّات جانب الدهليزية"
+      },
+      "structures": [
+        "scala_tympani",
+        "round_window",
+        "bony_labyrinth"
+      ],
+      "overview": {
+        "en": "The cochlear aqueduct starts in the scala tympani of the basal turn close to the round window membrane and runs down and medially to a funnel-shaped opening on the under surface of the pyramid by the jugular foramen and the glossopharyngeal nerve. It holds the periotic duct, a loose meshwork through which perilymph communicates with cerebrospinal fluid and which damps sudden pressure changes between them. Beside the vestibular aqueduct run usually two small paravestibular canaliculi: the main one (Cotugno's) leaves the vestibule above and medial to the aqueduct and carries the vein of the vestibular aqueduct with a small artery; a second, less constant one brings a vein from the tympanic cavity and joins it.",
+        "ar": "يبدأ المسال القوقعي في السقالة الطبلية للفة القاعدية قرب غشاء النافذة المستديرة، ويمتد إلى الأسفل والأنسي حتى فتحة قمعية على السطح السفلي للهرم بجانب الثقبة الوداجية والعصب اللساني البلعومي. يحوي القناة حول الأذنية، وهي شبكة رخوة يتصل عبرها اللمف المحيطي بالسائل الدماغي الشوكي، وتخمد تغيرات الضغط المفاجئة بينهما. وبجانب المسال الدهليزي تسير عادةً قُنيّتان صغيرتان جانب دهليزيتين: الرئيسية (قُنيّة كوتونيو) تخرج من الدهليز فوق المسال وأنسيه وتحمل وريد المسال الدهليزي مع شريان صغير؛ والثانية، الأقل ثباتاً، تحمل وريداً من الجوف الطبلي وتنضم إليها."
+      },
+      "surgical": {
+        "en": "A wide cochlear aqueduct is one explanation for a perilymph gusher when the labyrinth is opened.",
+        "ar": "اتساع المسال القوقعي أحد تفسيرات تدفق اللمف المحيطي بقوة عند فتح التيه."
+      },
+      "numbers": []
+    },
+    {
+      "id": "inner_ear_arteries",
+      "title": {
+        "en": "Arteries of the inner ear and the AICA loop",
+        "ar": "شرايين الأذن الداخلية وعروة الشريان المخيخي الأمامي السفلي"
+      },
+      "structures": [
+        "vestibulocochlear_nerve",
+        "bony_labyrinth"
+      ],
+      "overview": {
+        "en": "The membranous labyrinth is supplied almost wholly by the labyrinthine (internal auditory) artery, usually from AICA and occasionally from the basilar; it also feeds the nerves, dura and bone of the internal canal. It divides into the anterior vestibular artery (utricular macula, superior and lateral cristae, upper walls of utricle and saccule) and the common cochlear artery. The common cochlear artery gives the main cochlear artery, for the apical three quarters and the modiolus through radiating arterioles to the spiral ligament, stria vascularis, spiral ganglion and basilar membrane, and the vestibulocochlear artery, which splits into a cochlear ramus for the basal quarter and the posterior vestibular artery for the saccular macula, posterior crista and lower walls of utricle and saccule. AICA often loops towards or into the internal canal.",
+        "ar": "يتغذى التيه الغشائي كلياً تقريباً من الشريان التيهي (السمعي الباطن)، الناشئ عادة من الشريان المخيخي الأمامي السفلي وأحياناً من القاعدي؛ ويغذي أيضاً أعصاب القناة الباطنة وجافيتها وعظمها. ينقسم إلى الشريان الدهليزي الأمامي (لطخة القُريبة، والعرفان العلوي والجانبي، والجداران العلويان للقُريبة والكييس) والشريان القوقعي المشترك. يعطي القوقعي المشترك الشريانَ القوقعي الرئيسي للأرباع الثلاثة القمية والعمود عبر شُرينات شعاعية إلى الرباط الحلزوني والمخطط الوعائي والعقدة الحلزونية والغشاء القاعدي، والشريانَ الدهليزي القوقعي الذي ينقسم إلى فرع قوقعي للربع القاعدي والشريان الدهليزي الخلفي للطخة الكييس والعرف الخلفي والجدارين السفليين للقُريبة والكييس. وكثيراً ما يصنع الشريان المخيخي الأمامي السفلي عروة نحو القناة الباطنة أو داخلها."
+      },
+      "surgical": {
+        "en": "The labyrinthine artery is an end artery, so its occlusion causes sudden loss of both hearing and balance. The AICA loop lies in the operative field of vestibular schwannoma and vestibular nerve surgery.",
+        "ar": "الشريان التيهي شريان انتهائي، لذا يسبب انسداده فقداناً مفاجئاً للسمع والتوازن معاً. وتقع عروة الشريان المخيخي الأمامي السفلي في ساحة جراحة الورم الشفاني الدهليزي وقطع العصب الدهليزي."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "AICA loop inside the internal canal",
+            "ar": "عروة الشريان داخل القناة الباطنة"
+          },
+          "value": "40",
+          "unit": "percent",
+          "source": {
+            "ref": "janfaza",
+            "page": 470
+          }
+        },
+        {
+          "label": {
+            "en": "AICA loop at the porus",
+            "ar": "العروة عند الفوهة"
+          },
+          "value": "27",
+          "unit": "percent",
+          "source": {
+            "ref": "janfaza",
+            "page": 471
+          }
+        },
+        {
+          "label": {
+            "en": "AICA loop in the cerebellopontine angle",
+            "ar": "العروة في الزاوية المخيخية الجسرية"
+          },
+          "value": "33",
+          "unit": "percent",
+          "source": {
+            "ref": "janfaza",
+            "page": 471
+          }
+        }
+      ]
+    },
+    {
+      "id": "inner_ear_veins",
+      "title": {
+        "en": "Veins of the inner ear",
+        "ar": "أوردة الأذن الداخلية"
+      },
+      "structures": [
+        "scala_tympani",
+        "scala_vestibuli",
+        "bony_labyrinth"
+      ],
+      "overview": {
+        "en": "The veins do not follow the arteries. The cochlea drains mainly through the common modiolar vein, formed by anterior and posterior spiral veins (the first from the spiral lamina and scala vestibuli, the second from the scala tympani, the outer wall of the duct and the spiral ganglion), into the inferior cochlear vein, which runs in the canal of Cotugno to the inferior petrosal sinus. Vestibular veins drain the utricle and ampullae (anterior) and the saccule, posterior ampulla and basal cochlea (posterior). The vein of the vestibular aqueduct drains the semicircular ducts to the sigmoid sinus. An internal auditory vein drains the upper turns through the internal canal to the inferior petrosal sinus.",
+        "ar": "لا تتبع الأوردةُ الشرايين. تُصرَّف القوقعة أساساً عبر الوريد العمودي المشترك، المتشكل من الوريدين الحلزونيين الأمامي والخلفي (الأول من الصفيحة الحلزونية والسقالة الدهليزية، والثاني من السقالة الطبلية والجدار الخارجي للقناة والعقدة الحلزونية)، إلى الوريد القوقعي السفلي الذي يسير في قناة كوتونيو إلى الجيب الصخري السفلي. وتُصرّف الأوردة الدهليزية القُريبة والأمبولات (الأمامي) والكييس والأمبولة الخلفية وقاعدة القوقعة (الخلفي). ويصرّف وريد المسال الدهليزي القنوات نصف الهلالية الغشائية إلى الجيب السيني. ويصرّف وريد سمعي باطن اللفات العلوية عبر القناة الباطنة إلى الجيب الصخري السفلي."
+      },
+      "numbers": []
+    }
+  ]
+}

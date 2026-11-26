@@ -140,6 +140,29 @@ export const en = {
 
   'units.ml': 'mL',
   'units.mm': 'mm',
+  'topics.title': 'Topics',
+  'topics.open': 'Read the topics',
+  'topics.intro':
+    'Every topic of the reference chapter on the temporal bone and ear, in our own words, with figures and the page they come from. Open a topic to read it, or show its structures on a specimen.',
+  'topics.search': 'Search the topics',
+  'topics.noResults': 'No topic matches this search.',
+  'topics.count': '{count} topics',
+  'topics.backToList': 'All topics',
+  'topics.overview': 'Description',
+  'topics.surgical': 'Surgical relevance',
+  'topics.variants': 'Variants',
+  'topics.numbers': 'Figures',
+  'topics.source': 'Source',
+  'topics.page': 'p. {page}',
+  'topics.structures': 'In the 3D model',
+  'topics.notIn3d': 'This topic has no structure in the 3D model yet; it is covered by the text.',
+  'topics.showIn3d': 'Show in 3D',
+  'topics.draft': 'Draft written by Claude; text and Arabic terms await the reviewer.',
+  'topics.related': 'Read about it',
+  'topics.close': 'Close the topic',
+  'topics.focusMissing': 'This specimen does not include {name}. Choose another specimen.',
+  'units.deg': '°',
+  'units.percent': '%',
 } as const;
 
 export type MessageKey = keyof typeof en;

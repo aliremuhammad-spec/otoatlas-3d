@@ -773,3 +773,184 @@ fieldset {
 .structure-name__note--schematic {
   color: #ff9ccb;
 }
+
+/* Topics: the chapter's reading texts. */
+.visually-hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+button.secondary {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+button.link {
+  min-block-size: auto;
+  padding: 0.2rem 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  text-align: start;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.topics {
+  max-inline-size: 48rem;
+}
+
+.topics__search input {
+  inline-size: 100%;
+  min-block-size: var(--touch);
+  padding-inline: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.topics__section ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.topics__section h2 {
+  margin-block: 1.5rem 0.5rem;
+  font-size: 1.05rem;
+  color: var(--text-dim);
+}
+
+.topics__item {
+  inline-size: 100%;
+  margin-block-end: 0.35rem;
+  text-align: start;
+  background: var(--surface);
+}
+
+.topic {
+  line-height: 1.6;
+}
+
+.topic__title {
+  margin-block-start: 0;
+}
+
+.topic h3,
+.topic h4 {
+  margin-block: 1.1rem 0.3rem;
+  font-size: 0.95rem;
+  color: var(--accent);
+}
+
+.topic p {
+  margin-block: 0 0.5rem;
+}
+
+.topic__draft {
+  color: var(--warn);
+  font-size: 0.85rem;
+}
+
+.topic__table-wrap {
+  overflow-x: auto;
+}
+
+.topic__numbers {
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.topic__numbers th,
+.topic__numbers td {
+  padding: 0.35rem 0.5rem;
+  border-block-end: 1px solid var(--line);
+  text-align: start;
+  vertical-align: top;
+}
+
+.topic__numbers th {
+  font-weight: 400;
+}
+
+.topic__figure {
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.topic__source {
+  color: var(--text-dim);
+  font-size: 0.8rem;
+}
+
+.topic__structures {
+  margin: 0 0 0.75rem;
+  padding-inline-start: 1.25rem;
+}
+
+.card__topics h3 {
+  margin: 0.75rem 0 0.2rem;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+.card__topics ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9rem;
+}
+
+/* A topic opened from a structure card reads over the 3D view, which stays where it was. */
+.topic-overlay {
+  position: absolute;
+  inset: 0.5rem;
+  overflow: auto;
+  padding: 0.75rem 1rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  z-index: 4;
+}
+
+.topic-overlay__close {
+  float: inline-end;
+  margin-inline-start: 0.5rem;
+}
+
+.viewer__notice {
+  position: absolute;
+  inset-block-start: 0.75rem;
+  inset-inline: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--warn);
+  border-radius: 8px;
+  background: rgb(23 32 38 / 94%);
+  z-index: 3;
+}
+
+.viewer__notice p {
+  margin: 0;
+}
+
+/* On a phone or a portrait tablet the 3D stage is short: a topic opened there takes the whole screen. */
+@media (max-width: 720px), (orientation: portrait) and (max-width: 1100px) {
+  .topic-overlay {
+    position: fixed;
+    inset: 0;
+    border: 0;
+    border-radius: 0;
+    padding: 1rem;
+    z-index: 30;
+  }
+}

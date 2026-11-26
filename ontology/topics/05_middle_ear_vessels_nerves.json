@@ -1,0 +1,161 @@
+{
+  "section": "middle_ear_vessels_nerves",
+  "title": {
+    "en": "Vessels and nerves of the middle ear",
+    "ar": "أوعية الأذن الوسطى وأعصابها"
+  },
+  "topics": [
+    {
+      "id": "anterior_tympanic_artery",
+      "title": {
+        "en": "Anterior tympanic and deep auricular arteries",
+        "ar": "الشريانان الطبلي الأمامي والأذني العميق"
+      },
+      "structures": [
+        "malleus",
+        "incus",
+        "tympanic_membrane"
+      ],
+      "overview": {
+        "en": "Both arise from the first part of the maxillary artery. The anterior tympanic artery enters the petrotympanic fissure and divides into three. A superior branch reaches the anterior and lateral attic walls and the front of the tegmen and joins the superior tympanic artery. A posterior branch supplies the posterolateral attic, the long and lenticular processes, the incudostapedial joint, the stapes head and the membrane. An ossicular branch splits into a mallear vessel, which runs in the lateral mallear ligament to a nutrient foramen on the neck, and an incudal vessel to a foramen on the body of the incus. The deep auricular artery enters at the floor of the bony canal; its anterior branch supplies the front of the canal, the membrane's rim and the floor of the cavity, its posterior branch the back of the canal, the rim and a loop above the umbo.",
+        "ar": "ينشأ الاثنان من الجزء الأول للشريان الفكي. يدخل الشريان الطبلي الأمامي الشقَّ الصخري الطبلي وينقسم إلى ثلاثة. فرع علوي يصل إلى الجدارين الأمامي والوحشي للسقيفة ومقدمة السقف ويتصل بالشريان الطبلي العلوي. وفرع خلفي يغذي السقيفة الخلفية الوحشية والساق الطويلة والناتئ العدسي والمفصل السنداني الركابي ورأس الركاب والغشاء. وفرع عظيمي ينقسم إلى وعاء مطرقي يسير في الرباط المطرقي الوحشي إلى ثقبة مغذية على العنق، ووعاء سنداني إلى ثقبة على جسم السندان. ويدخل الشريان الأذني العميق عند قاع القناة العظمية؛ يغذي فرعه الأمامي مقدمة القناة وحافة الغشاء وقاع الجوف، وفرعه الخلفي مؤخرة القناة والحافة وعروةً فوق السرة."
+      },
+      "surgical": {
+        "en": "The long process of the incus depends on a thin mucosal supply, which is one reason it is the part of the chain most often eroded in chronic ear disease.",
+        "ar": "تعتمد الساق الطويلة للسندان على تروية مخاطية رقيقة، وهذا أحد أسباب كونها الجزء الأكثر تآكلاً من السلسلة في أمراض الأذن المزمنة."
+      },
+      "numbers": []
+    },
+    {
+      "id": "tympanic_arteries",
+      "title": {
+        "en": "Inferior, posterior and superior tympanic arteries",
+        "ar": "الشرايين الطبلية السفلية والخلفية والعلوية"
+      },
+      "structures": [
+        "middle_ear_air_space",
+        "tympanic_plexus",
+        "facial_nerve",
+        "stapes"
+      ],
+      "overview": {
+        "en": "The inferior tympanic artery, from the ascending pharyngeal, enters with Jacobson's nerve through the inferior tympanic canaliculus and climbs the promontory in a groove in front of the round window, supplying floor, promontory, tubal orifice and the front of the stapes. The stylomastoid artery, from the posterior auricular, enters the stylomastoid foramen and supplies mastoid, the floor and back of the cavity, the facial nerve and the stapedius; its posterior tympanic branch follows the chorda. The superficial petrosal artery, from the middle meningeal near the foramen spinosum, runs with the greater petrosal nerve and supplies the geniculate region and the back of the stapes. The superior tympanic artery, also from the middle meningeal, enters with the lesser petrosal nerve, supplies tensor tympani and the medial attic, and runs down the promontory to join the inferior tympanic artery. The mastoid artery from the occipital supplies the back of the mastoid, and the tubal artery from the accessory meningeal supplies the tube and anterior cavity.",
+        "ar": "يدخل الشريان الطبلي السفلي، من البلعومي الصاعد، مع عصب جاكوبسون عبر القُنيّة الطبلية السفلية ويصعد الرعن في ثلم أمام النافذة المستديرة، فيغذي القاع والرعن وفتحة النفير ومقدمة الركاب. ويدخل الشريان الإبري الخشائي، من الأذني الخلفي، الثقبةَ الإبرية الخشائية ويغذي الخشاء وقاع الجوف ومؤخرته والعصب الوجهي والركابية؛ ويتبع فرعه الطبلي الخلفي حبلَ الطبل. ويسير الشريان الصخري السطحي، من السحائي الأوسط قرب الثقبة الشوكية، مع العصب الصخري الكبير ويغذي منطقة العقدة الركبية ومؤخرة الركاب. ويدخل الشريان الطبلي العلوي، من السحائي الأوسط أيضاً، مع العصب الصخري الصغير، فيغذي الموتّرة والسقيفة الأنسية وينزل على الرعن ليتصل بالطبلي السفلي. ويغذي الشريان الخشائي من القذالي مؤخرة الخشاء، والشريان النفيري من السحائي الإضافي النفيرَ ومقدمة الجوف."
+      },
+      "surgical": {
+        "en": "The inferior tympanic artery is the main feeder of glomus tympanicum; controlling it first reduces bleeding. A small vessel crossing the footplate vertically is usually a branch of this network, not a persistent stapedial artery.",
+        "ar": "الشريان الطبلي السفلي هو المغذي الرئيسي للورم الكبيبي الطبلي؛ والسيطرة عليه أولاً تقلل النزف. والوعاء الصغير الذي يعبر صفيحة الركاب عمودياً هو عادةً فرع من هذه الشبكة، لا شريان ركابي مستمر."
+      },
+      "numbers": []
+    },
+    {
+      "id": "carotid_basilar_branches",
+      "title": {
+        "en": "Branches from the internal carotid and basilar systems",
+        "ar": "فروع من جهازي السباتي الباطن والقاعدي"
+      },
+      "structures": [
+        "internal_carotid_artery",
+        "middle_ear_air_space",
+        "mastoid_antrum"
+      ],
+      "overview": {
+        "en": "Usually two caroticotympanic arteries, remnants of the embryonic hyoid artery, pass from the carotid canal to the anteromedial wall of the cavity and join the inferior tympanic artery. From the basilar system, the subarcuate artery (from the labyrinthine artery or AICA) runs through the petromastoid canal under the superior canal, supplying the bone of the canals and the upper vestibule, and ends in the medial wall of the antrum, where its branches supply the front of the mastoid and the wall of the superior petrosal sinus.",
+        "ar": "يمر عادةً شريانان سباتيان طبليان، وهما بقايا الشريان اللامي الجنيني، من القناة السباتية إلى الجدار الأمامي الأنسي للجوف ويتصلان بالشريان الطبلي السفلي. ومن الجهاز القاعدي يسير الشريان تحت المقوس (من التيهي أو من الشريان المخيخي الأمامي السفلي) في القناة الصخرية الخشائية تحت القناة العلوية، فيغذي عظم القنوات وأعلى الدهليز، وينتهي في الجدار الأنسي للغار حيث تغذي فروعه مقدمة الخشاء وجدار الجيب الصخري العلوي."
+      },
+      "numbers": []
+    },
+    {
+      "id": "arterial_anomalies",
+      "title": {
+        "en": "Persistent stapedial artery and aberrant carotid",
+        "ar": "الشريان الركابي المستمر والسباتي الشاذ"
+      },
+      "structures": [
+        "internal_carotid_artery",
+        "stapes",
+        "facial_nerve"
+      ],
+      "overview": {
+        "en": "A persistent stapedial artery is the embryonic hyoid artery that failed to regress. It leaves the internal carotid, crosses the floor and climbs the back of the promontory in a bony channel, passes through the obturator foramen of the stapes, enters the facial canal near the cochleariform process and reaches the middle fossa, often taking over the middle meningeal territory. In the aberrant internal carotid artery the petrous carotid is small or missing, and an enlarged inferior tympanic artery carries the flow across the promontory to the intracranial carotid.",
+        "ar": "الشريان الركابي المستمر هو الشريان اللامي الجنيني الذي لم يتراجع. يخرج من السباتي الباطن، ويعبر القاع، ويصعد مؤخرة الرعن في قناة عظمية، ويمر عبر الثقبة السادّة للركاب، ويدخل القناة الوجهية قرب الناتئ الملعقي، ويصل إلى الحفرة الوسطى، وكثيراً ما يأخذ منطقة الشريان السحائي الأوسط. وفي الشريان السباتي الباطن الشاذ يكون الجزء الصخري من السباتي صغيراً أو غائباً، ويحمل شريانٌ طبلي سفلي متضخم الجريانَ عبر الرعن إلى السباتي داخل القحف."
+      },
+      "surgical": {
+        "en": "An aberrant carotid appears as a red pulsatile mass behind the anteroinferior membrane and must not be biopsied; CT shows the missing carotid canal. A true stapedial artery can be associated with an abnormal stapes and complicates stapes surgery.",
+        "ar": "يظهر السباتي الشاذ ككتلة حمراء نابضة خلف الجزء الأمامي السفلي من الغشاء ويجب ألا تؤخذ منه خزعة؛ ويُظهر التصوير المقطعي غياب القناة السباتية. وقد يترافق الشريان الركابي الحقيقي مع ركاب شاذ ويعقّد جراحة الركاب."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Persistent stapedial artery",
+            "ar": "الشريان الركابي المستمر"
+          },
+          "text": {
+            "en": "1 in 5,000 to 10,000 ears",
+            "ar": "1 من كل 5000 إلى 10000 أذن"
+          },
+          "source": {
+            "ref": "janfaza",
+            "page": 462
+          }
+        }
+      ]
+    },
+    {
+      "id": "middle_ear_veins_lymph",
+      "title": {
+        "en": "Veins and lymphatics of the middle ear",
+        "ar": "أوردة الأذن الوسطى ولمفياتها"
+      },
+      "structures": [
+        "middle_ear_air_space"
+      ],
+      "overview": {
+        "en": "The veins run with the arteries and drain to the pterygoid plexus and the superior petrosal sinus. Lymph goes to the retropharyngeal and parotid nodes.",
+        "ar": "تسير الأوردة مع الشرايين وتصبّ في الضفيرة الجناحية والجيب الصخري العلوي. ويذهب اللمف إلى العقد خلف البلعوم والعقد النكفية."
+      },
+      "numbers": []
+    },
+    {
+      "id": "tympanic_nerve_plexus",
+      "title": {
+        "en": "Jacobson's nerve and the tympanic plexus",
+        "ar": "عصب جاكوبسون والضفيرة الطبلية"
+      },
+      "structures": [
+        "tympanic_plexus",
+        "middle_ear_air_space",
+        "facial_nerve"
+      ],
+      "overview": {
+        "en": "The tympanic branch of the glossopharyngeal nerve leaves its inferior ganglion, enters through the inferior tympanic canaliculus and climbs the promontory in a groove or partly in bone. Around the round window it is joined by caroticotympanic sympathetic fibres from the carotid plexus, forming the tympanic plexus, which supplies the mucosa of the cavity and tube. The plexus collects into the lesser superficial petrosal nerve, which leaves the cavity through a small canal just below the cochleariform process, receives twigs from the facial nerve near the geniculate ganglion, and goes on through the middle fossa to the otic ganglion with preganglionic parasympathetic fibres for the parotid.",
+        "ar": "يخرج الفرع الطبلي للعصب اللساني البلعومي من عقدته السفلية، ويدخل عبر القُنيّة الطبلية السفلية، ويصعد الرعن في ثلم أو جزئياً داخل العظم. وعند النافذة المستديرة تنضم إليه ألياف ودية سباتية طبلية من الضفيرة السباتية، فتتشكل الضفيرة الطبلية التي تعصّب مخاطية الجوف والنفير. وتتجمع الضفيرة في العصب الصخري السطحي الصغير الذي يغادر الجوف عبر قناة صغيرة تحت الناتئ الملعقي مباشرة، ويتلقى فروعاً من العصب الوجهي قرب العقدة الركبية، ثم يمضي عبر الحفرة الوسطى إلى العقدة الأذنية حاملاً أليافاً نظيرة ودية قبل عقدية للنكفة."
+      },
+      "surgical": {
+        "en": "The promontory, especially in front of the oval window, is very sensitive under local anaesthesia. Dividing the plexus (tympanic neurectomy) has been used for gustatory sweating (Frey's syndrome) and drooling.",
+        "ar": "الرعن، وخاصة أمام النافذة البيضية، شديد الحساسية تحت التخدير الموضعي. وقد استُعمل قطع الضفيرة (قطع العصب الطبلي) لعلاج التعرق الذوقي (متلازمة فراي) وسيلان اللعاب."
+      },
+      "numbers": []
+    },
+    {
+      "id": "arnold_nerve",
+      "title": {
+        "en": "Arnold's nerve in the temporal bone",
+        "ar": "عصب أرنولد في العظم الصدغي"
+      },
+      "structures": [
+        "facial_nerve",
+        "external_acoustic_meatus"
+      ],
+      "overview": {
+        "en": "The auricular branch of the vagus takes a large root from the vagal superior ganglion and a small one from the glossopharyngeal inferior ganglion. From the jugular foramen it passes lateral to the jugular bulb, in the mastoid canaliculus or a groove, to the facial canal. There it divides: an upper branch ends in the sheath of the facial nerve, and a lower branch takes on the facial nerve's cutaneous fibres and leaves through the tympanomastoid fissure to the back of the canal and the concha.",
+        "ar": "يأخذ الفرع الأذني للمبهم جذراً كبيراً من العقدة العلوية للمبهم وجذراً صغيراً من العقدة السفلية للعصب اللساني البلعومي. ومن الثقبة الوداجية يمر وحشي البصلة الوداجية، في القُنيّة الخشائية أو في ثلم، إلى القناة الوجهية. وهناك ينقسم: ينتهي فرع علوي في غمد العصب الوجهي، ويحمل فرع سفلي الأليافَ الجلدية للعصب الوجهي ويخرج عبر الشق الطبلي الخشائي إلى مؤخرة القناة والمحارة."
+      },
+      "surgical": {
+        "en": "This is the path for the vesicles of herpes zoster oticus (Ramsay Hunt) and for the cough reflex from the ear canal. Its canaliculus can be mistaken for a fracture line on CT.",
+        "ar": "هذا هو طريق حويصلات الحلأ النطاقي الأذني (رامزي هنت) ومنعكس السعال من القناة السمعية. وقد تُحسب قُنيّته خطَّ كسر في التصوير المقطعي."
+      },
+      "numbers": []
+    }
+  ]
+}

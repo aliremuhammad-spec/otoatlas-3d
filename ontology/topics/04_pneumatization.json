@@ -1,0 +1,155 @@
+{
+  "section": "pneumatization",
+  "title": {
+    "en": "Pneumatization of the temporal bone",
+    "ar": "تهوية العظم الصدغي"
+  },
+  "topics": [
+    {
+      "id": "pneumatization_regions",
+      "title": {
+        "en": "Regions, areas and tracts",
+        "ar": "المناطق والباحات والسبل"
+      },
+      "structures": [
+        "middle_ear_air_space",
+        "mastoid_antrum",
+        "temporal_bone_air_cells"
+      ],
+      "overview": {
+        "en": "The air spaces of the temporal bone are described at three levels. Five regions: middle ear, mastoid, perilabyrinthine, petrous apex and accessory. Each region has areas: the five divisions of the tympanic cavity; antrum, central tract and periphery of the mastoid; the spaces above and below the labyrinth; peritubal and apical areas of the apex. Tracts are the corridors along which cells spread from one region to the next, mostly towards the apex.",
+        "ar": "توصف الأحياز الهوائية للعظم الصدغي على ثلاثة مستويات. خمس مناطق: الأذن الوسطى، والخشاء، وحول التيه، وقمة الصخري، والمناطق الملحقة. ولكل منطقة باحات: أقسام الجوف الطبلي الخمسة؛ والغار والسبيل المركزي ومحيط الخشاء؛ والحيّزان فوق التيه وتحته؛ والباحتان حول النفير والقمية في القمة. أما السبل فهي الممرات التي تمتد عبرها الخلايا من منطقة إلى أخرى، ومعظمها نحو القمة."
+      },
+      "surgical": {
+        "en": "In this app the tympanic cavity, the antrum and the remaining cells are computed as three structures inside each scanned block; the tracts are not separated yet, because the cells medial and posterior to the labyrinth do not fall cleanly on either side of a simple rule.",
+        "ar": "في هذا التطبيق يُحسب الجوف الطبلي والغار وبقية الخلايا كثلاث بنى داخل كل كتلة مصوّرة؛ ولم تُفصل السبل بعد، لأن الخلايا الأنسية والخلفية للتيه لا تقع بوضوح على جانبي أي قاعدة بسيطة."
+      },
+      "numbers": []
+    },
+    {
+      "id": "mastoid_region",
+      "title": {
+        "en": "Mastoid region: antrum, Körner's septum, peripheral cells",
+        "ar": "منطقة الخشاء: الغار، حاجز كورنر، الخلايا المحيطية"
+      },
+      "structures": [
+        "mastoid_antrum",
+        "temporal_bone_air_cells",
+        "sigmoid_sinus_and_dura",
+        "facial_nerve"
+      ],
+      "overview": {
+        "en": "At birth only the antrum and the bone next to it hold air; cells then replace marrow-filled bone through childhood and beyond, and infection early in life can halt this, leaving sclerotic bone. The antrum opens forwards into the epitympanum through the aditus, and the central tract runs down from it. Squamous and petrous parts aerate separately, and between them Körner's (petrosquamous) septum may persist. Peripheral cells are named by position: tegmental under the tegmen; sinodural in the angle between the dural plate above and the sinus plate behind; sinal around the sigmoid sinus; facial around the descending facial nerve; tip cells, split by the digastric ridge into medial and lateral groups.",
+        "ar": "عند الولادة لا يحوي الهواءَ إلا الغارُ والعظم المجاور له؛ ثم تحل الخلايا محل العظم المملوء بالنقي طوال الطفولة وما بعدها، وقد يوقف الالتهابُ في الحياة الباكرة ذلك فيبقى العظم متصلباً. ينفتح الغار إلى الأمام على السقيفة عبر المدخل، ويمتد السبيل المركزي نزولاً منه. يتهوّى الجزءان الحرشفي والصخري بشكل منفصل، وقد يبقى بينهما حاجز كورنر (الصخري الحرشفي). وتُسمى الخلايا المحيطية بحسب موضعها: السقفية تحت السقف؛ والجيبية الجافية في الزاوية بين الصفيحة الجافية في الأعلى وصفيحة الجيب في الخلف؛ والجيبية حول الجيب السيني؛ والوجهية حول العصب الوجهي النازل؛ وخلايا الذروة التي يقسمها الحرف ذو البطنين إلى مجموعتين أنسية ووحشية."
+      },
+      "surgical": {
+        "en": "A preserved Körner's septum can be mistaken for the medial wall of the antrum, leaving the true antrum and its disease unopened. The sinodural angle, the sinus plate and the digastric ridge are the frame of a mastoidectomy, and facial cells lie directly on the nerve.",
+        "ar": "قد يُظن حاجز كورنر الباقي الجدارَ الأنسي للغار، فيبقى الغار الحقيقي وما فيه من مرض دون فتح. والزاوية الجيبية الجافية وصفيحة الجيب والحرف ذو البطنين هي إطار عملية استئصال الخشاء، والخلايا الوجهية تقع على العصب مباشرة."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Extensive pneumatization in adult bones (Zuckerkandl)",
+            "ar": "التهوية الواسعة في عظام البالغين (تسوكركاندل)"
+          },
+          "value": "37",
+          "unit": "percent",
+          "source": {
+            "ref": "janfaza",
+            "page": 455
+          }
+        },
+        {
+          "label": {
+            "en": "Partial pneumatization",
+            "ar": "التهوية الجزئية"
+          },
+          "value": "43",
+          "unit": "percent",
+          "source": {
+            "ref": "janfaza",
+            "page": 455
+          }
+        },
+        {
+          "label": {
+            "en": "Air limited to the antrum",
+            "ar": "هواء محصور في الغار"
+          },
+          "value": "20",
+          "unit": "percent",
+          "source": {
+            "ref": "janfaza",
+            "page": 455
+          }
+        },
+        {
+          "label": {
+            "en": "Antrum volume in this app's specimens",
+            "ar": "حجم الغار في عينات هذا التطبيق"
+          },
+          "value": "0.2–0.6",
+          "unit": "ml",
+          "source": {
+            "ref": "app"
+          }
+        }
+      ]
+    },
+    {
+      "id": "perilabyrinthine_apex_accessory",
+      "title": {
+        "en": "Perilabyrinthine, apical and accessory cells",
+        "ar": "الخلايا حول التيه وفي القمة والملحقة"
+      },
+      "structures": [
+        "temporal_bone_air_cells",
+        "bony_labyrinth",
+        "internal_carotid_artery"
+      ],
+      "overview": {
+        "en": "Around the labyrinth cells occupy a supralabyrinthine area and an infralabyrinthine area. In the petrous apex a peritubal area surrounds the bony tube, anterolateral to the carotid canal, and an apical area lies anteromedial to it. Air can also extend beyond the temporal bone's main body: forwards into the zygomatic root and arch, upwards into the squama above the temporal line, backwards into the occipital bone from the sinal cells, and down into the base of the styloid process from the tip.",
+        "ar": "تشغل الخلايا حول التيه باحة فوق تيهية وباحة تحت تيهية. وفي قمة الصخري تحيط باحة حول نفيرية بالنفير العظمي، أمام القناة السباتية وجانبيها، وتقع الباحة القمية أمامها وأنسيها. وقد يمتد الهواء أيضاً خارج الجسم الرئيسي للعظم: إلى الأمام في جذر الوجني وقوسه، وإلى الأعلى في الحرشفة فوق الخط الصدغي، وإلى الخلف في العظم القذالي من الخلايا الجيبية، وإلى الأسفل في قاعدة الناتئ الإبري من الذروة."
+      },
+      "surgical": {
+        "en": "Infection reaching the apex gives petrous apicitis; spread of air into the zygomatic root explains zygomatic abscess from mastoiditis.",
+        "ar": "وصول الالتهاب إلى القمة يسبب التهاب قمة الصخري؛ وامتداد الهواء إلى جذر الوجني يفسّر الخراج الوجني الناتج عن التهاب الخشاء."
+      },
+      "numbers": []
+    },
+    {
+      "id": "pneumatization_tracts",
+      "title": {
+        "en": "Tracts towards the apex",
+        "ar": "السبل نحو القمة"
+      },
+      "structures": [
+        "temporal_bone_air_cells",
+        "vestibule_and_semicircular_canals",
+        "sigmoid_sinus_and_dura"
+      ],
+      "overview": {
+        "en": "The posterosuperior tract runs forwards and medially from the upper mastoid in the angle between the middle and posterior fossa plates and the superior canal, usually ending near the internal auditory canal but sometimes passing above it to the apex. The posteromedial tract runs along the posterior surface of the pyramid at a lower level, between the endolymphatic duct and sac and the posterior fossa plate. The subarcuate tract passes through the arch of the superior canal beside the petromastoid canal. The perilabyrinthine tracts reach the spaces above and below the labyrinth from the epitympanum and hypotympanum. The peritubal tracts start at the protympanum or tube and pass in front of the carotid to the apex.",
+        "ar": "يمتد السبيل الخلفي العلوي إلى الأمام والأنسي من أعلى الخشاء في الزاوية بين صفيحتي الحفرتين الوسطى والخلفية والقناة العلوية، وينتهي عادةً قرب القناة السمعية الباطنة لكنه قد يمر فوقها إلى القمة. ويمتد السبيل الخلفي الأنسي على السطح الخلفي للهرم في مستوى أخفض، بين القناة والكيس اللمفيين الداخليين وصفيحة الحفرة الخلفية. ويعبر السبيل تحت المقوس قوسَ القناة العلوية بجانب القناة الصخرية الخشائية. وتصل السبل حول التيهية إلى الحيّزين فوق التيه وتحته من السقيفة وتحت الطبل. وتبدأ السبل حول النفيرية من أمام الطبل أو النفير وتمر أمام السباتي إلى القمة."
+      },
+      "surgical": {
+        "en": "These tracts are the routes surgeons follow to drain the apex, and the routes by which disease reaches it.",
+        "ar": "هذه السبل هي الطرق التي يتبعها الجرّاح لتصريف القمة، والطرق التي يصل منها المرض إليها."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Subarcuate tract reaching the apex",
+            "ar": "وصول السبيل تحت المقوس إلى القمة"
+          },
+          "value": "3",
+          "unit": "percent",
+          "source": {
+            "ref": "janfaza",
+            "page": 457
+          }
+        }
+      ]
+    }
+  ]
+}

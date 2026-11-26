@@ -1,0 +1,169 @@
+{
+  "section": "internal_auditory_canal",
+  "title": {
+    "en": "Internal auditory canal and the eighth nerve",
+    "ar": "القناة السمعية الباطنة والعصب الثامن"
+  },
+  "topics": [
+    {
+      "id": "internal_auditory_canal",
+      "title": {
+        "en": "Internal auditory canal",
+        "ar": "القناة السمعية الباطنة"
+      },
+      "structures": [
+        "vestibulocochlear_nerve",
+        "facial_nerve",
+        "temporal_bone"
+      ],
+      "overview": {
+        "en": "A bony channel from the posterior fossa into the petrous bone carrying the facial, cochlear and vestibular nerves with the labyrinthine artery and vein. Its opening in the posterior fossa is the porus; its blind lateral end is the fundus. At the fundus a horizontal ridge, the falciform (transverse) crest, divides the perforated plate into an upper and a lower part, and in the upper part a vertical crest (Bill's bar) separates the facial nerve with the nervus intermedius in front from the superior vestibular nerve behind. Below the falciform crest the cochlear nerve lies in front and the inferior vestibular nerve behind. Most canals run nearly at right angles to the sagittal plane.",
+        "ar": "قناة عظمية من الحفرة الخلفية إلى داخل العظم الصخري، تحمل الأعصاب الوجهي والقوقعي والدهليزي مع الشريان والوريد التيهيين. فتحتها في الحفرة الخلفية هي الفوهة، ونهايتها الوحشية العمياء هي القعر. عند القعر يقسم حرفٌ أفقي، هو العرف المنجلي (المستعرض)، الصفيحةَ المثقّبة إلى جزء علوي وجزء سفلي، وفي الجزء العلوي يفصل عرفٌ عمودي (قضيب بيل) العصبَ الوجهي مع العصب المتوسط في الأمام عن العصب الدهليزي العلوي في الخلف. وتحت العرف المنجلي يقع العصب القوقعي في الأمام والعصب الدهليزي السفلي في الخلف. وتسير معظم القنوات بزاوية قائمة تقريباً على المستوى السهمي."
+      },
+      "surgical": {
+        "en": "The four quadrants at the fundus are what the surgeon identifies first when the canal is opened from the middle fossa or translabyrinthine route; the vertical crest marks off the facial nerve. The two sides of one person are usually alike, so a difference of more than 2 mm suggests disease such as a vestibular schwannoma.",
+        "ar": "الأرباع الأربعة عند القعر هي أول ما يحدده الجرّاح عند فتح القناة من طريق الحفرة الوسطى أو الطريق عبر التيه؛ والعرف العمودي يفصل العصب الوجهي. وتتشابه القناتان عادة عند الشخص نفسه، فالفرق الذي يتجاوز 2 مم يوحي بمرض مثل الورم الشفاني الدهليزي."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Axis at 80–90° to the sagittal plane",
+            "ar": "محور بزاوية 80–90° مع المستوى السهمي"
+          },
+          "value": "58",
+          "unit": "percent",
+          "source": {
+            "ref": "janfaza",
+            "page": 469
+          }
+        },
+        {
+          "label": {
+            "en": "Axis at 91–100° to the sagittal plane",
+            "ar": "محور بزاوية 91–100° مع المستوى السهمي"
+          },
+          "value": "37",
+          "unit": "percent",
+          "source": {
+            "ref": "janfaza",
+            "page": 469
+          }
+        },
+        {
+          "label": {
+            "en": "Horizontal diameter (mean 3.68)",
+            "ar": "القطر الأفقي (المتوسط 3.68)"
+          },
+          "value": "2.5–5.26",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 470
+          }
+        },
+        {
+          "label": {
+            "en": "Vertical diameter (mean 3.72)",
+            "ar": "القطر العمودي (المتوسط 3.72)"
+          },
+          "value": "2.0–5.89",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 470
+          }
+        },
+        {
+          "label": {
+            "en": "Average length",
+            "ar": "متوسط الطول"
+          },
+          "value": "8",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 470
+          }
+        },
+        {
+          "label": {
+            "en": "Side-to-side difference regarded as abnormal",
+            "ar": "الفرق بين الجانبين الذي يُعدّ مرضياً"
+          },
+          "value": "> 2",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 470
+          }
+        }
+      ]
+    },
+    {
+      "id": "vestibular_nerves",
+      "title": {
+        "en": "Vestibular nerves and their anastomoses",
+        "ar": "الأعصاب الدهليزية ومفاغراتها"
+      },
+      "structures": [
+        "vestibulocochlear_nerve",
+        "utricle",
+        "saccule",
+        "semicircular_ducts"
+      ],
+      "overview": {
+        "en": "The superior division supplies the cristae of the superior and lateral canals, the utricular macula and a small part of the saccule. The inferior division supplies the saccular macula and, through the singular nerve in its own canal (or canals), the posterior crista. Three connections join the nerves: Voit's anastomosis between the superior and inferior vestibular nerves for the saccule, the vestibulofacial anastomosis carrying intermedius fibres to the facial trunk, and Oort's vestibulocochlear anastomosis, through which olivocochlear efferent fibres pass from the saccular branch to the cochlear nerve.",
+        "ar": "يعصّب القسم العلوي عرفي القناتين العلوية والوحشية ولطخة القُريبة وجزءاً صغيراً من الكييس. ويعصّب القسم السفلي لطخة الكييس، والعرف الخلفي عبر العصب المفرد الذي يسير في قناته الخاصة (أو قنواته). وتصل بين الأعصاب ثلاث مفاغرات: مفاغرة فويت بين العصبين الدهليزيين العلوي والسفلي للكييس، والمفاغرة الدهليزية الوجهية التي تحمل ألياف العصب المتوسط إلى الجذع الوجهي، والمفاغرة الدهليزية القوقعية (أورت) التي تمر عبرها الألياف الصادرة الزيتونية القوقعية من الفرع الكييسي إلى العصب القوقعي."
+      },
+      "surgical": {
+        "en": "The singular canal, just below and behind the round window niche, is the landmark for singular neurectomy for positional vertigo.",
+        "ar": "القناة المفردة، تحت كوة النافذة المستديرة وخلفها مباشرة، هي معلم قطع العصب المفرد لعلاج الدوار الوضعي."
+      },
+      "numbers": []
+    },
+    {
+      "id": "cochlear_nerve",
+      "title": {
+        "en": "Cochlear nerve and the cochleovestibular cleavage plane",
+        "ar": "العصب القوقعي والمستوى الفاصل بين القوقعي والدهليزي"
+      },
+      "structures": [
+        "vestibulocochlear_nerve"
+      ],
+      "overview": {
+        "en": "Cochlear nerve fibres carry hearing from the organ of Corti, with their cell bodies in the spiral ganglion, to the cochlear nuclei; the nerve enters the brainstem a little below the trigeminal and above the ninth to eleventh nerves. The cochlear and vestibular bundles rotate together through the canal, and the plane between them is not always clean.",
+        "ar": "تحمل ألياف العصب القوقعي السمعَ من عضو كورتي، وأجسام خلاياها في العقدة الحلزونية، إلى النوى القوقعية؛ ويدخل العصب جذع الدماغ تحت مدخل العصب مثلث التوائم بقليل وفوق الأعصاب من التاسع إلى الحادي عشر. وتلتف الحزمتان القوقعية والدهليزية معاً عبر القناة، والمستوى بينهما ليس واضحاً دائماً."
+      },
+      "surgical": {
+        "en": "In selective vestibular nerve section, the vestibular part looks greyer and the cochlear part whiter, a small artery often runs along the plane, the plane is clearer inside the canal than at the porus, and the nervus intermedius lies near its medial side.",
+        "ar": "في القطع الانتقائي للعصب الدهليزي يبدو الجزء الدهليزي أكثر رمادية والقوقعي أكثر بياضاً، ويسير غالباً شريان صغير على طول المستوى، ويكون المستوى أوضح داخل القناة منه عند الفوهة، ويقع العصب المتوسط قرب جانبه الأنسي."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "No distinct cleavage plane between cochlear and vestibular fibres",
+            "ar": "غياب مستوى فاصل واضح بين الألياف القوقعية والدهليزية"
+          },
+          "value": "20",
+          "unit": "percent",
+          "source": {
+            "ref": "janfaza",
+            "page": 479
+          }
+        },
+        {
+          "label": {
+            "en": "Entry into the brainstem below the trigeminal nerve",
+            "ar": "دخول جذع الدماغ تحت العصب مثلث التوائم"
+          },
+          "value": "5",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 479
+          }
+        }
+      ]
+    }
+  ]
+}

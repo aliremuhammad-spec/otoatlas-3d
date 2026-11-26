@@ -10,6 +10,8 @@ const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 
 // Relative base so the same build runs as a PWA, inside Capacitor and inside Tauri.
 export default defineConfig({
   base: './',
+  // The chapter's topic texts and the ontology live beside the app, in ../ontology.
+  server: { fs: { allow: ['..'] } },
   define: { __APP_VERSION__: JSON.stringify(pkg.version) },
   plugins: [
     react(),

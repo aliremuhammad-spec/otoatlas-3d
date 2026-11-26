@@ -1,0 +1,325 @@
+{
+  "section": "facial_nerve",
+  "title": {
+    "en": "Facial nerve",
+    "ar": "العصب الوجهي"
+  },
+  "topics": [
+    {
+      "id": "facial_nerve_components",
+      "title": {
+        "en": "Fibres, nuclei and the geniculate ganglion",
+        "ar": "الألياف والنوى والعقدة الركبية"
+      },
+      "structures": [
+        "facial_nerve",
+        "chorda_tympani"
+      ],
+      "overview": {
+        "en": "The facial nerve is the nerve of the second arch. Its motor root (special visceral efferent) supplies the muscles of facial expression, stapedius, stylohyoid and the posterior belly of digastric. The nervus intermedius carries the rest: secretomotor parasympathetic fibres to the lacrimal and nasal glands (greater petrosal nerve) and to the submandibular and sublingual glands (chorda tympani); taste from the front two thirds of the tongue (chorda) and from the palate (greater petrosal); and sensory fibres from the canal and concha. The motor nucleus lies low in the pons: its upper part, for the forehead and orbicularis oculi, receives cortical fibres from both sides, its lower part from the opposite side only. The superior salivatory nucleus sends the secretory fibres and the nucleus of the solitary tract receives taste. The geniculate ganglion holds the cell bodies of the taste and sensory fibres.",
+        "ar": "العصب الوجهي هو عصب القوس الثانية. يعصّب جذره الحركي (الصادر الحشوي الخاص) عضلات التعبير الوجهي والركابية والإبرية اللامية والبطن الخلفي لذات البطنين. ويحمل العصب المتوسط ما تبقى: أليافاً نظيرة ودية مفرزة للغدد الدمعية والأنفية (عبر العصب الصخري الكبير) وللغدتين تحت الفك وتحت اللسان (عبر حبل الطبل)؛ والذوق من الثلثين الأماميين للسان (حبل الطبل) ومن الحنك (الصخري الكبير)؛ وأليافاً حسية من القناة والمحارة. تقع النواة الحركية في أسفل الجسر: يتلقى جزؤها العلوي، الخاص بالجبهة والدويرية العينية، أليافاً قشرية من الجانبين، وجزؤها السفلي من الجانب المقابل فقط. وترسل النواة اللعابية العلوية الألياف المفرزة، وتستقبل نواة السبيل المفرد الذوق. وتحوي العقدة الركبية أجسام خلايا ألياف الذوق والحس."
+      },
+      "surgical": {
+        "en": "The bilateral cortical supply of the upper face is why a central lesion spares the forehead while a lesion of the nucleus or nerve does not. Testing tear flow, taste and the stapedial reflex helps place a lesion along the nerve.",
+        "ar": "التعصيب القشري الثنائي للجزء العلوي من الوجه هو سبب نجاة الجبهة في الآفة المركزية بينما لا تنجو في آفة النواة أو العصب. ويساعد اختبار الدمع والذوق والمنعكس الركابي على تحديد موضع الآفة على طول العصب."
+      },
+      "numbers": []
+    },
+    {
+      "id": "facial_nerve_segments",
+      "title": {
+        "en": "Segments of the facial nerve",
+        "ar": "قطع العصب الوجهي"
+      },
+      "structures": [
+        "facial_nerve",
+        "vestibule_and_semicircular_canals",
+        "stapes_footplate",
+        "chorda_tympani"
+      ],
+      "overview": {
+        "en": "From the pons the nerve crosses the cerebellopontine angle with the eighth nerve and enters the internal canal (meatal segment), where the nervus intermedius joins it spirally near the fundus. The labyrinthine segment, the shortest and narrowest part of the canal, runs forwards between cochlea and vestibule to the geniculate ganglion, where the nerve turns sharply back (first genu). The tympanic segment runs back along the medial wall above the oval window and below the lateral canal, starting just above the cochleariform process. Below the lateral canal, beside the short process of the incus, it bends down (second genu) into the mastoid segment, which descends to the stylomastoid foramen, giving the nerve to stapedius and the chorda tympani on the way.",
+        "ar": "من الجسر يعبر العصب الزاوية المخيخية الجسرية مع العصب الثامن ويدخل القناة الباطنة (القطعة الصماخية)، حيث ينضم إليه العصب المتوسط بشكل حلزوني قرب القعر. وتسير القطعة التيهية، وهي أقصر أجزاء القناة وأضيقها، إلى الأمام بين القوقعة والدهليز حتى العقدة الركبية، حيث ينعطف العصب بحدة إلى الخلف (الركبة الأولى). وتسير القطعة الطبلية إلى الخلف على الجدار الأنسي فوق النافذة البيضية وتحت القناة الجانبية، بدءاً من فوق الناتئ الملعقي مباشرة. وتحت القناة الجانبية، بجانب الساق القصيرة للسندان، ينحني نزولاً (الركبة الثانية) إلى القطعة الخشائية التي تنزل حتى الثقبة الإبرية الخشائية، وتعطي في طريقها عصبَ الركابية وحبلَ الطبل."
+      },
+      "surgical": {
+        "en": "The labyrinthine segment is where the canal is tightest, so swelling there (Bell's palsy, fracture) compresses the nerve most. In this app the specimens' facial nerve label covers the labyrinthine and tympanic segments; the mastoid segment is not yet shown.",
+        "ar": "القطعة التيهية هي أضيق جزء في القناة، لذا تضغط الوذمة هناك (شلل بل، الكسر) على العصب أكثر من أي موضع آخر. في هذا التطبيق تغطي تسمية العصب الوجهي في العينات القطعتين التيهية والطبلية؛ ولا تُعرض القطعة الخشائية بعد."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Intracranial segment",
+            "ar": "القطعة داخل القحف"
+          },
+          "value": "23–24",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 475
+          }
+        },
+        {
+          "label": {
+            "en": "Meatal segment",
+            "ar": "القطعة الصماخية"
+          },
+          "value": "7–8",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 475
+          }
+        },
+        {
+          "label": {
+            "en": "Labyrinthine segment",
+            "ar": "القطعة التيهية"
+          },
+          "value": "3–4",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 475
+          }
+        },
+        {
+          "label": {
+            "en": "Tympanic segment",
+            "ar": "القطعة الطبلية"
+          },
+          "value": "12–13",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 475
+          }
+        },
+        {
+          "label": {
+            "en": "Mastoid segment",
+            "ar": "القطعة الخشائية"
+          },
+          "value": "15–20",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 475
+          }
+        }
+      ]
+    },
+    {
+      "id": "facial_nerve_anomalies",
+      "title": {
+        "en": "Anomalies of the facial nerve's course",
+        "ar": "شذوذات مسار العصب الوجهي"
+      },
+      "structures": [
+        "facial_nerve",
+        "stapes",
+        "stapes_footplate"
+      ],
+      "overview": {
+        "en": "The trunk can run below the oval window or even below both windows; it can cross the footplate or pass through the obturator foramen of the stapes; the mastoid segment can lie several millimetres further back or further out than expected; and the nerve can split into two or three parts that leave the skull separately. These variants are more frequent in ears with congenital malformation.",
+        "ar": "قد يسير الجذع تحت النافذة البيضية أو حتى تحت النافذتين معاً؛ وقد يعبر صفيحة الركاب أو يمر عبر الثقبة السادّة للركاب؛ وقد تقع القطعة الخشائية أبعد إلى الخلف أو إلى الخارج بعدة ملليمترات مما يُتوقع؛ وقد ينقسم العصب إلى جزأين أو ثلاثة تخرج من الجمجمة بشكل منفصل. وهذه المتغيرات أكثر تواتراً في الآذان ذات التشوه الخلقي."
+      },
+      "surgical": {
+        "en": "In atresia and other malformations the nerve is often displaced, so it is located early with monitoring and never assumed to be in the usual place.",
+        "ar": "في الرتق والتشوهات الأخرى كثيراً ما يكون العصب منزاحاً، لذا يُحدَّد مكانه باكراً مع المراقبة العصبية ولا يُفترض أنه في موضعه المعتاد."
+      },
+      "numbers": []
+    },
+    {
+      "id": "facial_canal_dehiscence",
+      "title": {
+        "en": "Dehiscence of the facial canal",
+        "ar": "تفزّر القناة الوجهية"
+      },
+      "structures": [
+        "facial_nerve",
+        "stapes_footplate",
+        "tensor_tympani_tendon",
+        "middle_ear_air_space"
+      ],
+      "overview": {
+        "en": "Gaps in the bony facial canal are common. They are found most often in the tympanic segment above the oval window, and also near the tensor tendon, in the facial recess and in the medial wall of the anterior epitympanic recess; many bones have more than one.",
+        "ar": "الفجوات في القناة الوجهية العظمية شائعة. وأكثر ما توجد في القطعة الطبلية فوق النافذة البيضية، وكذلك قرب وتر الموتّرة، وفي الردب الوجهي، وفي الجدار الأنسي للردب السقيفي الأمامي؛ وفي كثير من العظام أكثر من فجوة واحدة."
+      },
+      "surgical": {
+        "en": "A bare nerve can be injured during stapes or cholesteatoma surgery, and infection can reach it directly, which explains facial palsy in acute otitis media.",
+        "ar": "قد يتأذى العصب المكشوف أثناء جراحة الركاب أو الورم الكوليستيرولي، وقد يصل الالتهاب إليه مباشرة، وهذا يفسّر الشلل الوجهي في التهاب الأذن الوسطى الحاد."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Bones with a dehiscence of 0.4 mm or more (tympanic or mastoid segment)",
+            "ar": "العظام التي فيها تفزّر 0.4 مم أو أكثر (في القطعة الطبلية أو الخشائية)"
+          },
+          "value": "55",
+          "unit": "percent",
+          "source": {
+            "ref": "janfaza",
+            "page": 476
+          }
+        },
+        {
+          "label": {
+            "en": "Bones with more than one dehiscence",
+            "ar": "العظام التي فيها أكثر من تفزّر"
+          },
+          "value": "22",
+          "unit": "percent",
+          "source": {
+            "ref": "janfaza",
+            "page": 476
+          }
+        },
+        {
+          "label": {
+            "en": "Mean width above the oval window",
+            "ar": "متوسط العرض فوق النافذة البيضية"
+          },
+          "value": "0.92",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 476
+          }
+        },
+        {
+          "label": {
+            "en": "Mean width in the mastoid segment",
+            "ar": "متوسط العرض في القطعة الخشائية"
+          },
+          "value": "0.73",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 476
+          }
+        }
+      ]
+    },
+    {
+      "id": "facial_hiatus_geniculate",
+      "title": {
+        "en": "Facial hiatus and the geniculate ganglion",
+        "ar": "فرجة القناة الوجهية والعقدة الركبية"
+      },
+      "structures": [
+        "facial_nerve"
+      ],
+      "overview": {
+        "en": "The hiatus is an opening of variable size in the floor of the middle fossa over the geniculate ganglion, through which the greater superficial petrosal nerve leaves. In some bones the ganglion has no bony roof at all and is covered only by dura.",
+        "ar": "الفرجة فتحة متفاوتة الحجم في أرضية الحفرة الوسطى فوق العقدة الركبية، يخرج منها العصب الصخري السطحي الكبير. وفي بعض العظام لا يكون للعقدة سقف عظمي إطلاقاً، فلا يغطيها إلا الأم الجافية."
+      },
+      "surgical": {
+        "en": "Lifting dura from the floor of the middle fossa can injure an uncovered ganglion, so elevation proceeds from behind forwards. The hiatus and the greater petrosal nerve guide the surgeon to the internal canal in the middle fossa approach.",
+        "ar": "قد يؤذي رفعُ الجافية عن أرضية الحفرة الوسطى عقدةً غير مغطاة، لذا يُرفع من الخلف إلى الأمام. وتوجّه الفرجة والعصب الصخري الكبير الجرّاحَ إلى القناة الباطنة في مقاربة الحفرة الوسطى."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Ganglion covered only by dura",
+            "ar": "عقدة لا يغطيها إلا الأم الجافية"
+          },
+          "value": "5–15",
+          "unit": "percent",
+          "source": {
+            "ref": "janfaza",
+            "page": 477
+          }
+        }
+      ]
+    },
+    {
+      "id": "facial_nerve_branches",
+      "title": {
+        "en": "Greater petrosal nerve and nerve to stapedius",
+        "ar": "العصب الصخري الكبير وعصب الركابية"
+      },
+      "structures": [
+        "facial_nerve",
+        "stapedius_muscle"
+      ],
+      "overview": {
+        "en": "The greater superficial petrosal nerve, carrying parasympathetic and taste fibres, leaves the front of the geniculate ganglion, emerges through the hiatus and runs forwards in the middle fossa towards the foramen lacerum. There it meets the sympathetic deep petrosal nerve to form the nerve of the pterygoid canal (vidian nerve), which goes on to the pterygopalatine ganglion. The nerve to stapedius leaves the mastoid segment at the level of the pyramidal eminence.",
+        "ar": "يخرج العصب الصخري السطحي الكبير، الحامل لألياف نظيرة ودية وذوقية، من مقدمة العقدة الركبية، ويبرز عبر الفرجة، ويسير إلى الأمام في الحفرة الوسطى نحو الثقبة الممزقة. وهناك يلتقي بالعصب الصخري العميق الودي فيشكلان عصب القناة الجناحية (العصب الفيدي) الذي يمضي إلى العقدة الجناحية الحنكية. ويخرج عصب الركابية من القطعة الخشائية عند مستوى البارزة الهرمية."
+      },
+      "numbers": []
+    },
+    {
+      "id": "chorda_tympani_course",
+      "title": {
+        "en": "Chorda tympani",
+        "ar": "حبل الطبل"
+      },
+      "structures": [
+        "chorda_tympani",
+        "facial_nerve",
+        "malleus_neck",
+        "incus_long_process",
+        "posterior_malleal_fold",
+        "anterior_malleal_fold"
+      ],
+      "overview": {
+        "en": "Its fibres travel inside the facial trunk, in front and lateral in the tympanic segment and behind and lateral in the mastoid segment, and usually leave it a few millimetres above the stylomastoid foramen. The nerve runs back up in its own small canal and enters the cavity through the iter chordae posterius, at about the level of the round window, with the posterior tympanic artery. It crosses the medial face of the membrane in the posterior malleal fold, passes between the long process of the incus and the handle and medial to the malleus neck, and leaves through the iter chordae anterius (canal of Huguier) into the petrotympanic fissure with the anterior tympanic artery, then joins the lingual nerve below the skull base.",
+        "ar": "تسير أليافه داخل الجذع الوجهي، في الأمام والوحشي في القطعة الطبلية وفي الخلف والوحشي في القطعة الخشائية، وتغادره عادةً قبل الثقبة الإبرية الخشائية ببضعة ملليمترات. يصعد العصب في قناته الصغيرة الخاصة ويدخل الجوف عبر المعبر الحبلي الخلفي، عند مستوى النافذة المستديرة تقريباً، مع الشريان الطبلي الخلفي. ويعبر الوجه الأنسي للغشاء في الثنية المطرقية الخلفية، ويمر بين الساق الطويلة للسندان والقبضة وأنسي عنق المطرقة، ثم يغادر عبر المعبر الحبلي الأمامي (قناة هوغيير) إلى الشق الصخري الطبلي مع الشريان الطبلي الأمامي، ثم ينضم إلى العصب اللساني تحت قاعدة الجمجمة."
+      },
+      "variants": {
+        "en": "In infants it can branch off outside the skull and re-enter through its own canal in front of the stylomastoid foramen, a canal that may persist. It can leave the facial nerve as high as the lateral canal, can be doubled, and can pass lateral rather than medial to the malleus neck, with its posterior opening just inside the canal rim.",
+        "ar": "عند الرضيع قد يتفرع خارج الجمجمة ثم يعود إليها عبر قناة خاصة أمام الثقبة الإبرية الخشائية، وقد تبقى هذه القناة. وقد يغادر العصبَ الوجهي في مستوى مرتفع حتى القناة الجانبية، وقد يكون مضاعفاً، وقد يمر وحشي عنق المطرقة لا أنسيه، مع فتحة خلفية داخل حافة القناة مباشرة."
+      },
+      "surgical": {
+        "en": "Together with the facial nerve it bounds the facial recess, and it is easily stretched or cut when the canal skin is raised or the posterior bony annulus is removed; injury changes taste on that side of the tongue.",
+        "ar": "يحدّ مع العصب الوجهي الردبَ الوجهي، ويسهل شدّه أو قطعه عند رفع جلد القناة أو إزالة الحلقة العظمية الخلفية؛ وأذيته تغيّر الذوق في ذلك الجانب من اللسان."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Usual exit above the stylomastoid foramen",
+            "ar": "موضع الانفصال المعتاد فوق الثقبة الإبرية الخشائية"
+          },
+          "value": "≈ 4",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 477
+          }
+        }
+      ]
+    },
+    {
+      "id": "facial_nerve_blood_supply",
+      "title": {
+        "en": "Blood supply of the facial nerve",
+        "ar": "التروية الدموية للعصب الوجهي"
+      },
+      "structures": [
+        "facial_nerve"
+      ],
+      "overview": {
+        "en": "AICA supplies the intracranial part and the labyrinthine artery the meatal part. The geniculate ganglion is supplied by the superficial petrosal branch of the middle meningeal artery, and the rest of the canal by that artery and the stylomastoid artery, which meet inside it. Vessels lie mostly just inside the perineurium and take up a much smaller share of the labyrinthine segment than of the tympanic and mastoid segments.",
+        "ar": "يغذي الشريان المخيخي الأمامي السفلي الجزءَ داخل القحف، والشريان التيهي الجزءَ الصماخي. وتتغذى العقدة الركبية من الفرع الصخري السطحي للشريان السحائي الأوسط، وبقية القناة من هذا الشريان والشريان الإبري الخشائي اللذين يلتقيان داخلها. وتقع الأوعية في معظمها تحت غمد العصب مباشرة، وتشغل في القطعة التيهية حصة أصغر بكثير مما تشغله في القطعتين الطبلية والخشائية."
+      },
+      "surgical": {
+        "en": "The meeting zone near the geniculate ganglion and the scant vessels of the labyrinthine segment are thought to make that part most vulnerable to ischaemia and swelling.",
+        "ar": "يُعتقد أن منطقة التقاء الأوعية قرب العقدة الركبية وقلة أوعية القطعة التيهية تجعلان ذلك الجزء الأكثر عرضة لنقص التروية والوذمة."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Cross-section taken by vessels: labyrinthine / tympanic / mastoid",
+            "ar": "حصة الأوعية من المقطع: التيهية / الطبلية / الخشائية"
+          },
+          "value": "12 / 63 / 54",
+          "unit": "percent",
+          "source": {
+            "ref": "janfaza",
+            "page": 478
+          }
+        }
+      ]
+    }
+  ]
+}

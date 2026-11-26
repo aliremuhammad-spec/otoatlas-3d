@@ -22,9 +22,10 @@ describe('message catalogs', () => {
     for (const k of keys) expect(placeholders(ar[k]), k).toBe(placeholders(en[k]));
   });
 
-  it('translate every Arabic string except the product name', () => {
+  it('translate every Arabic string except the product name and bare symbols', () => {
     for (const k of keys) {
-      if (k === 'app.name') continue;
+      // The product name stays in Latin script; a symbol such as ° needs no translation.
+      if (k === 'app.name' || !/[A-Za-z]/.test(en[k])) continue;
       expect(/[؀-ۿ]/.test(ar[k]), `ar ${k} contains no Arabic`).toBe(true);
     }
   });

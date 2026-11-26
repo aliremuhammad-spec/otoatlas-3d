@@ -15,9 +15,11 @@ function groupOf(s: SpecimenIndexEntry): (typeof GROUPS)[number] {
 
 interface Props {
   onBack: () => void;
+  /** Structures to show and select once a specimen is open (from a topic). */
+  focus?: readonly string[] | null;
 }
 
-export function ViewerScreen({ onBack }: Props) {
+export function ViewerScreen({ onBack, focus = null }: Props) {
   const { t } = useI18n();
   const phantom = useMemo(createPhantom, []);
   const [specimens, setSpecimens] = useState<readonly SpecimenIndexEntry[]>([]);
@@ -90,7 +92,7 @@ export function ViewerScreen({ onBack }: Props) {
         </label>
       </header>
       {status === 'ready' ? (
-        <SpecimenView key={content.specimenId} content={content} />
+        <SpecimenView key={content.specimenId} content={content} focus={focus} />
       ) : (
         <div className="viewer__stage viewer__stage--message" role="status">
           {t(status === 'loading' ? 'viewer.loading' : 'viewer.loadError')}

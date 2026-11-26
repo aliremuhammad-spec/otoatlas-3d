@@ -1,0 +1,13 @@
+{
+  "status": "Topic texts written by Claude on 2026-11-26 in its own words, organised by the topics of the reference chapter. Every text and every Arabic term is a draft until the reviewer approves it. Numbers carry the page of the source they come from.",
+  "sources": {
+    "janfaza": {
+      "en": "Janfaza P, Nadol JB Jr, Galla RJ, Fabian RL, Montgomery WW. Surgical Anatomy of the Head and Neck, chapter 9: Temporal bone and ear",
+      "ar": "Janfaza P وآخرون. التشريح الجراحي للرأس والعنق، الفصل 9: العظم الصدغي والأذن"
+    },
+    "app": {
+      "en": "Measured on the specimens in this app (see each structure's card)",
+      "ar": "مقيس على عينات هذا التطبيق (انظر بطاقة كل بنية)"
+    }
+  }
+}

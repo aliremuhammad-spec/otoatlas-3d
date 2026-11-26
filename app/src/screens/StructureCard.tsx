@@ -4,12 +4,15 @@ import { estimateCdlOrganOfCorti } from '../measure/cdl';
 import { formatMillilitres, formatMillimetres, formatVoxelSize } from '../measure/format';
 import type { SceneContent, SceneStructure } from '../viewer/content';
 import { MEASUREMENT_IDS, type MeasurementId } from '../viewer/manifest';
+import { pick, topicsForStructure } from '../topics/topics';
 import { displayName, latinLine } from '../viewer/names';
 
 interface Props {
   structure: SceneStructure;
   content: SceneContent;
   onClose: () => void;
+  /** Opens one of the chapter topics about this structure. */
+  onOpenTopic?: (id: string) => void;
 }
 
 function MeasurementRow({ id, value, unit }: { id: string; value: number; unit: 'mm' | 'mL' }) {
@@ -50,12 +53,13 @@ function reviewerName(name: string, locale: string): string {
 }
 
 /** Facts about one structure: its names, where its geometry comes from, and how accurate the mesh is. */
-export function StructureCard({ structure, content, onClose }: Props) {
+export function StructureCard({ structure, content, onClose, onOpenTopic }: Props) {
   const { t, numerals, locale } = useI18n();
   const name = displayName(structure.names, locale);
   const latin = latinLine(structure.names, locale);
   const other = locale === 'ar' ? structure.names.en : structure.names.ar;
   const info = structure.info;
+  const topics = onOpenTopic ? topicsForStructure(structure.id) : [];
   const voxel = info
     ? [...new Set(info.sourceVoxelMm.map((v) => formatVoxelSize(v, numerals)))].join(' × ')
     : null;
@@ -84,6 +88,20 @@ export function StructureCard({ structure, content, onClose }: Props) {
           <p>{locale === 'ar' ? info.description.ar : info.description.en}</p>
           {info.description.status === 'draft' && <p className="card__draft">{t('viewer.card.descriptionDraft')}</p>}
         </div>
+      )}
+      {topics.length > 0 && onOpenTopic && (
+        <nav className="card__topics" aria-label={t('topics.related')}>
+          <h3>{t('topics.related')}</h3>
+          <ul>
+            {topics.map((topic) => (
+              <li key={topic.id}>
+                <button type="button" className="link" onClick={() => onOpenTopic(topic.id)}>
+                  {pick(topic.title, locale)}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
       )}
       {info ? (
         <dl className="card__facts">

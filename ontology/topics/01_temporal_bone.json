@@ -1,0 +1,107 @@
+{
+  "section": "temporal_bone",
+  "title": {
+    "en": "Temporal bone",
+    "ar": "العظم الصدغي"
+  },
+  "topics": [
+    {
+      "id": "temporal_bone_parts",
+      "title": {
+        "en": "Parts of the temporal bone",
+        "ar": "أجزاء العظم الصدغي"
+      },
+      "structures": [
+        "temporal_bone"
+      ],
+      "overview": {
+        "en": "The temporal bone is assembled from five parts that fuse during development: the squamous plate above, the mastoid behind, the tympanic ring that forms most of the bony ear canal, the petrous pyramid that holds the labyrinth and points forwards and medially to the skull base, and the styloid process below. Each part brings its own relations, so knowing which part a landmark belongs to tells you what lies beyond it: dura of the middle fossa above the squama and tegmen, the sigmoid sinus behind the mastoid, the carotid canal and jugular bulb under the petrous part.",
+        "ar": "يتكوّن العظم الصدغي من خمسة أجزاء تلتحم أثناء النمو: الصفيحة الحرشفية في الأعلى، والجزء الخشائي في الخلف، والحلقة الطبلية التي تشكّل معظم القناة السمعية العظمية، والهرم الصخري الذي يحتوي التيه ويتجه إلى الأمام والأنسي نحو قاعدة الجمجمة، والناتئ الإبري في الأسفل. لكل جزء علاقاته الخاصة، فمعرفة الجزء الذي ينتمي إليه معلمٌ ما تدلّ على ما يقع خلفه: أمّ الجافية للحفرة القحفية الوسطى فوق الحرشفة والسقف الطبلي، والجيب السيني خلف الخشاء، والقناة السباتية والبصلة الوداجية تحت الجزء الصخري."
+      },
+      "surgical": {
+        "en": "In the specimens of this app the bone is shown as the block cut out for scanning, so its outer surfaces end at the cut faces; landmarks of the outer surfaces below are described in text.",
+        "ar": "يظهر العظم في عينات هذا التطبيق ككتلة مقطوعة للتصوير، فتنتهي سطوحه الخارجية عند وجوه القطع؛ لذلك توصف معالم السطوح الخارجية التالية نصّاً."
+      },
+      "numbers": []
+    },
+    {
+      "id": "temporal_bone_lateral_surface",
+      "title": {
+        "en": "Lateral surface: Henle's spine, cribriform area, fissures",
+        "ar": "السطح الوحشي: شوكة هنله، الباحة الغربالية، الشقوق"
+      },
+      "structures": [
+        "temporal_bone",
+        "mastoid_antrum"
+      ],
+      "overview": {
+        "en": "Above and behind the bony meatus sits the small suprameatal spine of Henle, with the cribriform area just behind it: a patch of cortex perforated by tiny vascular channels that lead into the antrum. Around the meatus run the sutures between the parts of the bone: the tympanosquamous and tympanomastoid fissures, and medially the petrotympanic (glaserian) fissure, which carries the chorda tympani and the anterior tympanic artery out of the middle ear through the canal of Huguier. Behind the mastoid lies the mastoid foramen with its emissary vein to the sigmoid sinus and a mastoid branch of the occipital artery.",
+        "ar": "فوق الصماخ العظمي وخلفه تقع شوكة هنله الصغيرة فوق الصماخية، وخلفها مباشرة الباحة الغربالية: رقعة من القشرة تخترقها قنوات وعائية دقيقة تؤدي إلى الغار الخشائي. وحول الصماخ تمتد الدروز بين أجزاء العظم: الشق الطبلي الحرشفي والشق الطبلي الخشائي، وفي الأنسي الشق الصخري الطبلي (شق غلازر) الذي يخرج منه حبل الطبل والشريان الطبلي الأمامي من الأذن الوسطى عبر قناة هوغيير. وخلف الخشاء تقع الثقبة الخشائية ويمر فيها وريد مُرسِل إلى الجيب السيني وفرع خشائي من الشريان القذالي."
+      },
+      "surgical": {
+        "en": "Henle's spine and the cribriform area point to the antrum, which lies deep to them in the adult; the spine itself is inconstant, so it is used together with the temporal line and the posterosuperior canal wall. Pus from the antrum can reach the surface through the cribriform area and form a subperiosteal abscess. The tympanomastoid fissure is a route for spread from the ear canal to the skull base in necrotising (malignant) otitis externa and may carry Arnold's nerve.",
+        "ar": "تشير شوكة هنله والباحة الغربالية إلى الغار الذي يقع في عمقهما عند البالغ؛ ولأن الشوكة غير ثابتة تُستعمل مع الخط الصدغي والجدار الخلفي العلوي للقناة. قد يصل القيح من الغار إلى السطح عبر الباحة الغربالية فيشكّل خراجاً تحت السمحاق. والشق الطبلي الخشائي طريق لانتشار التهاب الأذن الظاهرة الناخر (الخبيث) من القناة إلى قاعدة الجمجمة، وقد يمر فيه عصب أرنولد."
+      },
+      "numbers": []
+    },
+    {
+      "id": "temporal_bone_middle_fossa_surface",
+      "title": {
+        "en": "Middle fossa surface: arcuate eminence, facial hiatus",
+        "ar": "سطح الحفرة الوسطى: البارزة المقوسة، فرجة القناة الوجهية"
+      },
+      "structures": [
+        "temporal_bone",
+        "vestibule_and_semicircular_canals",
+        "facial_nerve"
+      ],
+      "overview": {
+        "en": "On the upper surface of the petrous bone the arcuate eminence marks the superior semicircular canal. In front of it the hiatus of the facial canal opens towards the geniculate ganglion and lets out the greater superficial petrosal nerve, together with the petrosal branch of the middle meningeal artery. A little more laterally, in the petrosquamous fissure, the superior tympanic canaliculus carries the lesser superficial petrosal nerve and the superior tympanic artery.",
+        "ar": "على السطح العلوي للعظم الصخري تدلّ البارزة المقوسة على القناة نصف الهلالية العلوية. وأمامها تنفتح فرجة القناة الوجهية نحو العقدة الركبية ويخرج منها العصب الصخري السطحي الكبير مع الفرع الصخري للشريان السحائي الأوسط. وإلى الوحشي قليلاً، في الشق الصخري الحرشفي، تحمل القُنيّة الطبلية العلوية العصب الصخري السطحي الصغير والشريان الطبلي العلوي."
+      },
+      "surgical": {
+        "en": "In a well pneumatised bone tegmental cells can rise above the canal, so the eminence does not always mark the canal reliably in the middle fossa approach; the facial hiatus and the greater superficial petrosal nerve are the other landmarks used there.",
+        "ar": "في العظم جيد التهوية قد ترتفع الخلايا السقفية فوق القناة، فلا تدلّ البارزة دائماً على موضع القناة بدقة في مقاربة الحفرة الوسطى؛ والمعلمان الآخران هناك هما فرجة القناة الوجهية والعصب الصخري السطحي الكبير."
+      },
+      "numbers": []
+    },
+    {
+      "id": "temporal_bone_posterior_fossa_surface",
+      "title": {
+        "en": "Posterior fossa surface: porus, subarcuate fossa, vestibular aqueduct",
+        "ar": "سطح الحفرة الخلفية: فوهة القناة السمعية الباطنة، الحفرة تحت المقوسة، المسال الدهليزي"
+      },
+      "structures": [
+        "temporal_bone",
+        "vestibulocochlear_nerve",
+        "sigmoid_sinus_and_dura"
+      ],
+      "overview": {
+        "en": "The posterior surface of the pyramid carries the porus of the internal auditory canal, through which the facial and vestibulocochlear nerves and the labyrinthine artery pass. Above and lateral to it the subarcuate fossa leads into the petromastoid canal, which carries the subarcuate artery under the arch of the superior canal. Further back and lower, a shallow depression covered by a lip of bone (the operculum) holds the external opening of the vestibular aqueduct and the endolymphatic sac.",
+        "ar": "يحمل السطح الخلفي للهرم فوهة القناة السمعية الباطنة التي يمر عبرها العصبان الوجهي والدهليزي القوقعي والشريان التيهي. وفوقها وإلى الوحشي تقود الحفرة تحت المقوسة إلى القناة الصخرية الخشائية التي يمر فيها الشريان تحت المقوس تحت قوس القناة العلوية. وإلى الخلف والأسفل يحوي انخفاضٌ ضحل تغطيه شفة عظمية (الغطاء) الفتحةَ الخارجية للمسال الدهليزي والكيس اللمفي الداخلي."
+      },
+      "numbers": []
+    },
+    {
+      "id": "temporal_bone_base",
+      "title": {
+        "en": "Inferior surface: stylomastoid foramen, jugular and carotid openings",
+        "ar": "السطح السفلي: الثقبة الإبرية الخشائية، فتحتا الوداجي والسباتي"
+      },
+      "structures": [
+        "temporal_bone",
+        "facial_nerve",
+        "internal_carotid_artery"
+      ],
+      "overview": {
+        "en": "From below, the digastric groove runs forwards on the mastoid and ends at the stylomastoid foramen, where the facial nerve leaves with the stylomastoid artery. Between the carotid foramen and the jugular fossa stands the jugulocarotid spine; in the small petrosal fossula on it the inferior tympanic canaliculus admits Jacobson's nerve and the inferior tympanic artery. Nearby is the funnel-shaped outer opening of the cochlear aqueduct.",
+        "ar": "من الأسفل يمتد الثلم ذو البطنين إلى الأمام على الخشاء وينتهي عند الثقبة الإبرية الخشائية حيث يخرج العصب الوجهي مع الشريان الإبري الخشائي. وبين الثقبة السباتية والحفرة الوداجية تنتصب الشوكة الوداجية السباتية؛ وفي الحُفيرة الصخرية الصغيرة عليها تُدخل القُنيّة الطبلية السفلية عصبَ جاكوبسون والشريانَ الطبلي السفلي. وبالقرب منها الفتحة الخارجية القمعية للمسال القوقعي."
+      },
+      "surgical": {
+        "en": "Erosion of the jugulocarotid spine on CT points to a lesion of the jugular foramen. The digastric ridge is the classic guide to the stylomastoid foramen when the facial nerve is followed down the mastoid.",
+        "ar": "تآكل الشوكة الوداجية السباتية في التصوير المقطعي يشير إلى آفة في الثقبة الوداجية. والحرف ذو البطنين هو الدليل التقليدي إلى الثقبة الإبرية الخشائية عند تتبّع العصب الوجهي نزولاً في الخشاء."
+      },
+      "numbers": []
+    }
+  ]
+}

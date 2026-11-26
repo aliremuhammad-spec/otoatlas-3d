@@ -21,13 +21,23 @@ is 0.061 mm. Anything thinner than about two voxels cannot be specimen-derived.
 
 ## Coverage map
 
-Status: ✔ in the app now · ◐ partly · ○ planned.
+Status: ✔ in the app now · ◐ partly · ○ planned. The status column is about geometry.
+
+**Text (tier T), 26 November 2026.** Every row below now has draft text: 70 topics in
+`ontology/topics/`, one file per section of the chapter, each with a description, surgical
+relevance, variants where they matter, and figures with the chapter page they come from
+(or "measured on the specimens in this app"). The texts are our own wording; the chapter
+itself is not in the repository. They are built into the app (not into specimen
+packages), read under Topics from the home screen, opened from each structure's card, and
+can show their structures on the open specimen. Arabic terms follow the reviewed
+ontology names (for example الناتئ الوحشي, الساق القصيرة للسندان, السقالة الطبلية,
+النافذة المستديرة, القنوات نصف الهلالية). All texts await the reviewer.
 
 ### External ear
 
 | Topic | Plan | Status |
 |---|---|---|
-| Auricle: surface landmarks, cartilage, ligaments, intrinsic and extrinsic muscles, vessels, nerves, lymph nodes | D (no dataset includes the auricle) + T | ○ |
+| Auricle: surface landmarks, cartilage, ligaments, intrinsic and extrinsic muscles, vessels, nerves, lymph nodes | D (no dataset includes the auricle) + T | ◐ text only (four topics); no geometry |
 | External canal: cartilaginous and bony parts, S-shaped course, two isthmuses, inferior tympanic recess, foramen of Huschke, relations (parotid, condyle, mastoid cells, epitympanum), skin, blood, nerves, lymph | S (canal label) + A (parts, isthmuses, recess) + measured lengths and diameters + T | ◐ label only |
 | Tympanic membrane: diameters, angle to the canal, umbo, pars tensa and flaccida, malleal folds, notch of Rivinus, fibrous annulus, layers, blood and nerve supply, quadrants and what lies behind each | S (label) + computed quadrants and umbo from the malleus handle + label extents + T; pars flaccida, folds and annulus D | ◐ quadrants, umbo, extents and quadrant texts live |
 
@@ -70,7 +80,7 @@ Status: ✔ in the app now · ◐ partly · ○ planned.
 | Course: meatal, labyrinthine, geniculate, tympanic, second genu, mastoid segments; stylomastoid foramen | S (OpenEar label covers labyrinthine and tympanic) + new segmentation of the mastoid segment's canal from CBCT + A (segment boundaries) | ◐ |
 | Branches: greater superficial petrosal, nerve to stapedius, chorda tympani | S (chorda label) + D + T | ◐ |
 | Dehiscence, hiatus, anomalies | A where seen + T | ○ |
-| Components, nuclei, central connections | T only (outside the temporal bone) | ○ |
+| Components, nuclei, central connections | T only (outside the temporal bone) | ◐ text |
 
 ## Working basis from 20 November 2026
 

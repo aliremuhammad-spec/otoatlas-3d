@@ -11,7 +11,9 @@ import { LabelLayer } from '../viewer/labels';
 import { displayName, latinLine } from '../viewer/names';
 import { ViewerCore } from '../viewer/ViewerCore';
 import { SlicePane } from './SlicePane';
+import { STRUCTURE_NAMES, topicById } from '../topics/topics';
 import { StructureCard } from './StructureCard';
+import { TopicReader } from './TopicReader';
 
 type Mode = 'explore' | 'p2p' | 's2s';
 
@@ -22,10 +24,12 @@ interface Measurement {
 
 interface Props {
   content: SceneContent;
+  /** Structures to show and select when the view opens (from a topic). */
+  focus?: readonly string[] | null;
 }
 
 /** The 3D stage and its side panel for one specimen. Remount it (by key) to switch specimen. */
-export function SpecimenView({ content }: Props) {
+export function SpecimenView({ content, focus = null }: Props) {
   const { t, numerals, locale } = useI18n();
   const hostRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -58,6 +62,9 @@ export function SpecimenView({ content }: Props) {
   const [opacity, setOpacity] = useState<Readonly<Record<string, number>>>({});
   const [expanded, setExpanded] = useState<ReadonlySet<string>>(() => new Set());
   const entries = listEntries(content.structures);
+  const [topicId, setTopicId] = useState<string | null>(null);
+  const [focusMissing, setFocusMissing] = useState<string | null>(null);
+  const presentIds = new Set(content.structures.map((s) => s.id));
 
   useEffect(() => {
     const host = hostRef.current;
@@ -137,6 +144,27 @@ export function SpecimenView({ content }: Props) {
   const selectRef = useRef<(id: string | null) => void>(() => undefined);
   selectRef.current = select;
 
+  // Shows structures (hidden by default or by the user) and selects the first; for topics.
+  const showRef = useRef<(ids: readonly string[]) => void>(() => undefined);
+  showRef.current = show;
+
+  function show(ids: readonly string[]): void {
+    const present = ids.filter((id) => content.structures.some((s) => s.id === id));
+    if (present.length === 0) return;
+    setGroupVisible(present, true);
+    selectRef.current(present[0] ?? null);
+  }
+
+  useEffect(() => {
+    if (!core || !focus || focus.length === 0) return;
+    if (focus.some((id) => content.structures.some((s) => s.id === id))) {
+      setFocusMissing(null);
+      showRef.current(focus);
+    } else {
+      setFocusMissing(focus[0] ?? null);
+    }
+  }, [core, focus, content]);
+
   function select(id: string | null): void {
     const group = content.structures.find((s) => s.id === id)?.group;
     if (group) setExpanded((prev) => (prev.has(group.id) ? prev : new Set([...prev, group.id])));
@@ -155,6 +183,12 @@ export function SpecimenView({ content }: Props) {
       : null;
   const result = mode === 'p2p' ? pointResult : mode === 's2s' ? surfaceResult : null;
   const selectedStructure = content.structures.find((s) => s.id === selected) ?? null;
+  const openTopic = topicId ? topicById(topicId) : null;
+
+  function focusName(id: string): string {
+    const s = content.structures.find((x) => x.id === id);
+    return s ? displayName(s.names, locale) : (STRUCTURE_NAMES.get(id)?.[locale === 'ar' ? 'ar' : 'en'] ?? id);
+  }
 
   function measureSurfaces(a: string, b: string): void {
     const core = coreRef.current;
@@ -333,7 +367,41 @@ export function SpecimenView({ content }: Props) {
           </div>
         )}
         {selectedStructure && (
-          <StructureCard structure={selectedStructure} content={content} onClose={() => select(null)} />
+          <StructureCard
+            structure={selectedStructure}
+            content={content}
+            onClose={() => select(null)}
+            onOpenTopic={setTopicId}
+          />
+        )}
+        {focusMissing && (
+          <div className="viewer__notice" role="status">
+            <p>{t('topics.focusMissing', { name: focusName(focusMissing) })}</p>
+            <button type="button" onClick={() => setFocusMissing(null)} aria-label={t('viewer.card.close')}>
+              ×
+            </button>
+          </div>
+        )}
+        {openTopic && (
+          <div className="topic-overlay" role="dialog" aria-modal="false" aria-label={t('topics.title')}>
+            <button
+              type="button"
+              className="topic-overlay__close"
+              onClick={() => setTopicId(null)}
+              aria-label={t('topics.close')}
+            >
+              ×
+            </button>
+            <TopicReader
+              topic={openTopic}
+              level={3}
+              showable={presentIds}
+              onShow={(ids) => {
+                setTopicId(null);
+                show(ids);
+              }}
+            />
+          </div>
         )}
       </div>
       <aside className="viewer__panel">

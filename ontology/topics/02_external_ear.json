@@ -1,0 +1,455 @@
+{
+  "section": "external_ear",
+  "title": {
+    "en": "External ear",
+    "ar": "الأذن الظاهرة"
+  },
+  "topics": [
+    {
+      "id": "auricle_form",
+      "title": {
+        "en": "Auricle: shape and landmarks",
+        "ar": "الصيوان: الشكل والمعالم"
+      },
+      "structures": [],
+      "overview": {
+        "en": "The auricle stands off the side of the head at roughly thirty degrees and reaches adult proportions in late childhood. Its rim is the helix, which may carry Darwin's tubercle where it turns down; inside and parallel to it runs the antihelix, which splits above into two crura enclosing the triangular fossa, with the scaphoid fossa between helix and antihelix. The crus of the helix divides the concha into the cymba above and the cavum below; the concha sits at about a right angle to the mastoid. In front the tragus overhangs the canal opening, opposite it the antitragus, separated by the intertragic notch, and below hangs the lobule, which has no cartilage.",
+        "ar": "يبرز الصيوان عن جانب الرأس بزاوية نحو ثلاثين درجة، ويبلغ أبعاد البالغ في أواخر الطفولة. حافته هي الحتار، وقد تحمل حديبة داروين حيث ينعطف نزولاً؛ وفي داخله وموازياً له يمتد الحتار المقابل الذي ينقسم في الأعلى إلى ساقين تحيطان بالحفرة المثلثية، وبين الحتار والحتار المقابل تقع الحفرة الزورقية. تقسم ساق الحتار المحارةَ إلى قارب المحارة في الأعلى وجوف المحارة في الأسفل، وتقع المحارة بزاوية قائمة تقريباً على الخشاء. في الأمام يطل الزنمة على فتحة القناة، ويقابلها الزنمة المقابلة ويفصلهما الثلم بين الزنمتين، وفي الأسفل تتدلى الشحمة الخالية من الغضروف."
+      },
+      "surgical": {
+        "en": "A missing antihelical fold is the usual cause of the prominent (lop) ear. The lobule is a handy source of fat for myringoplasty: an incision along its lower edge leaves little scar.",
+        "ar": "غياب طية الحتار المقابل هو السبب المعتاد للأذن البارزة. والشحمة مصدر سهل للشحم في رأب الغشاء الطبلي: شقٌّ على حافتها السفلية يترك ندبة قليلة."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Angle of the auricle to the head",
+            "ar": "زاوية الصيوان مع الرأس"
+          },
+          "value": "≈ 30",
+          "unit": "deg",
+          "source": {
+            "ref": "janfaza",
+            "page": 424
+          }
+        },
+        {
+          "label": {
+            "en": "Angle of the concha to the mastoid",
+            "ar": "زاوية المحارة مع الخشاء"
+          },
+          "value": "90 ± 15",
+          "unit": "deg",
+          "source": {
+            "ref": "janfaza",
+            "page": 424
+          }
+        }
+      ]
+    },
+    {
+      "id": "auricle_skin_cartilage",
+      "title": {
+        "en": "Auricle: skin and cartilage",
+        "ar": "الصيوان: الجلد والغضروف"
+      },
+      "structures": [],
+      "overview": {
+        "en": "The auricle is a single plate of elastic cartilage, continuous with the cartilage of the outer canal, covered by thin skin that is bound tightly to the perichondrium on the lateral face, where there is almost no subcutaneous fat. Sebaceous glands are plentiful in the concha and scapha. The cartilage carries small named features (the spine of the helix, the cauda helicis separated from the antitragus by a fissure, the ponticulus on the back of the concha) and the fibrous-filled fissures of Santorini in the tragal part. Between the tragus and the helix there is a gap without cartilage.",
+        "ar": "الصيوان صفيحة واحدة من الغضروف المرن تتصل بغضروف القناة الخارجية، ويغطيها جلد رقيق ملتصق بشدة بالسمحاق الغضروفي على الوجه الوحشي حيث يكاد ينعدم الشحم تحت الجلد. تكثر الغدد الدهنية في المحارة والحفرة الزورقية. يحمل الغضروف معالم صغيرة مسماة (شوكة الحتار، وذيل الحتار الذي يفصله شقٌّ عن الزنمة المقابلة، والجُسير على ظهر المحارة)، وشقوق سانتوريني الممتلئة بنسيج ليفي في جزء الزنمة. وبين الزنمة والحتار فجوة خالية من الغضروف."
+      },
+      "surgical": {
+        "en": "Because the skin cannot swell outwards, perichondritis is very painful, and haematoma collects between perichondrium and cartilage, typically in the upper lateral auricle. In through-and-through lacerations the perichondrium is closed as a layer and sutures through cartilage are avoided. Pulling the auricle hurts in otitis externa because the canal cartilage moves with it, a useful sign against otitis media. The endaural (Lempert) incision uses the cartilage-free gap between tragus and helix.",
+        "ar": "لأن الجلد لا يستطيع الانتفاخ إلى الخارج يكون التهاب السمحاق الغضروفي شديد الألم، ويتجمع الورم الدموي بين السمحاق والغضروف عادة في الجزء العلوي الوحشي من الصيوان. في الجروح النافذة يُخاط السمحاق الغضروفي كطبقة وتُتجنّب الغرز عبر الغضروف. ويؤلم شدّ الصيوان في التهاب الأذن الظاهرة لأن غضروف القناة يتحرك معه، وهي علامة مفيدة للتفريق عن التهاب الأذن الوسطى. ويستعمل الشق داخل الأذن (شق ليمبرت) الفجوة الخالية من الغضروف بين الزنمة والحتار."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Cartilage thickness",
+            "ar": "ثخانة الغضروف"
+          },
+          "value": "0.5–2.0",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 426
+          }
+        }
+      ]
+    },
+    {
+      "id": "auricle_ligaments_muscles",
+      "title": {
+        "en": "Auricle: ligaments and muscles",
+        "ar": "الصيوان: الأربطة والعضلات"
+      },
+      "structures": [],
+      "overview": {
+        "en": "Three extrinsic ligaments tie the cartilage to the skull: an anterior one from helix and tragus to the zygomatic root, a superior one from the spine of the helix to the bony meatus, and a posterior one from the back of the concha to the mastoid. Intrinsic fibrous bands join parts of the cartilage, one of them bridging tragus and helix in front of the meatus. The anterior, superior and posterior auricular muscles move the whole auricle; six small intrinsic muscles (helicis major and minor, tragicus, antitragicus, transverse and oblique) are vestigial in humans.",
+        "ar": "تربط ثلاثة أربطة خارجية الغضروف بالجمجمة: رباط أمامي من الحتار والزنمة إلى جذر الوجني، ورباط علوي من شوكة الحتار إلى الصماخ العظمي، ورباط خلفي من ظهر المحارة إلى الخشاء. وتصل أشرطة ليفية داخلية بين أجزاء الغضروف، أحدها يعبر بين الزنمة والحتار أمام الصماخ. تحرّك العضلات الأذنية الأمامية والعلوية والخلفية الصيوان كله، أما العضلات الداخلية الست الصغيرة (الحتارية الكبيرة والصغيرة، والزنمية، والزنمية المقابلة، والمستعرضة، والمائلة) فهي أثرية عند الإنسان."
+      },
+      "surgical": {
+        "en": "The endaural incision divides the fibrous band between tragus and helix.",
+        "ar": "يقطع الشق داخل الأذن الشريط الليفي بين الزنمة والحتار."
+      },
+      "numbers": []
+    },
+    {
+      "id": "auricle_supply",
+      "title": {
+        "en": "Auricle: vessels, nerves and lymph",
+        "ar": "الصيوان: الأوعية والأعصاب واللمف"
+      },
+      "structures": [],
+      "overview": {
+        "en": "Blood comes from the posterior auricular artery (external carotid), anterior auricular branches of the superficial temporal artery and a branch of the occipital artery, with veins alongside. The facial nerve moves the auricle: its temporal branch the anterior and superior muscles, its posterior auricular branch the posterior muscle and the intrinsic muscles on the cranial face. Skin sensation is shared: the great auricular nerve (C2–C3) takes most of the cranial surface and the lower lateral face, the auriculotemporal nerve the tragus and front of the helix, the lesser occipital nerve the upper cranial part, and fibres of VII, IX and X reach the concha through Arnold's nerve. Lymph drains to parotid nodes in front, mastoid nodes behind and superficial cervical nodes below.",
+        "ar": "يأتي الدم من الشريان الأذني الخلفي (من السباتي الظاهر) والفروع الأذنية الأمامية للشريان الصدغي السطحي وفرع من الشريان القذالي، وتسير الأوردة بجانبها. يحرّك العصب الوجهي الصيوان: فرعه الصدغي للعضلتين الأمامية والعلوية، وفرعه الأذني الخلفي للعضلة الخلفية والعضلات الداخلية على الوجه القحفي. أما الحس فمشترك: العصب الأذني الكبير (ر2–ر3) لمعظم السطح القحفي والجزء السفلي من الوجه الجانبي، والعصب الأذني الصدغي للزنمة ومقدمة الحتار، والعصب القذالي الصغير للجزء القحفي العلوي، وتصل ألياف من الأعصاب السابع والتاسع والعاشر إلى المحارة عبر عصب أرنولد. ويُصرَّف اللمف إلى العقد النكفية في الأمام والعقد الخشائية في الخلف والعقد الرقبية السطحية في الأسفل."
+      },
+      "surgical": {
+        "en": "An infected mastoid node can imitate mastoiditis; the abscess then lies on the periosteum, whereas in mastoiditis it lies beneath it.",
+        "ar": "قد تقلّد العقدة الخشائية الملتهبة التهابَ الخشاء؛ يكون الخراج عندئذ فوق السمحاق، أما في التهاب الخشاء فيكون تحته."
+      },
+      "numbers": []
+    },
+    {
+      "id": "ear_canal_course",
+      "title": {
+        "en": "External canal: length, course, isthmuses",
+        "ar": "القناة السمعية الظاهرة: الطول والمسار والتضيقان"
+      },
+      "structures": [
+        "external_acoustic_meatus",
+        "tympanic_membrane"
+      ],
+      "overview": {
+        "en": "The canal runs from the concha to the tympanic membrane in a gentle S: its outer part heads forwards and upwards, its middle part turns backwards, and its bony inner part runs forwards and down again. Because the membrane closes it obliquely, the floor and front wall are longer than the roof and back wall. There are two narrowings: the cartilaginous isthmus at the inner end of the cartilaginous part, and the bony isthmus about two centimetres in, just outside the recess in front of the membrane. The outer third is cartilaginous, deficient above and behind where fibrous tissue fills in, and firmly attached to the bone.",
+        "ar": "تمتد القناة من المحارة إلى الغشاء الطبلي بشكل S لطيف: يتجه جزؤها الخارجي إلى الأمام والأعلى، ثم ينعطف جزؤها الأوسط إلى الخلف، ثم يعود جزؤها العظمي الداخلي إلى الأمام والأسفل. ولأن الغشاء يغلقها بشكل مائل يكون قاعها وجدارها الأمامي أطول من سقفها وجدارها الخلفي. فيها تضيقان: التضيق الغضروفي عند النهاية الداخلية للجزء الغضروفي، والتضيق العظمي على بعد نحو سنتيمترين، خارج الردب الواقع أمام الغشاء مباشرة. الثلث الخارجي غضروفي، ناقص في الأعلى والخلف حيث يملأ النسيجُ الليفي الفراغ، وملتصق بالعظم بقوة."
+      },
+      "surgical": {
+        "en": "To see the membrane in an adult, the auricle is pulled up and back; in an infant, down.",
+        "ar": "لرؤية الغشاء عند البالغ يُشدّ الصيوان إلى الأعلى والخلف، وعند الرضيع إلى الأسفل."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Length, tragus to membrane",
+            "ar": "الطول من الزنمة إلى الغشاء"
+          },
+          "value": "40",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 433
+          }
+        },
+        {
+          "label": {
+            "en": "Length, concha to membrane",
+            "ar": "الطول من المحارة إلى الغشاء"
+          },
+          "value": "25",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 433
+          }
+        },
+        {
+          "label": {
+            "en": "Floor and front wall longer than roof and back wall by",
+            "ar": "زيادة طول القاع والجدار الأمامي على السقف والجدار الخلفي"
+          },
+          "value": "6",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 433
+          }
+        },
+        {
+          "label": {
+            "en": "Cartilaginous part",
+            "ar": "الجزء الغضروفي"
+          },
+          "value": "8",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 433
+          }
+        }
+      ]
+    },
+    {
+      "id": "bony_canal",
+      "title": {
+        "en": "Bony canal: tympanic bone, foramen of Huschke, relations",
+        "ar": "القناة العظمية: العظم الطبلي، ثقبة هوشكه، العلاقات"
+      },
+      "structures": [
+        "external_acoustic_meatus",
+        "temporal_bone",
+        "temporal_bone_air_cells"
+      ],
+      "overview": {
+        "en": "The tympanic bone, grown from the fetal tympanic ring, makes the front, floor and lower back of the bony canal; the ring is open above and behind, so the squamous and petrous parts complete the wall there. In infants the bony canal is very short and the membrane lies flatter. A gap in the anteroinferior wall, the foramen of Huschke, is normal until about four years and occasionally persists. In the floor, just outside the membrane, the inferior tympanic recess dips about five millimetres deep at an acute angle to the membrane. Relations: parotid and the mandibular condyle in front and below, mastoid cells behind, the epitympanum medially above, and the middle fossa above the roof, which is squamous bone and often contains cells.",
+        "ar": "يشكّل العظم الطبلي، الناشئ من الحلقة الطبلية الجنينية، الجدار الأمامي والقاع والجزء السفلي من الجدار الخلفي للقناة العظمية؛ والحلقة مفتوحة في الأعلى والخلف فيكمل الجزءان الحرشفي والصخري الجدار هناك. القناة العظمية عند الرضيع قصيرة جداً والغشاء أكثر أفقية. فجوةٌ في الجدار الأمامي السفلي، ثقبة هوشكه، طبيعية حتى نحو أربع سنوات وقد تبقى أحياناً. وفي القاع، خارج الغشاء مباشرة، ينخفض الردب الطبلي السفلي بعرض نحو خمسة ملليمترات ويصنع زاوية حادة مع الغشاء. العلاقات: النكفة واللقمة الفكية في الأمام والأسفل، والخلايا الخشائية في الخلف، والسقيفة في الأنسي العلوي، والحفرة القحفية الوسطى فوق السقف المكوّن من العظم الحرشفي والذي يحوي غالباً خلايا هوائية."
+      },
+      "surgical": {
+        "en": "Infection can cross between canal and parotid through the foramen of Huschke or the lower cartilage. The recess can hide an inferior marginal perforation at otoscopy. Mastoiditis can break through the thin posterior wall into the canal. A longitudinal temporal bone fracture typically runs through the roof of the canal into the middle ear, tearing the membrane and causing CSF otorrhoea.",
+        "ar": "قد تعبر العدوى بين القناة والنكفة عبر ثقبة هوشكه أو الغضروف السفلي. وقد يخفي الردبُ انثقاباً حافياً سفلياً عند تنظير الأذن. ويمكن لالتهاب الخشاء أن يخترق الجدار الخلفي الرقيق إلى القناة. وكسر العظم الصدغي الطولي يمر عادة في سقف القناة إلى الأذن الوسطى فيمزق الغشاء ويسبب سيلان السائل الدماغي الشوكي من الأذن."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Bony isthmus from the concha",
+            "ar": "بعد التضيق العظمي عن المحارة"
+          },
+          "value": "20",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 433
+          }
+        },
+        {
+          "label": {
+            "en": "Width of the inferior tympanic recess",
+            "ar": "عرض الردب الطبلي السفلي"
+          },
+          "value": "5",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 435
+          }
+        }
+      ]
+    },
+    {
+      "id": "ear_canal_skin",
+      "title": {
+        "en": "Skin of the canal",
+        "ar": "جلد القناة"
+      },
+      "structures": [
+        "external_acoustic_meatus"
+      ],
+      "overview": {
+        "en": "Over the cartilage the skin is thicker and has a true subcutaneous layer with hair follicles (without arrector muscles), sebaceous glands and ceruminous glands, the latter modified apocrine glands lying deeper and mostly in the roof and floor. Over the bone the skin is very thin, has no appendages and passes without a break onto the membrane.",
+        "ar": "فوق الغضروف يكون الجلد أثخن وله طبقة تحت جلدية حقيقية فيها جريبات شعر (بلا عضلات ناصبة) وغدد دهنية وغدد صملاخية، وهذه الأخيرة غدد مفترزة معدلة تقع أعمق ومعظمها في السقف والقاع. أما فوق العظم فالجلد رقيق جداً بلا ملحقات، ويستمر دون انقطاع على الغشاء."
+      },
+      "surgical": {
+        "en": "The thin bony-canal skin tears easily during wax removal or surgery, and cold or heat passes quickly to the bone beneath, which is linked to exostoses. A furuncle is an infection of a gland in the cartilaginous part.",
+        "ar": "يتمزق جلد القناة العظمية الرقيق بسهولة أثناء إزالة الصملاخ أو الجراحة، وينتقل البرد أو الحرارة بسرعة إلى العظم تحته، وهذا مرتبط بالعُرَن العظمية. والدمّل التهابُ غدة في الجزء الغضروفي."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Skin over bone",
+            "ar": "ثخانة الجلد فوق العظم"
+          },
+          "value": "≈ 0.2",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 435
+          }
+        },
+        {
+          "label": {
+            "en": "Skin over cartilage",
+            "ar": "ثخانة الجلد فوق الغضروف"
+          },
+          "value": "0.5–1.0",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 436
+          }
+        }
+      ]
+    },
+    {
+      "id": "ear_canal_supply",
+      "title": {
+        "en": "Canal: vessels, lymph and nerves (Arnold's nerve)",
+        "ar": "القناة: الأوعية واللمف والأعصاب (عصب أرنولد)"
+      },
+      "structures": [
+        "external_acoustic_meatus"
+      ],
+      "overview": {
+        "en": "The deep auricular artery, from the first part of the maxillary artery, passes through the parotid behind the jaw joint to the canal and the outer face of the membrane. Veins reach the retromandibular and external jugular veins, and through the mastoid emissary vein the sigmoid sinus. Lymph follows the auricle's routes. The nerve supply reflects a meeting of branchial and post-branchial skin and overlaps: the auriculotemporal nerve takes the front and roof of the canal and the front of the membrane; the posterior canal, the back of the membrane and the concha are supplied by fibres of VII, IX and X carried by Arnold's nerve. Arnold's nerve leaves the superior (jugular) ganglion of the vagus, crosses the jugular fossa in the mastoid canaliculus, picks up a branch from the facial nerve and exits through the tympanomastoid fissure.",
+        "ar": "يصل الشريان الأذني العميق، من الجزء الأول للشريان الفكي، عبر النكفة خلف المفصل الفكي إلى القناة والوجه الخارجي للغشاء. وتصبّ الأوردة في الوريدين خلف الفكي والوداجي الظاهر، وعبر الوريد المُرسِل الخشائي في الجيب السيني. ويتبع اللمف طرق الصيوان. أما التعصيب فيعكس التقاء جلدٍ غلصمي وجلدٍ خلف غلصمي ويتداخل: العصب الأذني الصدغي لمقدمة القناة وسقفها ومقدمة الغشاء؛ والجزء الخلفي من القناة وخلف الغشاء والمحارة تعصّبها ألياف من الأعصاب السابع والتاسع والعاشر يحملها عصب أرنولد. يخرج عصب أرنولد من العقدة العلوية (الوداجية) للعصب المبهم، ويعبر الحفرة الوداجية في القُنيّة الخشائية، ويتلقى فرعاً من العصب الوجهي، ثم يخرج عبر الشق الطبلي الخشائي."
+      },
+      "surgical": {
+        "en": "The vesicles of herpes zoster oticus in the concha and posterior canal follow this shared territory, and touching the posterior canal can provoke a cough through Arnold's nerve.",
+        "ar": "تتبع حويصلات الحلأ النطاقي الأذني في المحارة والقناة الخلفية هذه المنطقة المشتركة، وقد يثير لمسُ الجدار الخلفي للقناة السعالَ عبر عصب أرنولد."
+      },
+      "numbers": []
+    },
+    {
+      "id": "tympanic_membrane_shape",
+      "title": {
+        "en": "Tympanic membrane: size, tilt and landmarks",
+        "ar": "الغشاء الطبلي: الأبعاد والميل والمعالم"
+      },
+      "structures": [
+        "tympanic_membrane",
+        "malleus_handle",
+        "malleus_lateral_process",
+        "anterior_malleal_fold",
+        "posterior_malleal_fold"
+      ],
+      "overview": {
+        "en": "The membrane closes the canal obliquely, tilted so that it faces down, forwards and out; the roof of the canal meets it at an obtuse angle. It is slightly taller than it is wide. Seen from the canal it is a shallow cone whose apex, the umbo, is the tip of the malleus handle; the handle runs up and back from the umbo to the lateral process, which shows as a small knob. From the lateral process the anterior and posterior malleal folds run to the tympanic spines at the ends of the notch of Rivinus and separate the pars flaccida above from the pars tensa below. The cone of light at otoscopy points down and forwards from the umbo.",
+        "ar": "يغلق الغشاء القناة بشكل مائل فيتجه إلى الأسفل والأمام والخارج؛ ويلتقي به سقف القناة بزاوية منفرجة. ارتفاعه أكبر قليلاً من عرضه. يبدو من جهة القناة مخروطاً ضحلاً رأسه السُرّة، وهي طرف قبضة المطرقة؛ تمتد القبضة من السرة إلى الأعلى والخلف حتى الناتئ الوحشي الذي يظهر كعقدة صغيرة. ومن الناتئ الوحشي تمتد الثنيتان المطرقيتان الأمامية والخلفية إلى الشوكتين الطبليتين عند طرفي ثلمة ريفينوس، وتفصلان الجزء الرخو في الأعلى عن الجزء المشدود في الأسفل. ويتجه المخروط الضوئي عند التنظير إلى الأسفل والأمام من السرة."
+      },
+      "surgical": {
+        "en": "The light reflex vanishes with inflammation of the membrane or middle ear, so it is a poor sign on its own.",
+        "ar": "يختفي المنعكس الضوئي مع التهاب الغشاء أو الأذن الوسطى، فهو علامة ضعيفة وحده."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Vertical diameter (along the handle)",
+            "ar": "القطر العمودي (على طول القبضة)"
+          },
+          "value": "8.5–10",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 438
+          }
+        },
+        {
+          "label": {
+            "en": "Horizontal diameter",
+            "ar": "القطر الأفقي"
+          },
+          "value": "8–9",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 438
+          }
+        },
+        {
+          "label": {
+            "en": "Angle between canal roof and membrane",
+            "ar": "الزاوية بين سقف القناة والغشاء"
+          },
+          "value": "140",
+          "unit": "deg",
+          "source": {
+            "ref": "janfaza",
+            "page": 438
+          }
+        }
+      ]
+    },
+    {
+      "id": "tympanic_membrane_layers",
+      "title": {
+        "en": "Pars tensa and pars flaccida: layers and annulus",
+        "ar": "الجزء المشدود والجزء الرخو: الطبقات والحلقة"
+      },
+      "structures": [
+        "tympanic_membrane"
+      ],
+      "overview": {
+        "en": "Both parts have three layers: skin outside, continuous with the canal; mucosa inside, continuous with the middle ear; and a fibrous middle layer. In the pars tensa that middle layer has outer radial fibres running from the handle to the rim and inner circular fibres that gather at the edge into the fibrocartilaginous annulus seated in the tympanic sulcus. The annulus and sulcus stop at the notch of Rivinus, where the pars flaccida attaches straight to squamous bone. Despite its name the pars flaccida is the thicker part: its skin has more cell layers and its middle layer is an irregular mesh of collagen and elastic fibres rather than an ordered sheet.",
+        "ar": "للجزأين ثلاث طبقات: جلد في الخارج يتصل بجلد القناة، ومخاطية في الداخل تتصل بمخاطية الأذن الوسطى، وطبقة ليفية في الوسط. في الجزء المشدود تتألف الطبقة الوسطى من ألياف شعاعية خارجية تمتد من القبضة إلى الحافة، وألياف دائرية داخلية تتجمع عند الحافة في الحلقة الليفية الغضروفية المستقرة في الثلم الطبلي. وتتوقف الحلقة والثلم عند ثلمة ريفينوس، حيث يتصل الجزء الرخو مباشرة بالعظم الحرشفي. ورغم اسمه فالجزء الرخو هو الأثخن: في جلده طبقات خلوية أكثر، وطبقته الوسطى شبكة غير منتظمة من الكولاجين والألياف المرنة بدلاً من صفيحة منتظمة."
+      },
+      "surgical": {
+        "en": "A perforation that heals on its own often lacks the fibrous layer; the thin two-layer patch can look like a hole and is shown by pneumatic otoscopy. Scarring may hyalinise into tympanosclerosis.",
+        "ar": "الانثقاب الذي يلتئم ذاتياً تنقصه غالباً الطبقة الليفية؛ فتبدو الرقعة الرقيقة ذات الطبقتين كأنها ثقب، ويكشفها التنظير بالضغط الهوائي. وقد يتحول التندب إلى تصلب طبلي بالتزجّج."
+      },
+      "numbers": []
+    },
+    {
+      "id": "tympanic_membrane_supply",
+      "title": {
+        "en": "Tympanic membrane: vessels and nerves",
+        "ar": "الغشاء الطبلي: الأوعية والأعصاب"
+      },
+      "structures": [
+        "tympanic_membrane",
+        "chorda_tympani",
+        "tympanic_plexus"
+      ],
+      "overview": {
+        "en": "Two networks meet in the membrane. On the outer face the deep auricular artery forms a peripheral ring and, largest of all, the manubrial artery running down the handle. On the inner face branches of the anterior tympanic and stylomastoid arteries form an inner ring and a descending vessel. Outer sensation comes from the auriculotemporal nerve and Arnold's nerve (with fibres of VII, IX and X); inner sensation from the tympanic plexus, with small twigs from the chorda tympani. Most nerve fibres enter from above and behind and run down beside the manubrial artery; the pars flaccida is more densely supplied than the pars tensa.",
+        "ar": "تلتقي في الغشاء شبكتان. على الوجه الخارجي يشكّل الشريان الأذني العميق حلقة محيطية، وأكبرَ الأوعية جميعاً: الشريان القبضي النازل على طول القبضة. وعلى الوجه الداخلي تشكّل فروع الشريانين الطبلي الأمامي والإبري الخشائي حلقة داخلية ووعاءً نازلاً. يأتي الحس الخارجي من العصب الأذني الصدغي وعصب أرنولد (مع ألياف الأعصاب السابع والتاسع والعاشر)، والحس الداخلي من الضفيرة الطبلية مع فروع صغيرة من حبل الطبل. تدخل معظم الألياف العصبية من الأعلى والخلف وتنزل بجانب الشريان القبضي؛ والجزء الرخو أغنى تعصيباً من الجزء المشدود."
+      },
+      "numbers": []
+    },
+    {
+      "id": "tympanic_membrane_quadrants",
+      "title": {
+        "en": "Quadrants and what lies behind them",
+        "ar": "الأرباع وما يقع خلف كلٍّ منها"
+      },
+      "structures": [
+        "tympanic_membrane_anterosuperior",
+        "tympanic_membrane_anteroinferior",
+        "tympanic_membrane_posterosuperior",
+        "tympanic_membrane_posteroinferior"
+      ],
+      "overview": {
+        "en": "A line along the handle and a line through the umbo at right angles divide the pars tensa into four quadrants. Behind the posterosuperior quadrant lie the long process of the incus, the stapes and the oval window, with the chorda tympani crossing; behind the anterosuperior quadrant the tensor tendon and the tympanic opening of the Eustachian tube; behind the anteroinferior quadrant the carotid wall; behind the posteroinferior quadrant the round window niche and the hypotympanum over the jugular bulb. In this app the quadrants are computed for each specimen from its malleus handle and membrane.",
+        "ar": "يقسم خطٌّ على طول القبضة وخطٌّ عمودي عليه يمر بالسرة الجزءَ المشدود إلى أربعة أرباع. خلف الربع الخلفي العلوي تقع الساق الطويلة للسندان والركاب والنافذة البيضية ويعبرها حبل الطبل؛ وخلف الربع الأمامي العلوي وتر الموتّرة والفتحة الطبلية لنفير أوستاش؛ وخلف الربع الأمامي السفلي الجدار السباتي؛ وخلف الربع الخلفي السفلي كوة النافذة المستديرة وتحت الطبل فوق البصلة الوداجية. في هذا التطبيق تُحسب الأرباع لكل عينة من قبضة مطرقتها وغشائها."
+      },
+      "surgical": {
+        "en": "Myringotomy is placed in the posteroinferior quadrant, where the medial wall is a few millimetres away and nothing vital is close, but a high jugular bulb can bulge here. Avoid the anteroinferior quadrant over a possibly dehiscent carotid and the posterosuperior quadrant over the ossicles and oval window.",
+        "ar": "يُجرى بضع الطبلة في الربع الخلفي السفلي، حيث يبعد الجدار الأنسي بضعة ملليمترات ولا يقترب شيء حيوي، لكن البصلة الوداجية العالية قد تبرز هنا. ويُتجنب الربع الأمامي السفلي فوق سباتي قد يكون متفززاً، والربع الخلفي العلوي فوق العظيمات والنافذة البيضية."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Membrane to medial wall behind the posteroinferior quadrant",
+            "ar": "المسافة بين الغشاء والجدار الأنسي خلف الربع الخلفي السفلي"
+          },
+          "value": "2–4",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 441
+          }
+        }
+      ]
+    },
+    {
+      "id": "external_ear_variants",
+      "title": {
+        "en": "Development and anomalies of the external ear",
+        "ar": "تطور الأذن الظاهرة وشذوذاتها"
+      },
+      "structures": [
+        "tympanic_membrane",
+        "external_acoustic_meatus"
+      ],
+      "overview": {
+        "en": "In mid-fetal life the membrane lies almost flat, under rather than beside the otic capsule, and turns upright and outward with growth; how far it turns accounts for adult differences in its tilt. Congenital atresia of the canal is often accompanied by ossicular malformation while the inner ear may be normal, so the loss can be purely conductive. Accessory auricles appear as preauricular tags; preauricular pits and sinuses come from the first branchial cleft or imperfect fusion of the hillocks of His and matter only when infected.",
+        "ar": "في منتصف الحياة الجنينية يكون الغشاء شبه أفقي، تحت المحفظة الأذنية لا بجانبها، ثم ينتصب ويتجه إلى الخارج مع النمو؛ ومقدار هذا الدوران يفسّر الفروق في ميله عند البالغين. يرافق رتقُ القناة الخلقي غالباً تشوهٌ في العظيمات بينما قد تكون الأذن الداخلية طبيعية، فيكون نقص السمع توصيلياً صرفاً. وتظهر الأذينات الإضافية كزوائد أمام الأذن؛ أما النقر والجيوب أمام الأذن فمنشؤها الشق الغلصمي الأول أو التحام ناقص لتلال هيس، ولا أهمية لها إلا إذا التهبت."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Canal atresia",
+            "ar": "رتق القناة"
+          },
+          "text": {
+            "en": "about 1 in 2,000 births; bilateral in one in six",
+            "ar": "نحو 1 من كل 2000 ولادة؛ ثنائي الجانبين في واحدة من كل ست حالات"
+          },
+          "source": {
+            "ref": "janfaza",
+            "page": 441
+          }
+        }
+      ]
+    }
+  ]
+}

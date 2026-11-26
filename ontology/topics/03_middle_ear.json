@@ -1,0 +1,628 @@
+{
+  "section": "middle_ear",
+  "title": {
+    "en": "Middle ear",
+    "ar": "الأذن الوسطى"
+  },
+  "topics": [
+    {
+      "id": "malleus",
+      "title": {
+        "en": "Malleus",
+        "ar": "المطرقة"
+      },
+      "structures": [
+        "malleus",
+        "malleus_head",
+        "malleus_neck",
+        "malleus_lateral_process",
+        "malleus_handle"
+      ],
+      "overview": {
+        "en": "The head sits in the epitympanum and meets the incus body at a saddle joint; below it the neck narrows. From the neck a slender anterior process runs forwards to the petrotympanic fissure beside the chorda tympani; it ossifies separately in membrane and fuses later. The lateral (short) process carries a cartilage cap bound into the membrane, and the handle (manubrium) descends inside the fibrous layer to the umbo, where the layer splits around its tip. About halfway down the handle curves slightly inwards and lifts off the membrane, leaving a small mucosal fold between them. The anterior process and its ligament, with the posterior incudal ligament, form the axis about which the chain rocks.",
+        "ar": "يقع الرأس في السقيفة ويلتقي بجسم السندان في مفصل سرجي؛ وتحته يضيق العنق. ومن العنق يمتد ناتئ أمامي رفيع إلى الأمام نحو الشق الصخري الطبلي بجانب حبل الطبل؛ يتعظم هذا الناتئ بشكل مستقل من الغشاء ثم يلتحم لاحقاً. ويحمل الناتئ الوحشي (القصير) قلنسوة غضروفية مثبّتة في الغشاء، وتنزل القبضة داخل الطبقة الليفية حتى السرة، حيث تنشق الطبقة حول طرفها. وفي منتصف القبضة تقريباً تنحني قليلاً إلى الداخل وتبتعد عن الغشاء، فتبقى بينهما ثنية مخاطية صغيرة. يشكّل الناتئ الأمامي ورباطه، مع الرباط السنداني الخلفي، المحورَ الذي تتأرجح حوله السلسلة."
+      },
+      "surgical": {
+        "en": "In this app the head, neck, lateral process and handle are divided by rule along each specimen's own malleus; the anterior process is too fine for the scans and is not shown.",
+        "ar": "في هذا التطبيق يُقسَم الرأس والعنق والناتئ الوحشي والقبضة بقاعدة على طول مطرقة كل عينة؛ أما الناتئ الأمامي فأدق من أن تُظهره الصور ولا يُعرض."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Malleus length in this app's specimens",
+            "ar": "طول المطرقة في عينات هذا التطبيق"
+          },
+          "value": "7.9–9.1",
+          "unit": "mm",
+          "source": {
+            "ref": "app"
+          }
+        }
+      ]
+    },
+    {
+      "id": "malleus_ligaments",
+      "title": {
+        "en": "Suspensory ligaments of the malleus",
+        "ar": "الأربطة المعلّقة للمطرقة"
+      },
+      "structures": [
+        "anterior_malleal_ligament",
+        "lateral_malleal_ligament",
+        "superior_malleal_ligament",
+        "malleus_head",
+        "malleus_neck"
+      ],
+      "overview": {
+        "en": "Three ligaments hang the malleus in place. The anterior ligament runs from the head and anterior process forwards to the anterior epitympanic wall and through the petrotympanic fissure, some fibres continuing as far as the sphenoid spine; it lies just above the anterior malleal fold. The lateral ligament fans from the neck to the bony edge of the notch of Rivinus. The superior ligament drops from the roof of the epitympanum to the head. Together they keep the malleus positioned, damp its movement at loud sound and resist shifts with middle ear pressure.",
+        "ar": "تعلّق ثلاثة أربطة المطرقة في مكانها. يمتد الرباط الأمامي من الرأس والناتئ الأمامي إلى الأمام نحو الجدار الأمامي للسقيفة وعبر الشق الصخري الطبلي، وتستمر بعض أليافه حتى شوكة الوتدي؛ ويقع فوق الثنية المطرقية الأمامية مباشرة. وينتشر الرباط الوحشي من العنق إلى الحافة العظمية لثلمة ريفينوس. وينزل الرباط العلوي من سقف السقيفة إلى الرأس. وتحافظ معاً على وضع المطرقة، وتخمد حركتها عند الأصوات الشديدة، وتقاوم انزياحها مع تغيرات ضغط الأذن الوسطى."
+      },
+      "surgical": {
+        "en": "The head can become fixed to the epitympanic wall; the resulting conductive loss can be mistaken for otosclerosis, and pneumatic otoscopy or palpating the malleus tells them apart.",
+        "ar": "قد يلتصق الرأس بجدار السقيفة؛ ويمكن أن يُخلط نقص السمع التوصيلي الناتج بتصلب الأذن، ويفرّق بينهما التنظيرُ بالضغط الهوائي أو جسُّ المطرقة."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Fixation of the malleus head in otherwise normal temporal bones",
+            "ar": "التصاق رأس المطرقة في عظام صدغية طبيعية في غير ذلك"
+          },
+          "text": {
+            "en": "15 of 1,200",
+            "ar": "15 من 1200"
+          },
+          "source": {
+            "ref": "janfaza",
+            "page": 442
+          }
+        }
+      ]
+    },
+    {
+      "id": "incus",
+      "title": {
+        "en": "Incus and its ligaments",
+        "ar": "السندان وأربطته"
+      },
+      "structures": [
+        "incus",
+        "incus_body",
+        "incus_short_process",
+        "incus_long_process",
+        "incus_lenticular_process",
+        "posterior_incudal_ligament",
+        "superior_incudal_ligament"
+      ],
+      "overview": {
+        "en": "The body lies in the epitympanum behind the malleus head. The short process points backwards into the fossa incudis, held there by the posterior incudal ligament; a superior ligament from the roof is not always present, and medial and lateral incudomallear ligaments bind body to head. The long process descends behind and parallel to the handle and ends in the lenticular process, a small knob on a thin stalk that meets the stapes head.",
+        "ar": "يقع الجسم في السقيفة خلف رأس المطرقة. تتجه الساق القصيرة إلى الخلف في حفرة السندان ويثبّتها هناك الرباط السنداني الخلفي؛ أما الرباط العلوي من السقف فلا يوجد دائماً، ويربط الرباطان السندانيان المطرقيان الأنسي والوحشي الجسمَ بالرأس. تنزل الساق الطويلة خلف القبضة وموازية لها، وتنتهي بالناتئ العدسي، وهو عقدة صغيرة على عُنيق رفيع تلتقي برأس الركاب."
+      },
+      "surgical": {
+        "en": "The short process in its fossa is a landmark for the facial nerve and lateral canal when opening the epitympanum from the mastoid. The long process can be pneumatised and is then fragile when handled.",
+        "ar": "الساق القصيرة في حفرتها معلمٌ للعصب الوجهي والقناة الوحشية عند فتح السقيفة من جهة الخشاء. وقد تكون الساق الطويلة مهوّاة فتصبح هشة عند التعامل معها."
+      },
+      "numbers": []
+    },
+    {
+      "id": "stapes",
+      "title": {
+        "en": "Stapes",
+        "ar": "الركاب"
+      },
+      "structures": [
+        "stapes",
+        "stapes_head_neck",
+        "stapes_anterior_crus",
+        "stapes_posterior_crus",
+        "stapes_footplate",
+        "annular_ligament"
+      ],
+      "overview": {
+        "en": "The head has a shallow socket for the lenticular process. The stapedius tendon attaches near the top of the posterior crus and sometimes onto the head. The anterior crus is thinner and straighter than the posterior. Between them lies the obturator foramen, which may be closed over by mucosa and often fails to form in the trisomies. The footplate fills the oval window, held by the annular ligament, and sometimes carries a low ridge along its outer face.",
+        "ar": "للرأس نقرة ضحلة يستقر فيها الناتئ العدسي. يرتكز وتر الركابية قرب أعلى الساق الخلفية وأحياناً على الرأس. والساق الأمامية أرقّ وأكثر استقامة من الخلفية. وبينهما الثقبة السادّة التي قد تغطيها المخاطية، وكثيراً ما لا تتشكل في التثلثات الصبغية. وتملأ صفيحة الركاب النافذة البيضية ويثبّتها الرباط الحلقي، وقد تحمل حرفاً منخفضاً على طول وجهها الخارجي."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Footplate",
+            "ar": "صفيحة الركاب"
+          },
+          "value": "≈ 3.0 × 1.4",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 445
+          }
+        },
+        {
+          "label": {
+            "en": "Footplate in this app's specimens",
+            "ar": "صفيحة الركاب في عينات هذا التطبيق"
+          },
+          "value": "2.5–3.5 × 1.0–1.9",
+          "unit": "mm",
+          "source": {
+            "ref": "app"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ossicular_joints",
+      "title": {
+        "en": "Joints of the ossicles",
+        "ar": "مفاصل العظيمات"
+      },
+      "structures": [
+        "malleus_head",
+        "incus_body",
+        "incus_lenticular_process",
+        "stapes_head_neck",
+        "stapes_footplate",
+        "annular_ligament"
+      ],
+      "overview": {
+        "en": "Both ossicular joints are true synovial joints that carry no weight, each with a capsule of ligamentous fibres between the periosteum of the two bones. The incudomallear joint is saddle-shaped with interlocking surfaces and a disc; its cartilage has a deep layer next to bone and a superficial layer like growth cartilage, and its capsule has synovial, fibrous and mucosal layers. The incudostapedial joint joins the convex lenticular process to the concave stapes head, has a joint space but usually no disc, and its capsule may blend below with the stapedius tendon; the lenticular process can even be a separate small bone. The stapediovestibular joint is not synovial: the annular ligament spans from the footplate's inner lining to the periosteum around the window, continuing inwards with the spiral ligament of the basal turn.",
+        "ar": "مفصلا العظيمات مفصلان زليليان حقيقيان لا يحملان وزناً، ولكل منهما محفظة من ألياف رباطية بين سمحاقي العظمين. المفصل السنداني المطرقي سرجي الشكل بسطوح متداخلة وقرص؛ لغضروفه طبقة عميقة تلي العظم وطبقة سطحية تشبه غضروف النمو، ولمحفظته طبقات زليلية وليفية ومخاطية. ويصل المفصل السنداني الركابي بين الناتئ العدسي المحدّب ورأس الركاب المقعّر، وله جوف مفصلي لكن لا قرص له عادةً، وقد تندمج محفظته في الأسفل مع وتر الركابية؛ بل قد يكون الناتئ العدسي عظماً صغيراً مستقلاً. أما المفصل الركابي الدهليزي فليس زليلياً: يمتد الرباط الحلقي من البطانة الداخلية للصفيحة إلى السمحاق حول النافذة، ويستمر إلى الداخل مع الرباط الحلزوني للفة القاعدية."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Adults with small spaces inside the annular ligament (none in children)",
+            "ar": "البالغون الذين في رباطهم الحلقي فراغات صغيرة (لا توجد عند الأطفال)"
+          },
+          "value": "70",
+          "unit": "percent",
+          "source": {
+            "ref": "janfaza",
+            "page": 446
+          }
+        }
+      ]
+    },
+    {
+      "id": "stapedius",
+      "title": {
+        "en": "Stapedius muscle",
+        "ar": "العضلة الركابية"
+      },
+      "structures": [
+        "stapedius_muscle",
+        "stapedius_tendon",
+        "facial_nerve"
+      ],
+      "overview": {
+        "en": "The muscle lies in its own bony canal in the posterior wall, alongside and in front of the descending facial nerve, which supplies it. Its fibres gather into a tendon that leaves through the tip of the pyramidal eminence and runs forwards to the stapes. Contraction tips the front of the footplate outwards and its back inwards, stiffening the chain against loud sound; this is the stapedial reflex.",
+        "ar": "تقع العضلة في قناتها العظمية الخاصة في الجدار الخلفي، بجانب العصب الوجهي النازل وأمامه، وهو الذي يعصّبها. تتجمع أليافها في وتر يخرج من رأس البارزة الهرمية ويمتد إلى الأمام نحو الركاب. يُميل تقلصُها مقدمةَ صفيحة الركاب إلى الخارج ومؤخرتها إلى الداخل، فيصلّب السلسلة أمام الأصوات الشديدة؛ وهذا هو المنعكس الركابي."
+      },
+      "variants": {
+        "en": "The tendon can be absent, and the muscle can be doubled.",
+        "ar": "قد يغيب الوتر، وقد تكون العضلة مضاعفة."
+      },
+      "surgical": {
+        "en": "In this app the muscle and tendon are schematic: placed by rule beside each specimen's facial nerve, not segmented.",
+        "ar": "العضلة والوتر في هذا التطبيق تخطيطيان: موضوعان بقاعدة بجانب العصب الوجهي لكل عينة، وليسا مقطّعين من الصورة."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Absent stapedius tendon",
+            "ar": "غياب وتر الركابية"
+          },
+          "value": "1",
+          "unit": "percent",
+          "source": {
+            "ref": "janfaza",
+            "page": 447
+          }
+        }
+      ]
+    },
+    {
+      "id": "tensor_tympani",
+      "title": {
+        "en": "Tensor tympani muscle",
+        "ar": "العضلة الموتّرة للطبلة"
+      },
+      "structures": [
+        "tensor_tympani_muscle",
+        "tensor_tympani_tendon",
+        "malleus_neck",
+        "malleus_handle"
+      ],
+      "overview": {
+        "en": "The muscle arises from the cartilage of the Eustachian tube, the walls of its bony semicanal above the tube and the nearby greater wing of the sphenoid, and some of its fibres are continuous with tensor veli palatini. Most of its length lies in the semicanal. Its tendon turns almost at a right angle around the cochleariform process, a few fibres attaching in the process's hollow, and inserts on the neck and upper handle of the malleus. The cochleariform process holds the tendon in place but does not act as a pulley. Supplied by the trigeminal nerve through the nerve to medial pterygoid, it pulls the handle inwards and stiffens membrane and chain.",
+        "ar": "تنشأ العضلة من غضروف نفير أوستاش وجدران نصف قناتها العظمية فوق النفير والجناح الكبير للوتدي المجاور، وتستمر بعض أليافها مع العضلة الموترة لشراع الحنك. يقع معظم طولها في نصف القناة. ينعطف وترها بزاوية قائمة تقريباً حول الناتئ الملعقي، وترتكز بعض الألياف في تجويف الناتئ، ثم يرتكز على العنق والجزء العلوي من قبضة المطرقة. يثبّت الناتئ الملعقي الوتر في مكانه لكنه لا يعمل كبكرة. تعصّبها الشعبة الفكية السفلية للعصب مثلث التوائم عبر العصب الجناحي الأنسي، وهي تشدّ القبضة إلى الداخل وتصلّب الغشاء والسلسلة."
+      },
+      "surgical": {
+        "en": "With a large perforation the tendon is no longer opposed by the membrane, and the umbo can be drawn in onto the promontory; dividing the tendon may be needed before grafting to return the malleus to place. The cochleariform process is a dependable landmark for the facial nerve, which lies just above it.",
+        "ar": "مع الانثقاب الكبير لا يعود الغشاء يقاوم شدّ الوتر، فقد تنسحب السرة إلى الداخل حتى الرعن؛ وقد يلزم قطع الوتر قبل الترقيع لإعادة المطرقة إلى مكانها. والناتئ الملعقي معلمٌ موثوق للعصب الوجهي الذي يقع فوقه مباشرة."
+      },
+      "variants": {
+        "en": "The muscle may split into medial and lateral bundles.",
+        "ar": "قد تنقسم العضلة إلى حزمتين أنسية ووحشية."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Length of the muscle",
+            "ar": "طول العضلة"
+          },
+          "value": "≈ 20",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 446
+          }
+        }
+      ]
+    },
+    {
+      "id": "tympanic_cavity_divisions",
+      "title": {
+        "en": "Tympanic cavity: size and divisions",
+        "ar": "الجوف الطبلي: الأبعاد والأقسام"
+      },
+      "structures": [
+        "middle_ear_air_space",
+        "tympanic_membrane"
+      ],
+      "overview": {
+        "en": "The cavity is a narrow space standing in the sagittal plane, about as tall as it is long, and narrowest at the umbo where the handle approaches the promontory. It is divided by planes taken from the membrane's rim: the mesotympanum lies directly medial to the pars tensa; the epitympanum above a plane through the anterior and posterior tympanic striae; the hypotympanum below the lowest point of the annulus; the protympanum in front of the annulus's anterior margin, leading to the tube; and the posterior tympanum behind its posterior margin, holding the sinus tympani and facial recess.",
+        "ar": "الجوف حيّز ضيق قائم في المستوى السهمي، ارتفاعه يقارب طوله، وأضيق ما يكون عند السرة حيث تقترب القبضة من الرعن. يُقسَم بمستويات مأخوذة من حافة الغشاء: الطبل المتوسط يقع أنسي الجزء المشدود مباشرة؛ والسقيفة (فوق الطبل) فوق مستوى يمر بالشريطين الطبليين الأمامي والخلفي؛ وتحت الطبل تحت أخفض نقطة من الحلقة؛ وأمام الطبل أمام الحافة الأمامية للحلقة ويقود إلى النفير؛ وخلف الطبل خلف حافتها الخلفية ويضم الجيب الطبلي والردب الوجهي."
+      },
+      "surgical": {
+        "en": "In this app the cavity is computed as one air space on each specimen with a CBCT; the division planes are not drawn yet.",
+        "ar": "في هذا التطبيق يُحسب الجوف كحيّز هوائي واحد في كل عينة لها تصوير مقطعي مخروطي؛ ولم تُرسم مستويات الأقسام بعد."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Front to back",
+            "ar": "من الأمام إلى الخلف"
+          },
+          "value": "15",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 447
+          }
+        },
+        {
+          "label": {
+            "en": "Height",
+            "ar": "الارتفاع"
+          },
+          "value": "15",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 447
+          }
+        },
+        {
+          "label": {
+            "en": "Width at the epitympanum",
+            "ar": "العرض عند السقيفة"
+          },
+          "value": "6",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 447
+          }
+        },
+        {
+          "label": {
+            "en": "Width at the umbo",
+            "ar": "العرض عند السرة"
+          },
+          "value": "2",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 447
+          }
+        },
+        {
+          "label": {
+            "en": "Width at the hypotympanum",
+            "ar": "العرض عند تحت الطبل"
+          },
+          "value": "4",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 447
+          }
+        },
+        {
+          "label": {
+            "en": "Cavity volume in this app's specimens",
+            "ar": "حجم الجوف في عينات هذا التطبيق"
+          },
+          "value": "0.6–0.8",
+          "unit": "ml",
+          "source": {
+            "ref": "app"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tympanic_walls",
+      "title": {
+        "en": "Walls of the tympanic cavity",
+        "ar": "جدران الجوف الطبلي"
+      },
+      "structures": [
+        "middle_ear_air_space",
+        "internal_carotid_artery",
+        "temporal_bone",
+        "tympanic_membrane",
+        "bony_labyrinth"
+      ],
+      "overview": {
+        "en": "The roof, the tegmen tympani, is a thin plate separating the cavity from the middle cranial fossa. The floor is mostly the dome of the jugular bulb, uneven with small cells, with the root of the styloid process behind. The anterior (carotid) wall is the thin bone of the carotid canal; above it open the tube and the semicanal of tensor tympani. The lateral wall is, from above down, the scutum of squamous bone, the membrane and the tympanic bone. The medial (labyrinthine) wall carries the promontory over the basal turn, the two windows, and the ridges called ponticulus (from pyramidal eminence to promontory) and subiculum (from styloid eminence to the back of the round window niche). The posterior wall is described separately.",
+        "ar": "السقف، أي السقف الطبلي، صفيحة رقيقة تفصل الجوف عن الحفرة القحفية الوسطى. والقاع معظمه قبة البصلة الوداجية، غير مستوٍ تتخلله خلايا صغيرة، ويقع جذر الناتئ الإبري خلفه. والجدار الأمامي (السباتي) هو العظم الرقيق للقناة السباتية، وفوقه تنفتح فتحة النفير ونصف قناة الموتّرة. والجدار الوحشي من الأعلى إلى الأسفل: الدرع من العظم الحرشفي، ثم الغشاء، ثم العظم الطبلي. ويحمل الجدار الأنسي (التيهي) الرعنَ فوق اللفة القاعدية، والنافذتين، والحرفين المسميين الجُسير (من البارزة الهرمية إلى الرعن) والسُّنيد (من البارزة الإبرية إلى خلف كوة النافذة المستديرة). ويوصف الجدار الخلفي على حدة."
+      },
+      "surgical": {
+        "en": "The tegmen can be dehiscent, exposing dura; the carotid wall can be thin or open, and a high jugular bulb can rise into the cavity behind the membrane. The scutum is the bone removed in atticotomy and the first to be eroded by attic cholesteatoma.",
+        "ar": "قد يكون السقف الطبلي متفززاً فتنكشف الأم الجافية؛ وقد يكون الجدار السباتي رقيقاً أو مفتوحاً، وقد ترتفع بصلة وداجية عالية إلى الجوف خلف الغشاء. والدرع هو العظم الذي يُزال في فتح السقيفة وأول ما يتآكل بالورم الكوليستيرولي في السقيفة."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Dehiscent tegmen tympani",
+            "ar": "تفزّر السقف الطبلي"
+          },
+          "value": "6",
+          "unit": "percent",
+          "source": {
+            "ref": "janfaza",
+            "page": 448
+          }
+        }
+      ]
+    },
+    {
+      "id": "posterior_wall",
+      "title": {
+        "en": "Posterior wall: eminences and ridges",
+        "ar": "الجدار الخلفي: البارزات والحروف"
+      },
+      "structures": [
+        "middle_ear_air_space",
+        "stapedius_tendon",
+        "chorda_tympani",
+        "facial_nerve"
+      ],
+      "overview": {
+        "en": "Three small eminences stand on the posterior wall: the pyramidal eminence, from whose tip the stapedius tendon emerges; the chordal eminence, lateral to it and just inside the posterior annulus, pierced by the opening (iter chordae posterius) through which the chorda tympani enters; and the styloid eminence below, over the root of the styloid process. Ridges join them: chordal (pyramidal to chordal), styloid (styloid to chordal) and pyramidal (styloid to pyramidal). Together with the eminences these come from the upper end of the second arch, the styloid complex. The wall's two recesses, the sinus tympani medial to the facial nerve and the facial recess lateral to it, have their own entries.",
+        "ar": "تنتصب على الجدار الخلفي ثلاث بارزات صغيرة: البارزة الهرمية التي يخرج من رأسها وتر الركابية؛ والبارزة الحبلية وحشيها وداخل الحلقة الخلفية مباشرة، وتخترقها الفتحة (المعبر الحبلي الخلفي) التي يدخل منها حبل الطبل؛ والبارزة الإبرية في الأسفل فوق جذر الناتئ الإبري. وتصل بينها حروف: الحبلي (من الهرمية إلى الحبلية)، والإبري (من الإبرية إلى الحبلية)، والهرمي (من الإبرية إلى الهرمية). وهذه مع البارزات مشتقة من الطرف العلوي للقوس الثانية، أي المركّب الإبري. ولردبي الجدار، الجيب الطبلي أنسي العصب الوجهي والردب الوجهي جانبيه، مدخلان خاصان."
+      },
+      "numbers": []
+    },
+    {
+      "id": "sinus_tympani",
+      "title": {
+        "en": "Sinus tympani",
+        "ar": "الجيب الطبلي"
+      },
+      "structures": [
+        "middle_ear_air_space",
+        "facial_nerve",
+        "vestibule_and_semicircular_canals",
+        "round_window"
+      ],
+      "overview": {
+        "en": "An air pocket of the posterior tympanum that reaches back medial to the facial nerve. Its limits: above, the ponticulus and lateral canal; behind, the posterior canal; below, the subiculum, styloid eminence and jugular wall; medially the labyrinth; laterally the pyramidal eminence and the facial nerve. Its depth backwards varies a great deal. It pneumatises from the middle ear, so a bony partition usually separates it from the mastoid cells, which pneumatise by another route.",
+        "ar": "جيب هوائي من خلف الطبل يمتد إلى الخلف أنسي العصب الوجهي. حدوده: في الأعلى الجُسير والقناة الجانبية؛ وفي الخلف القناة الخلفية؛ وفي الأسفل السُّنيد والبارزة الإبرية والجدار الوداجي؛ وفي الأنسي التيه؛ وفي الوحشي البارزة الهرمية والعصب الوجهي. يتفاوت عمقه إلى الخلف تفاوتاً كبيراً. يتهوّى من الأذن الوسطى، لذلك يفصله عادةً حاجز عظمي عن الخلايا الخشائية التي تتهوّى من طريق آخر."
+      },
+      "surgical": {
+        "en": "It cannot be seen through the canal or from the mastoid without help, which makes it a classic hiding place for residual cholesteatoma; angled endoscopes or mirrors are used to inspect it.",
+        "ar": "لا يُرى عبر القناة ولا من الخشاء دون وسيلة مساعدة، فهو مخبأ تقليدي لبقايا الورم الكوليستيرولي؛ وتُستعمل المناظير المائلة أو المرايا لفحصه."
+      },
+      "numbers": []
+    },
+    {
+      "id": "facial_recess",
+      "title": {
+        "en": "Facial recess",
+        "ar": "الردب الوجهي"
+      },
+      "structures": [
+        "middle_ear_air_space",
+        "facial_nerve",
+        "chorda_tympani",
+        "incus_short_process"
+      ],
+      "overview": {
+        "en": "The facial recess is the part of the posterior tympanum lateral to the facial nerve: the descending facial canal and the styloid complex bound it medially, the tympanic bone and the chorda tympani laterally, and the short process of the incus sits above it.",
+        "ar": "الردب الوجهي هو جزء خلف الطبل الواقع وحشي العصب الوجهي: تحدّه في الأنسي القناة الوجهية النازلة والمركّب الإبري، وفي الوحشي العظم الطبلي وحبل الطبل، وتقع الساق القصيرة للسندان فوقه."
+      },
+      "surgical": {
+        "en": "Opening the recess from the mastoid between the facial nerve and the chorda (posterior tympanotomy) gives a view of the incudostapedial joint and the round window and is the usual route for a cochlear implant electrode. Cholesteatoma can extend into it, and the facial canal may be dehiscent on its medial wall.",
+        "ar": "فتح الردب من الخشاء بين العصب الوجهي وحبل الطبل (فتح الطبلة الخلفي) يكشف المفصل السنداني الركابي والنافذة المستديرة، وهو الطريق المعتاد لإدخال مسرى الغرسة القوقعية. قد يمتد إليه الورم الكوليستيرولي، وقد تكون القناة الوجهية متفززة على جداره الأنسي."
+      },
+      "numbers": []
+    },
+    {
+      "id": "anterior_epitympanic_recess",
+      "title": {
+        "en": "Anterior epitympanic recess and the cog",
+        "ar": "الردب السقيفي الأمامي والمسنّ"
+      },
+      "structures": [
+        "middle_ear_air_space",
+        "malleus_head",
+        "facial_nerve"
+      ],
+      "overview": {
+        "en": "A space of variable size in front of the malleus head: the tegmen above, tympanic bone laterally and below, the facial nerve and geniculate ganglion medially. It opens backwards into the epitympanum, sometimes only through a perforated bony septum, the cog, that hangs from the tegmen in front of the malleus head.",
+        "ar": "حيّز متفاوت الحجم أمام رأس المطرقة: السقف الطبلي في الأعلى، والعظم الطبلي في الوحشي والأسفل، والعصب الوجهي والعقدة الركبية في الأنسي. ينفتح إلى الخلف على السقيفة، وأحياناً عبر حاجز عظمي مثقّب فقط، هو المسنّ، يتدلى من السقف أمام رأس المطرقة."
+      },
+      "surgical": {
+        "en": "Attic cholesteatoma often spreads forwards into this recess. The facial nerve and the geniculate ganglion may lie exposed in its medial wall, so dissection there carries risk; the cog points to the nerve just behind and below it.",
+        "ar": "كثيراً ما ينتشر الورم الكوليستيرولي السقيفي إلى الأمام في هذا الردب. وقد يكون العصب الوجهي والعقدة الركبية مكشوفين في جداره الأنسي، فالتسليخ هناك خطِر؛ ويدلّ المسنّ على العصب الواقع خلفه وتحته مباشرة."
+      },
+      "numbers": []
+    },
+    {
+      "id": "oval_window_niche",
+      "title": {
+        "en": "Oval window niche",
+        "ar": "كوة النافذة البيضية"
+      },
+      "structures": [
+        "stapes_footplate",
+        "annular_ligament",
+        "facial_nerve",
+        "middle_ear_air_space"
+      ],
+      "overview": {
+        "en": "The niche leading to the oval window is bounded above by the tympanic facial nerve, below by the promontory, in front by the cochleariform process and behind by the ponticulus, sinus tympani and pyramidal eminence. In front of the window a small cleft in the capsule, the fissula ante fenestram, holds cartilage or fibrous tissue; behind it a smaller pocket, the fossula post fenestram, may be present.",
+        "ar": "تحدّ الكوةَ المؤدية إلى النافذة البيضية من الأعلى القطعةُ الطبلية من العصب الوجهي، ومن الأسفل الرعن، ومن الأمام الناتئ الملعقي، ومن الخلف الجُسير والجيب الطبلي والبارزة الهرمية. وأمام النافذة شقٌّ صغير في المحفظة، الشُّقيق أمام النافذة، يحوي غضروفاً أو نسيجاً ليفياً؛ وقد توجد خلفها جيبة أصغر هي النُّقيرة خلف النافذة."
+      },
+      "surgical": {
+        "en": "The fissula ante fenestram is where otosclerosis most often begins. The facial nerve above the window is the commonest site of a dehiscent canal and may even overhang the footplate, which matters in stapes surgery.",
+        "ar": "الشُّقيق أمام النافذة هو الموضع الذي يبدأ فيه تصلب الأذن في أغلب الأحيان. والعصب الوجهي فوق النافذة هو أشيع موضع لتفزّر القناة، وقد يتدلى فوق صفيحة الركاب، وهذا مهم في جراحة الركاب."
+      },
+      "numbers": []
+    },
+    {
+      "id": "round_window_niche",
+      "title": {
+        "en": "Round window niche and membrane",
+        "ar": "كوة النافذة المستديرة وغشاؤها"
+      },
+      "structures": [
+        "round_window",
+        "scala_tympani",
+        "middle_ear_air_space"
+      ],
+      "overview": {
+        "en": "The niche lies below and behind the promontory, with the subiculum above and behind and the hypotympanum below. The membrane at its depth separates the cavity from the scala tympani; it has an outer mucosal layer, an inner layer facing perilymph, and a middle layer of fibres, vessels and nerve fibres. It lies almost horizontally at the back and becomes steeper in front, and a mucosal fold or false membrane may partly cover the niche.",
+        "ar": "تقع الكوة تحت الرعن وخلفه، ويحدّها السُّنيد من الأعلى والخلف وتحت الطبل من الأسفل. والغشاء في عمقها يفصل الجوف عن السقالة الطبلية؛ له طبقة مخاطية خارجية وطبقة داخلية تواجه اللمف المحيطي وطبقة وسطى من الألياف والأوعية والألياف العصبية. وهو شبه أفقي في الخلف ويصبح أكثر عمودية في الأمام، وقد تغطي الكوةَ جزئياً ثنيةٌ مخاطية أو غشاءٌ كاذب."
+      },
+      "surgical": {
+        "en": "The overhanging lip of the niche often has to be drilled to see the membrane for a round window insertion of a cochlear implant electrode; a false membrane should not be mistaken for the true one.",
+        "ar": "كثيراً ما يلزم حفر الشفة المتدلية للكوة لرؤية الغشاء عند إدخال مسرى الغرسة القوقعية عبر النافذة المستديرة؛ ويجب ألا يُخلط الغشاء الكاذب بالغشاء الحقيقي."
+      },
+      "numbers": []
+    },
+    {
+      "id": "eustachian_tube",
+      "title": {
+        "en": "Eustachian tube",
+        "ar": "نفير أوستاش (الأنبوب السمعي)"
+      },
+      "structures": [
+        "middle_ear_air_space",
+        "internal_carotid_artery"
+      ],
+      "overview": {
+        "en": "The tube ventilates the middle ear and mastoid from the nasopharynx. Its posterolateral third is bony, lateral to the carotid canal and separated from it by thin bone pierced by caroticotympanic vessels; its anteromedial two thirds are cartilage and membrane, a large medial and small lateral cartilaginous lamina joined by fascia. The two parts meet at the narrow isthmus. The pharyngeal orifice lies well below the tympanic opening, is a slit at rest, and is bordered behind by the mobile torus with the fossa of Rosenmüller beyond it. Arteries come from pharyngeal branches of the maxillary and ascending pharyngeal arteries, the ascending palatine, the artery of the pterygoid canal, the middle meningeal and the accessory meningeal (tubal artery); veins go to the pterygoid plexus, lymph to retropharyngeal and deep cervical nodes. Sensation is from the tympanic plexus (IX) and, at the orifice, about equally from IX and the maxillary nerve.",
+        "ar": "يهوّي النفيرُ الأذنَ الوسطى والخشاءَ من البلعوم الأنفي. ثلثه الخلفي الوحشي عظمي، يقع وحشي القناة السباتية ويفصله عنها عظم رقيق تخترقه أوعية سباتية طبلية؛ وثلثاه الأماميان الأنسيان غضروف وغشاء: صفيحة غضروفية أنسية كبيرة ووحشية صغيرة تصل بينهما لفافة. يلتقي الجزءان عند البرزخ الضيق. وتقع الفتحة البلعومية أخفض كثيراً من الفتحة الطبلية، وهي شقٌّ في الراحة، تحدّها من الخلف الحدبة النفيرية المتحركة وخلفها حفرة روزنمولر. تأتي الشرايين من الفروع البلعومية للفكي والبلعومي الصاعد، والحنكي الصاعد، وشريان القناة الجناحية، والسحائي الأوسط، والسحائي الإضافي (الشريان النفيري)؛ وتصب الأوردة في الضفيرة الجناحية، واللمف في العقد خلف البلعوم والرقبية العميقة. والحس من الضفيرة الطبلية (العصب التاسع)، وعند الفتحة بالتساوي تقريباً من التاسع والعصب الفكي العلوي."
+      },
+      "numbers": [
+        {
+          "label": {
+            "en": "Length in adults",
+            "ar": "الطول عند البالغ"
+          },
+          "value": "31–38",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 449
+          }
+        },
+        {
+          "label": {
+            "en": "Pharyngeal orifice below the tympanic opening",
+            "ar": "انخفاض الفتحة البلعومية عن الفتحة الطبلية"
+          },
+          "value": "15",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 450
+          }
+        },
+        {
+          "label": {
+            "en": "Pharyngeal orifice at rest",
+            "ar": "الفتحة البلعومية في الراحة"
+          },
+          "value": "≈ 8 × 4",
+          "unit": "mm",
+          "source": {
+            "ref": "janfaza",
+            "page": 450
+          }
+        }
+      ]
+    },
+    {
+      "id": "eustachian_tube_muscles",
+      "title": {
+        "en": "Opening the tube: palatal muscles",
+        "ar": "فتح النفير: عضلات الحنك"
+      },
+      "structures": [],
+      "overview": {
+        "en": "At rest the tube is shut by the spring of its cartilage, the pressure of surrounding tissue and the surface tension of moist mucosa. It opens in swallowing and yawning. Tensor veli palatini arises from the sphenoid spine, scaphoid fossa, the lateral cartilaginous lamina and the fascia, hooks around the pterygoid hamulus into the soft palate, and opens the tube by pulling the lateral lamina down; some of its fibres continue into tensor tympani, and the mandibular nerve supplies it. Levator veli palatini, from the petrous bone in front of the carotid canal and the medial lamina, runs down beside the tube to the palate, lifts the tube and widens its lumen, supplied by the vagus through the pharyngeal plexus. Salpingopharyngeus runs from the lower medial lamina to the pharyngeal wall.",
+        "ar": "في الراحة يُغلق النفير بمرونة غضروفه وضغط النسج المحيطة والتوتر السطحي للمخاطية الرطبة. وينفتح عند البلع والتثاؤب. تنشأ العضلة الموترة لشراع الحنك من شوكة الوتدي والحفرة الزورقية والصفيحة الغضروفية الوحشية واللفافة، وتلتف حول خطاف الجناحي إلى الحنك الرخو، وتفتح النفير بسحب الصفيحة الوحشية إلى الأسفل؛ تستمر بعض أليافها في الموتّرة للطبلة، ويعصّبها العصب الفكي السفلي. وتمتد العضلة الرافعة لشراع الحنك، من العظم الصخري أمام القناة السباتية ومن الصفيحة الأنسية، نزولاً بجانب النفير إلى الحنك، فترفع النفير وتوسّع لمعته، ويعصّبها المبهم عبر الضفيرة البلعومية. وتمتد العضلة النفيرية البلعومية من الجزء السفلي للصفيحة الأنسية إلى جدار البلعوم."
+      },
+      "surgical": {
+        "en": "Too much peritubal fat (Ostmann's pad), as in obesity, can obstruct the tube and lead to serous otitis media; weight loss can leave it patulous, with autophony. Clonic spasm of the tensor muscles gives palatal myoclonus with clicking in the ear.",
+        "ar": "قد يسدّ الشحمُ الزائد حول النفير (وسادة أوستمان)، كما في البدانة، النفيرَ ويؤدي إلى التهاب الأذن الوسطى المصلي؛ وقد يتركه نقصُ الوزن مفتوحاً على الدوام مع سماع الصوت الذاتي. ويسبب التشنج الرمعي للعضلتين الموترتين الرمع الحنكي مع طقطقة في الأذن."
+      },
+      "numbers": []
+    },
+    {
+      "id": "mucosal_folds",
+      "title": {
+        "en": "Mucosal folds, pouches and Prussak's space",
+        "ar": "الثنيات المخاطية والجيوب ومسافة بروساك"
+      },
+      "structures": [
+        "anterior_malleal_fold",
+        "posterior_malleal_fold",
+        "middle_ear_folds",
+        "chorda_tympani",
+        "malleus_neck"
+      ],
+      "overview": {
+        "en": "Mucosa lines the cavity and wraps every ossicle, tendon and nerve, leaving folds that act like mesenteries carrying vessels to the ossicles. The anterior malleal fold covers the anterior process, anterior ligament and chorda and runs from the notch of Rivinus to the head and neck of the malleus; the posterior malleal fold wraps the chorda from the posterior tympanic spine to the malleus neck. Between each fold and the membrane lies a blind pouch of von Tröltsch, anterior and posterior; the posterior pouch opens into Prussak's space between the pars flaccida and the malleus neck. The incudal fold hangs from the roof over the incus body and short process, and the stapedial fold envelops the stapes and its obturator foramen.",
+        "ar": "تبطّن المخاطية الجوفَ وتلفّ كل عظيمة ووتر وعصب، فتترك ثنيات تعمل كمساريقات تحمل الأوعية إلى العظيمات. تغطي الثنية المطرقية الأمامية الناتئ الأمامي والرباط الأمامي وحبل الطبل، وتمتد من ثلمة ريفينوس إلى رأس المطرقة وعنقها؛ وتلفّ الثنية المطرقية الخلفية حبلَ الطبل من الشوكة الطبلية الخلفية إلى عنق المطرقة. وبين كل ثنية والغشاء جيب أعمى هو جيب فون ترولتش، أمامي وخلفي؛ وينفتح الجيب الخلفي على مسافة بروساك بين الجزء الرخو وعنق المطرقة. وتتدلى الثنية السندانية من السقف فوق جسم السندان وساقه القصيرة، وتلفّ الثنية الركابية الركاب وثقبته السادّة."
+      },
+      "surgical": {
+        "en": "These folds shape the ventilation of the attic and the paths cholesteatoma takes: a pars flaccida retraction fills Prussak's space and spreads backwards along the posterior pouch. In this app only the two malleal folds are shown, as schematic sheets.",
+        "ar": "تحدد هذه الثنيات تهوية السقيفة والطرق التي يسلكها الورم الكوليستيرولي: انسحاب الجزء الرخو يملأ مسافة بروساك وينتشر إلى الخلف على طول الجيب الخلفي. ولا يظهر في هذا التطبيق إلا الثنيتان المطرقيتان، كصفيحتين تخطيطيتين."
+      },
+      "numbers": []
+    },
+    {
+      "id": "mucosal_sacs",
+      "title": {
+        "en": "How the folds form: Proctor's sacs",
+        "ar": "كيف تتشكل الثنيات: أكياس بروكتور"
+      },
+      "structures": [
+        "middle_ear_air_space",
+        "temporal_bone_air_cells"
+      ],
+      "overview": {
+        "en": "From late fetal life mucosal sacs bud from the tube into the mesenchyme of the cavity, and the folds are the walls left where neighbouring sacs meet. The anterior sac, passing above and in front of the tensor tendon, makes the anterior pouch of von Tröltsch. The middle sac makes the epitympanum through three saccules: anterior (front of the attic), medial (superior incudal space) and posterior (later aerating the petrous part of the central mastoid). The superior sac runs back between handle and long process of the incus to make the posterior pouch and inferior incudal space, and later aerates the squamous part of the mastoid. The posterior sac makes the round window niche, the sinus tympani and most of the oval window niche.",
+        "ar": "منذ أواخر الحياة الجنينية تتبرعم أكياس مخاطية من النفير في اللحمة المتوسطة للجوف، والثنيات هي الجدران التي تبقى حيث تلتقي الأكياس المتجاورة. يصنع الكيس الأمامي، المارّ فوق وتر الموتّرة وأمامه، جيبَ فون ترولتش الأمامي. ويصنع الكيس الأوسط السقيفة عبر ثلاثة كييسات: أمامي (مقدمة السقيفة)، وأنسي (الحيّز السنداني العلوي)، وخلفي (يهوّي لاحقاً الجزء الصخري من الخشاء المركزي). ويمتد الكيس العلوي إلى الخلف بين القبضة والساق الطويلة للسندان فيصنع الجيب الخلفي والحيّز السنداني السفلي، ويهوّي لاحقاً الجزء الحرشفي من الخشاء. ويصنع الكيس الخلفي كوة النافذة المستديرة والجيب الطبلي ومعظم كوة النافذة البيضية."
+      },
+      "surgical": {
+        "en": "Körner's septum in the mastoid is thought to continue the fold between the superior and middle sacs, which is why it separates squamous from petrous cells.",
+        "ar": "يُعتقد أن حاجز كورنر في الخشاء امتدادٌ للثنية بين الكيسين العلوي والأوسط، ولهذا يفصل الخلايا الحرشفية عن الصخرية."
+      },
+      "numbers": []
+    }
+  ]
+}

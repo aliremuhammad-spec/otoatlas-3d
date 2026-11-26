@@ -27,6 +27,9 @@ export function Home({ onNavigate }: Props) {
         <button type="button" className="primary" onClick={() => onNavigate('viewer')}>
           {t('home.openViewer')}
         </button>
+        <button type="button" className="secondary" onClick={() => onNavigate('topics')} data-testid="open-topics">
+          {t('topics.open')}
+        </button>
         <p className="note">{t('home.phaseNote')}</p>
         <Disclaimer />
       </main>

@@ -55,6 +55,38 @@ for (const [name, viewport] of Object.entries(SCREENS)) {
   test.describe(`touch, ${name}`, () => {
     test.use({ viewport, isMobile: true, hasTouch: true, deviceScaleFactor: 2, locale: 'en-US' });
 
+    test('topics read on this screen, in Arabic too, and open over the 3D view', async ({ page }, testInfo) => {
+      await serveFixtureContent(page);
+      await page.goto('/');
+      await page.getByTestId('open-topics').tap({ timeout: 8000 });
+      await page.getByRole('button', { name: 'Tympanic membrane: size, tilt and landmarks' }).tap();
+      await expect(page.getByTestId('topic-reader')).toContainText('8.5–10 mm');
+      await noSidewaysScroll(page);
+      await page.screenshot({ path: testInfo.outputPath('topic.png'), fullPage: true });
+      await page.getByRole('button', { name: 'All topics' }).tap();
+      await page.getByRole('button', { name: 'Back' }).tap();
+      await page.getByRole('button', { name: 'Settings' }).tap();
+      await page.getByRole('radio', { name: 'العربية' }).check();
+      await page.getByRole('button', { name: 'رجوع' }).tap();
+      await page.getByTestId('open-topics').tap();
+      await page.getByRole('button', { name: 'القوقعة' }).tap();
+      await expect(page.getByTestId('topic-reader')).toContainText('32 مم');
+      await noSidewaysScroll(page);
+      await page.screenshot({ path: testInfo.outputPath('topic-ar.png'), fullPage: true });
+      await page.getByRole('button', { name: 'كل المواضيع' }).tap();
+      await page.getByRole('button', { name: 'رجوع' }).tap();
+      await page.getByRole('button', { name: 'افتح العارض' }).tap();
+      await page.locator('[data-structure="malleus"] .structure-name').tap();
+      await page.getByTestId('structure-card').getByRole('button', { name: 'المطرقة', exact: true }).tap();
+      const overlay = page.getByRole('dialog');
+      await expect(overlay.getByTestId('topic-reader')).toBeVisible();
+      const box = await overlay.boundingBox();
+      expect(box?.width ?? 0).toBeGreaterThan(200);
+      await page.screenshot({ path: testInfo.outputPath('topic-overlay-ar.png') });
+      await overlay.getByRole('button', { name: 'أغلق الموضوع' }).tap();
+      await expect(overlay).toHaveCount(0);
+    });
+
     test('select, card, slices and both measurements work by touch', async ({ page }, testInfo) => {
       const errors: string[] = [];
       page.on('pageerror', (e) => errors.push(String(e)));

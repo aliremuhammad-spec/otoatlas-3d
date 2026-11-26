@@ -144,3 +144,44 @@ test.describe('specimen package in Arabic', () => {
     await page.screenshot({ path: testInfo.outputPath('specimen-ar.png') });
   });
 });
+
+test.describe('chapter topics', () => {
+  test.use({ locale: 'en-US' });
+
+  test('a topic shows its structures on the specimen', async ({ page }, testInfo) => {
+    await serveFixtureContent(page);
+    await page.goto('/');
+    await page.getByTestId('open-topics').click({ timeout: 8000 });
+    await page.getByTestId('topics-search').fill('malleus');
+    await page.getByRole('button', { name: 'Malleus', exact: true }).click();
+    await expect(page.getByTestId('topic-reader')).toContainText('Surgical relevance');
+    await page.screenshot({ path: testInfo.outputPath('topic-en.png'), fullPage: true });
+    await page.getByTestId('topic-show').click();
+    await expect(page.getByTestId('specimen-select')).toHaveValue('TEST-SYNTHETIC-01');
+    await expect(page.getByTestId('structure-card')).toContainText('Malleus');
+  });
+
+  test('says so when the specimen lacks the structures of a topic', async ({ page }) => {
+    await serveFixtureContent(page);
+    await page.goto('/');
+    await page.getByTestId('open-topics').click({ timeout: 8000 });
+    await page.getByRole('button', { name: 'Segments of the facial nerve' }).click();
+    await page.getByTestId('topic-show').click();
+    await expect(page.getByRole('status').filter({ hasText: 'does not include' })).toContainText('Facial nerve');
+  });
+
+  test('the structure card opens a topic over the 3D view', async ({ page }, testInfo) => {
+    await serveFixtureContent(page);
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Open the viewer' }).click({ timeout: 8000 });
+    await page.locator('[data-structure="malleus"] .structure-name').click();
+    const card = page.getByTestId('structure-card');
+    await card.getByRole('button', { name: 'Malleus', exact: true }).click();
+    const overlay = page.getByRole('dialog');
+    await expect(overlay.getByTestId('topic-reader')).toContainText('lateral (short) process');
+    await page.screenshot({ path: testInfo.outputPath('topic-overlay-en.png') });
+    await overlay.getByRole('button', { name: 'Close the topic' }).click();
+    await expect(overlay).toHaveCount(0);
+    await expect(card).toBeVisible();
+  });
+});
