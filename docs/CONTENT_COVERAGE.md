@@ -44,11 +44,11 @@ Status: ✔ in the app now · ◐ partly · ○ planned.
 | Middle ear cavity and its divisions: epi-, meso-, hypo-, pro- and posterior tympanum; dimensions | Computed air space within 4 mm of the ossicles and membrane (otopipe/pneumatization.py) + division planes later + T | ◐ cavity computed on the four specimens with a CBCT (0.6 to 0.8 mL), volume shown; divisions ○ |
 | Walls: tegmen, jugular floor, carotid wall with tube opening, mastoid wall, lateral wall with scutum, labyrinthine wall | A on bone surface + T | ○ |
 | Eminences, ridges and recesses: promontory, ponticulus, subiculum, pyramidal, chordal and styloid eminences and ridges, sinus tympani, facial recess, oval and round window niches, cochleariform process, anterior epitympanic recess, cog, Prussak's space, pouches of von Tröltsch | A (points, regions, volumes) + S where the air space defines them + T | ○ |
-| Mucosal folds and their embryological sacs | D + T | ○ |
+| Mucosal folds and their embryological sacs | Schematic sheets placed by rule (otopipe/softtissue.py) + T | ◐ anterior and posterior malleal folds (schematic); other folds and the embryological sacs ○ |
 | Eustachian tube: bony and cartilaginous parts, isthmus, orifice, palatal muscles, supply | S for the bony part inside the scan + D beyond it + T | ○ |
 | Pneumatization: regions, areas, tracts; antrum, aditus, Körner's septum; tegmental, sinodural, sinal, facial, tip and perilabyrinthine cells | Computed air cells inside the cut block (otopipe/pneumatization.py) + tract regions later + T | ◐ antrum computed on its own (0.2 to 0.6 mL) and the other air cells as one structure, both with their volume; tracts ○ (a rule by position relative to the labyrinth was tried: the cells behind and medial to the labyrinth fall on either side of any simple plane, so tracts wait for review or for the danger map of Phase 3) |
 | Blood supply and anomalies: tympanic arteries, persistent stapedial artery, aberrant internal carotid, high jugular bulb | D variants + T | ○ |
-| Nerves: tympanic (Jacobson's), auricular branch of vagus (Arnold's), tympanic plexus, lesser petrosal | D + T | ○ |
+| Nerves: tympanic (Jacobson's), auricular branch of vagus (Arnold's), tympanic plexus, lesser petrosal | Schematic thread over the promontory, placed by rule (otopipe/softtissue.py) + T | ◐ tympanic plexus with the start of the lesser petrosal nerve (schematic); Arnold's nerve ○ |
 
 ### Inner ear and internal auditory canal
 

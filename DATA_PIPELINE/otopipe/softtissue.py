@@ -22,6 +22,15 @@ Tendons and muscles:
   the muscle: from there forwards 12 mm, medially and downwards along its semicanal, in
   whichever of a few directions near the textbook one crosses the nerve and labyrinth least.
 
+Mucosal folds and the tympanic plexus:
+- anterior and posterior malleal folds: thin sheets (0.08 mm) spanning the triangle between
+  the tip of the lateral process, the middle of the malleus neck, and the front or back
+  end of the membrane's upper rim (the tympanic spines at the notch of Rivinus);
+- tympanic plexus (Jacobson's nerve): a 0.12 mm thread 0.35 mm off the surface of the
+  promontory (the most lateral part of the cochlea within 3 mm of the umbo): from 3 mm
+  below the promontory's summit, over it, up 2.5 mm, then forwards and up 5 mm as the
+  lesser petrosal nerve, pushed off the nerve and labyrinth where it comes within 0.35 mm.
+
 Where a tube would still pass through the specimen's facial nerve or labyrinth, those voxels
 are removed, so it lies against them rather than through them.
 """
@@ -101,7 +110,30 @@ def _band(a, b, radius):
     return _tube(_densify(np.array([a, b]), GRID_MM / 2), radius)
 
 
-def build(parts: dict, spacings: dict, facial_nerve, bone, frame, labyrinth_points) -> SoftTissue:
+def _sheet(a, b, c, thickness):
+    """A flat triangle a-b-c of the given thickness on the fine grid."""
+    tri = np.array([a, b, c], float)
+    lo = tri.min(axis=0) - thickness - 2 * GRID_MM
+    hi = tri.max(axis=0) + thickness + 2 * GRID_MM
+    shape = tuple(int(v) for v in np.ceil((hi - lo) / GRID_MM) + 1)
+    g = lo + np.stack(np.indices(shape), axis=-1) * GRID_MM
+    n = np.cross(b - a, c - a)
+    n /= np.linalg.norm(n)
+    near_plane = np.abs((g - a) @ n) <= thickness / 2 + GRID_MM / 2
+    # Inside the triangle: barycentric coordinates of the point's projection.
+    v0, v1 = b - a, c - a
+    w = g - a
+    d00, d01, d11 = v0 @ v0, v0 @ v1, v1 @ v1
+    d20, d21 = w @ v0, w @ v1
+    den = d00 * d11 - d01 * d01
+    v = (d11 * d20 - d01 * d21) / den
+    u = (d00 * d21 - d01 * d20) / den
+    inside = (v >= 0) & (u >= 0) & (u + v <= 1)
+    return near_plane & inside, tuple(float(x) for x in lo)
+
+
+def build(parts: dict, spacings: dict, facial_nerve, bone, frame, labyrinth_points, membrane=None,
+          cochlea_points=None) -> SoftTissue:
     """`parts` maps bone name ('malleus', 'incus', 'stapes') to its part masks and origins
     (from otopipe.ossicles), `spacings` maps bone name to its voxel spacing; `facial_nerve`
     and `bone` are (mask, spacing, origin) labels."""
@@ -164,6 +196,49 @@ def build(parts: dict, spacings: dict, facial_nerve, bone, frame, labyrinth_poin
         out["tensor_tympani_muscle"] = _tube_tapered(path, np.clip(0.2 + along * 0.1, 0.2, 0.45))
         report["tensor_tympani"] = {"tendon_mm": round(float(np.linalg.norm(end - start)), 2), "reached_bone": met}
         report["tensor_tympani"]["muscle_path_touching"] = round(best[0], 2)
+    if "malleus" in parts and membrane is not None:
+        lp = part("malleus", "lateral_process")
+        tip = lp[np.argmax(lp @ L)]
+        neck_mid = part("malleus", "neck").mean(axis=0)
+        tm = _pts(*membrane)
+        rim = tm[tm @ S >= np.percentile(tm @ S, 92)]  # the membrane's upper rim
+        for name, pick in (("anterior_malleal_fold", np.argmax), ("posterior_malleal_fold", np.argmin)):
+            spine = rim[pick(rim @ A)]
+            out[name] = _sheet(tip, neck_mid, spine, 0.08)
+            report[name] = {"to_spine_mm": round(float(np.linalg.norm(spine - tip)), 2)}
+    if cochlea_points is not None and len(cochlea_points):
+        cochlea = cKDTree(cochlea_points)
+        # The promontory faces the membrane: its summit is the most lateral cochlear point
+        # within 3 mm (forwards, backwards, up, down) of the umbo.
+        rel = cochlea_points - frame.umbo
+        facing = cochlea_points[(np.abs(rel @ A) < 3.0) & (np.abs(rel @ S) < 3.0)]
+        if len(facing) == 0:
+            facing = cochlea_points
+        summit = facing[np.argmax(facing @ L)]
+
+        def on_surface(p):
+            # Nearest promontory point, then 0.35 mm out along the surface's outward normal.
+            q = cochlea_points[cochlea.query(p + 3.0 * L)[1]]
+            local = cochlea_points[cochlea.query_ball_point(q, 1.5)]
+            normal = q - local.mean(axis=0)
+            normal = _unit(normal) if np.linalg.norm(normal) > 1e-6 else L
+            return q + 0.35 * normal
+
+        course = [on_surface(summit - 3.0 * S + t * S) for t in np.arange(0.0, 5.51, 0.25)]
+        top = course[-1]
+        course += [top + t * _unit(A + 0.6 * S) for t in np.arange(0.25, 5.01, 0.25)]
+        path = np.array(course)
+        # Pushed off the nerve and the labyrinth wherever it comes closer than 0.35 mm.
+        for _ in range(5):
+            for tree in (labyrinth, nerve):
+                d, j = tree.query(path)
+                close = d < 0.35
+                if close.any():
+                    away = path[close] - tree.data[j[close]]
+                    away /= np.maximum(np.linalg.norm(away, axis=1, keepdims=True), 1e-6)
+                    path[close] += (0.35 - d[close])[:, None] * away
+        out["tympanic_plexus"] = _tube(_densify(path, GRID_MM / 2), 0.12)
+        report["tympanic_plexus"] = {"summit": [round(float(x), 2) for x in summit]}
     if "incus" in parts:
         body, short = part("incus", "body"), part("incus", "short_process")
         ligament("superior_incudal_ligament", body[np.argmax(body @ S)], S, 4.0, 0.15)

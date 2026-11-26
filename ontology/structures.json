@@ -923,6 +923,94 @@
       "default_visible": false
     },
     {
+      "id": "middle_ear_folds",
+      "name_en": "Mucosal folds of the middle ear",
+      "name_ta_latin": "Plicae mucosae cavitatis tympani",
+      "name_ar": "الثنيات المخاطية للأذن الوسطى",
+      "ar_status": "unverified",
+      "parent": null,
+      "system": "middle_ear",
+      "provenance_tier": "schematic",
+      "sources": [],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Group of the schematic folds below; not built on its own.",
+      "color": "#9fd3c7",
+      "mesh_error_limit_mm": 0.1
+    },
+    {
+      "id": "anterior_malleal_fold",
+      "name_en": "Anterior malleal fold",
+      "name_ta_latin": "Plica mallearis anterior",
+      "name_ar": "الثنية المطرقية الأمامية",
+      "ar_status": "unverified",
+      "parent": "middle_ear_folds",
+      "system": "middle_ear",
+      "provenance_tier": "schematic",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Muscles and Ligaments (schematic)",
+          "part": "anterior_malleal_fold",
+          "derived": true
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Schematic shape placed on this specimen by rule (otopipe/softtissue.py); no dataset labels the middle ear's soft tissues. Not for measurement.",
+      "color": "#9fd3c7",
+      "mesh_error_limit_mm": 0.1,
+      "default_visible": false
+    },
+    {
+      "id": "posterior_malleal_fold",
+      "name_en": "Posterior malleal fold",
+      "name_ta_latin": "Plica mallearis posterior",
+      "name_ar": "الثنية المطرقية الخلفية",
+      "ar_status": "unverified",
+      "parent": "middle_ear_folds",
+      "system": "middle_ear",
+      "provenance_tier": "schematic",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Muscles and Ligaments (schematic)",
+          "part": "posterior_malleal_fold",
+          "derived": true
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Schematic shape placed on this specimen by rule (otopipe/softtissue.py); no dataset labels the middle ear's soft tissues. Not for measurement.",
+      "color": "#7fbfb1",
+      "mesh_error_limit_mm": 0.1,
+      "default_visible": false
+    },
+    {
+      "id": "tympanic_plexus",
+      "name_en": "Tympanic plexus (Jacobson's nerve)",
+      "name_ta_latin": "Plexus tympanicus",
+      "name_ar": "الضفيرة الطبلية (عصب جاكوبسون)",
+      "ar_status": "unverified",
+      "parent": null,
+      "system": "middle_ear",
+      "provenance_tier": "schematic",
+      "sources": [
+        {
+          "dataset": "openear",
+          "label": "Muscles and Ligaments (schematic)",
+          "part": "tympanic_plexus",
+          "derived": true
+        }
+      ],
+      "content_status": "draft",
+      "reviewed_by": null,
+      "note": "Schematic shape placed on this specimen by rule (otopipe/softtissue.py); no dataset labels the middle ear's soft tissues. Not for measurement.",
+      "color": "#f2e15b",
+      "mesh_error_limit_mm": 0.1,
+      "default_visible": false
+    },
+    {
       "id": "facial_nerve",
       "name_en": "Facial nerve",
       "name_ta_latin": "Nervus facialis",

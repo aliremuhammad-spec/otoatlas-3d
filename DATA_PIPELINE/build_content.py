@@ -195,6 +195,12 @@ def build_openear(specimen: str, out: Path) -> dict:
                 (bone.mask, bone.spacing, bone.origin),
                 frame,
                 labyrinth,
+                membrane=(
+                    (segments["Tympanic Membrane"].mask, segments["Tympanic Membrane"].spacing, segments["Tympanic Membrane"].origin)
+                    if "Tympanic Membrane" in segments
+                    else None
+                ),
+                cochlea_points=ossicles.points(lab_of["Scala Tympani"]),
             )
             for part, (mask, origin) in soft.parts.items():
                 if mask.any():

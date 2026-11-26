@@ -208,6 +208,22 @@
     "annular_ligament": {
       "en": "Holds the footplate in the oval window, wider at the posterior end. Otosclerosis replaces it with new bone, usually starting at the anterior end (fissula ante fenestram). Shown as a schematic tube placed on this specimen by rule; its thickness is a textbook value.",
       "ar": "يثبّت صفيحة الركاب في النافذة البيضية، وهو أعرض عند طرفها الخلفي. يستبدله التصلب الأذني بعظم جديد، يبدأ عادةً من الطرف الأمامي (الشُّقَيق أمام النافذة). يظهر أنبوباً تخطيطياً موضوعاً على هذه العيّنة بقاعدة، وثخانته قيمة مرجعية."
+    },
+    "middle_ear_folds": {
+      "en": "Mucosal folds of the middle ear.",
+      "ar": "الثنيات المخاطية للأذن الوسطى."
+    },
+    "anterior_malleal_fold": {
+      "en": "Mucosal fold from the lateral process and neck of the malleus forwards to the anterior tympanic spine; with the posterior fold it marks the border between the pars tensa and the pars flaccida, and it bounds Prussak's space in front. Shown as a schematic shape placed on this specimen by rule.",
+      "ar": "ثنية مخاطية من الناتئ الوحشي وعنق المطرقة أماماً إلى الشوكة الطبلية الأمامية، وتحدّ مع الثنية الخلفية الفاصل بين الجزء المشدود والجزء الرخو، وتحدّ حيّز بروساك من الأمام. يظهر شكلاً تخطيطياً موضوعاً على هذه العيّنة بقاعدة."
+    },
+    "posterior_malleal_fold": {
+      "en": "Mucosal fold from the lateral process and neck of the malleus backwards to the posterior tympanic spine; it forms the posterior pouch of von Tröltsch with the drum, a route by which attic cholesteatoma spreads backwards. Shown as a schematic shape placed on this specimen by rule.",
+      "ar": "ثنية مخاطية من الناتئ الوحشي وعنق المطرقة خلفاً إلى الشوكة الطبلية الخلفية، وتشكّل مع الغشاء الطبلي الجيب الخلفي لفون ترولتش، وهو طريق ينتشر عبره الكوليستياتوما العلّي نحو الخلف. يظهر شكلاً تخطيطياً موضوعاً على هذه العيّنة بقاعدة."
+    },
+    "tympanic_plexus": {
+      "en": "The tympanic branch of the glossopharyngeal nerve (Jacobson's nerve) enters through the inferior tympanic canaliculus, runs up over the promontory and forms the tympanic plexus, which supplies the middle ear mucosa; its continuation, the lesser petrosal nerve, carries parasympathetic fibres to the parotid gland. Referred otalgia from the throat travels this way. Shown as a schematic shape placed on this specimen by rule.",
+      "ar": "الفرع الطبلي للعصب اللساني البلعومي (عصب جاكوبسون) يدخل عبر القُنيّة الطبلية السفلية، ويصعد فوق الرعن مشكّلاً الضفيرة الطبلية التي تعصب مخاطية الأذن الوسطى، ويتابع كعصب صخري صغير يحمل الألياف نظيرة الودية إلى الغدة النكفية. عبره ينتقل ألم الأذن المحوَّل من البلعوم. يظهر شكلاً تخطيطياً موضوعاً على هذه العيّنة بقاعدة."
     }
   }
 }
