@@ -201,6 +201,11 @@ soft tissue; or bake colour onto mesh textures.
   (cut 0): 0.2 mm 190 to 217 fps, 0.15 mm 102 to 116 fps, 0.1 mm 47 to 53 fps; typical (cut 0.4):
   0.2 and 0.15 mm 280 to 300 fps, 0.1 mm 67 to 81 fps. The PC half of Gate 0 (60 fps) is met at 0.2
   and 0.15 mm. Still to measure: the iPad and a phone. Empty-space skipping added (8^3-voxel occupancy blocks, `?noskip` or `__ray.setSkip(0)` to compare): on his PC at the default view 4.3 to 5.2 ms with and without it, so no gain there; swiftshader slightly slower. Kept (harmless); the cost is dominated by opaque surface rays.
+- Phone result, 28 Nov (his Android phone, Mali-G57 MC2, Chrome 158, DPR 2.75, 393x736 CSS px; low tier):
+  at half render scale (393x736) opaque worst case 0.2 mm 37 fps, 0.15 mm 31 fps; translucent worst 39 and 26;
+  typical (cut 0.4) 76 to 101 fps. At full device resolution (786x1472) 15 to 21 fps worst, 26 to 48 typical,
+  so full resolution fails 30 fps. iPad still unmeasured (faster GPU expected). Decision proposed: phone default
+  0.2 mm at half render scale, PC/tablet 0.15 mm; adaptive render scale. The page verdict now also reports half scale.
 - App access: Settings → «تجريبي» (Experimental) has a link to `dev/raymarch.html` (`data-testid="raymarch-link"`). It is only the speed test, not the surgical view (WP1 onward not built).
 - PWA trap: the app's service worker (registerType 'prompt') used to precache `/dev/raymarch.html`
   and answer any other `/dev/` URL with the app's index.html (a white page). `vite.config.ts` now

@@ -379,12 +379,13 @@ $('bench').onclick = async () => {
         results.push(line); $('results').textContent = results.join('\n'); rows.push({ tag, cut, scale, ms: m.median });
       }
     }
-    const v = tags.map((tag) => {
-      const full = rows.filter((r) => r.tag === tag && r.scale === '1');
-      const w = Math.max(...full.filter((r) => r.cut === '0').map((r) => r.ms)), t = Math.max(...full.filter((r) => r.cut === '0.4').map((r) => r.ms));
+    const v = tags.flatMap((tag) => ['1', '0.5'].map((sc) => {
+      const part = rows.filter((r) => r.tag === tag && r.scale === sc);
+      if (!part.length) return null;
+      const w = Math.max(...part.filter((r) => r.cut === '0').map((r) => r.ms)), t = Math.max(...part.filter((r) => r.cut === '0.4').map((r) => r.ms));
       const fw = 1000 / w, ft = 1000 / t;
-      return `${tag.replace('p', '.')} مم، شاشة كاملة: أسوأ حالة ${fw.toFixed(0)} إطار/ث (30 ${mark(fw, 30)} · 60 ${mark(fw, 60)})، حالة عادية ${ft.toFixed(0)} إطار/ث (30 ${mark(ft, 30)} · 60 ${mark(ft, 60)})`;
-    });
+      return `${tag.replace('p', '.')} مم، ${sc === '1' ? 'دقة الشاشة الكاملة' : 'نصف الدقة'}: أسوأ حالة ${fw.toFixed(0)} إطار/ث (30 ${mark(fw, 30)} · 60 ${mark(fw, 60)})، حالة عادية ${ft.toFixed(0)} إطار/ث (30 ${mark(ft, 30)} · 60 ${mark(ft, 60)})`;
+    }).filter(Boolean));
     $('verdict').innerHTML = '<b>الخلاصة</b><br>' + v.join('<br>'); $('verdict').style.display = 'block'; results.push('', ...v);
     $('busy').textContent = ' انتهى القياس. اضغط «نسخ النتائج».';
   } catch (e) { results.push('benchmark failed: ' + e.message); $('busy').textContent = ' فشل القياس: ' + e.message; }
