@@ -33,6 +33,10 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,woff2}'],
+        // Development pages under /dev/ (the ray-march test) are plain files: never precached, and a
+        // visit to one must not fall back to the app's index.html.
+        globIgnores: ['dev/**'],
+        navigateFallbackDenylist: [/\/dev\//],
         // Specimen packages are installed beside the app after the build; keep the
         // ones the user has opened so they work without a network.
         runtimeCaching: [
