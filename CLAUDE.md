@@ -1,6 +1,6 @@
 # OtoAtlas 3D: handoff for the next session
 
-Last updated 28 November 2026, WP0 finished, WP1 next (new session). Read this file first;
+Last updated 28 November 2026, WP0 finished, WP1 session 1 done on branch `wp1-colour-pipeline` (not merged), WP1 session 2 next (new session). Read this file first;
 it replaces re-reading the long earlier conversations. Update the "State" and "Next step"
 sections at the end of every session.
 
@@ -150,23 +150,62 @@ Use `DATA_PIPELINE/devtools/devdata.py` (docstring shows how). New extracts: cop
    surgeon position, microscope working distance and magnifications, landmarks per station,
    VES 3.5 installed on a Windows PC for the comparison, raters, stereo hardware.
 
-## Next step: Phase 2B, WP1 (colour pipeline for six specimens), two sessions, start in a NEW session
+## Next step: Phase 2B, WP1 session 2 (start in a NEW session; work is on branch `wp1-colour-pipeline`)
 
-Gate 0 was accepted by the user on 28 Nov as «approved with caveats»: speed met on PC (60 fps at 0.2 and
-0.15 mm) and on a low-tier phone at half render scale (30 fps at 0.2 mm, 0.15 mm opaque); iPad unmeasured, to be
-confirmed later and not blocking; alignment borderline (4 of 5 landmarks by median, lateral canal 0.275 mm).
-Approved tier rule: phone 0.2 mm at half render scale, PC and tablet 0.15 mm (0.1 mm optional on strong GPUs),
-automatic render-scale drop under 30 fps.
+Gate 0 was accepted 28 Nov as «approved with caveats» (PC 60 fps at 0.2 and 0.15 mm; low-tier phone 30 fps at half
+render scale; iPad unmeasured, not blocking; alignment borderline). Tier rule: phone 0.2 mm at half render scale, PC and
+tablet 0.15 mm (0.1 mm optional), automatic render-scale drop under 30 fps. WP1 goal and acceptance (plan, table row 1):
+colour pipeline, three tiers, bricks, built in CI; accepted when he approves a slice montage per specimen and sizes are
+within budget.
 
-WP1 from the plan (tab "Phase 2B plan", table row 1): colour pipeline for six specimens (OpenEar candidates;
-ETA's CBCT has a known artefact; VES integrated six of eight): resample to the segmentation frame, crop to bone,
-epoxy removal, slice-wise colour levelling, three tiers, bricks, built in CI. Accepted when: a slice montage per
-specimen that he approves, sizes within the budget. Reuse `.github/scripts/build_colour_web.py` and
-`extract_colour_products.py` (ZETA only so far; apply the same global shift check per specimen with the MI
-scripts in `.github/scripts/wp0/`, do not assume ZETA's shift). Open items to fold in: tighten the specimen mask
-(cylinder-edge strip), better epoxy mask, normals from CBCT per specimen, which specimens are in the six.
-Plan document: not yet updated with the PC and phone benchmark numbers or this decision (the Arabic WP0 section
-there still says the iPad decides); update it at the end of WP1.
+**Done in session 1 (branch, not merged; merging touches `DATA_PIPELINE/`, so main would rebuild all content, ~12 min):**
+- `DATA_PIPELINE/otopipe/colour.py` (pure functions) + `tests/test_colour.py` (18 tests; whole pipeline suite 87 pass):
+  cylinder fit, per-slice epoxy-based levelling (gain limit 1 +- 0.10, smoothed along z), alpha from saturation with the
+  cylinder edge ring (0.8 mm) removed, tiers 0.2/0.15/0.1 mm (block average in x,y, linear in z, voxel centres checked),
+  tissue crop, **bricks** (64^3, each gzipped alone, interleaved RGBA x fastest, all-zero bricks not stored, JSON index with
+  offsets; `bricks_encode/decode`), normals on a 0.4 mm grid, MI shift and orientation checks, CBCT-density alpha.
+- `.github/scripts/build_colour.py SPEC out` (reads the colour NRRD frame from its header like the segmentation reader
+  does, runs everything, reads its own bricks back and fails if they differ, writes montage PNGs and
+  `<SPEC>_colour_meta.json`), `.github/workflows/colour-build.yml` (specimens from `.github/colour-specimens.json`;
+  runs on push to the work branch because a workflow can only be dispatched from main; big files are a workflow
+  artifact, which the shell cannot download (proxy blocks blob.core.windows.net); montage and meta go to branches
+  `dev-data-colour-wp1-<SPEC>`, read them with
+  `gh api -H "Accept: application/vnd.github.raw" "repos/aliremuhammad-spec/otoatlas-3d/contents/<file>?ref=<branch>"`),
+  `colour_survey.py` + `dev-colour-survey.yml` (lists the colour NRRD header of every OpenEar specimen).
+- Facts found: every OpenEar specimen except GAMMA has a micro-slicing volume on the same axis-aligned grid (792 x 792 x
+  346..380 at 0.05 x 0.05 x 0.15 mm, LPS header with negative x,y directions = RAS positive, origin 0); GAMMA's grid is
+  slightly rotated (not handled, it is not published). Cylinder axis and radius are constant across slices (radius
+  19.1 to 19.4 mm). Epoxy colour drifts 4 to 8 percent along z, levelling flattens it. Orientation: identity beats every
+  mirror against labels and CBCT in all seven built specimens.
+- Alignment (colour = label + shift, mm, mutual information vs labels, mean of luminance and alpha): ZETA (-0.15, 0.05,
+  0.10), ALPHA (-0.025, 0.05, 0.05), DELTA (-0.025, 0.10, 0.10), ETA (0.025, 0.025, 0.075), EPSILON (0.025, 0.10,
+  0.15), THETA (0, 0.025, 0.075). All below the noise floor; the colour-to-CBCT MI shifts are 0.05 or less. The
+  shift is already subtracted from `origin_mm` in the written index files. The ZETA value differs by up to 0.1 mm
+  from the WP0 edge-based (-0.075, -0.05, 0.125): same sign, MI curves are flat, not decisive.
+- **Alpha lesson:** saturation alone makes pale cortex look like epoxy (ALPHA, DELTA, ETA, THETA lost large areas;
+  ZETA and EPSILON were complete). Fix: where the specimen has a CBCT, pale voxels are split by a two-class (isodata)
+  threshold on CBCT density and the dense ones become opaque (ALPHA +3.4, DELTA +4.7, THETA +3.5 percent of the block).
+  It switches itself off when epoxy and bone are not separable: ZETA and EPSILON (complete anyway) and **ETA**
+  (known CBCT artefact; still fragmentary in pale areas). BETA has no CBCT and a sparse, olive, low-saturation colour block
+  (13.6 percent opaque, 10 x 14 x 14 mm): not a candidate, stays on meshes.
+- Sizes (MB, 0.2 / 0.15 / 0.1 / normals): ZETA 9.1/20.6/64.2/3.3, ALPHA 11.0/25.1/80.5/4.4, DELTA 8.4/19.2/60.3/3.9,
+  ETA 8.1/18.6/58.3/3.8, EPSILON 11.2/25.4/79.4/3.8, THETA 6.9/15.6/48.8/3.1. Without the 0.1 tier about 31 to 40 MB per
+  specimen (about 200 MB for six); the 0.1 tier alone is about 390 MB for six, so proposed: 0.2, 0.15 and normals on the
+  site, 0.1 only on the HF mirror. Budget not yet approved by the user.
+
+**Session 2, in this order:**
+1. Ask: which six (proposal ZETA, ALPHA, DELTA, ETA, EPSILON, THETA; EPSILON and THETA are not published today, adding them
+   to `.github/specimens.json` also builds their meshes; BETA mesh-only), the size budget, and his approval of the
+   montages (`dev-data-colour-wp1-<SPEC>` branches, files `<SPEC>_montage_0.15.png`; sent to him in session 1).
+2. ETA: try a local epoxy baseline for the CBCT (cupping), residual instead of absolute density; keep the switch-off.
+3. Look at the rectangular tone patches in coronal views (likely stitching seams of the micro-slicing) and decide whether
+   to mask or accept.
+4. Integrate into `deploy.yml`: colour job per specimen in the content matrix (cache key includes `colour.py`), copy tiers
+   0.2/0.15 and normals into the site and the 0.1 tier to the HF mirror (`HF_TOKEN`), add a `colour` block to the
+   specimen manifest (tiers, dims, spacing, origin_mm, brick index file, shift, status), parser and tests in
+   `app/src/viewer/manifest.ts`. Then merge the branch.
+5. Update the plan document (PC and phone numbers, the Gate 0 decision, WP1 results; the Arabic WP0 section still says
+   the iPad decides) and this file.
 
 ## WP0 (feasibility on ZETA), finished 28 Nov, kept for reference
 
