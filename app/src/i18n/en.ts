@@ -36,6 +36,9 @@ export const en = {
   'settings.numerals': 'Numerals',
   'settings.numerals.western': 'Western (0-9)',
   'settings.numerals.eastern': 'Eastern Arabic (٠-٩)',
+  'settings.experimental': 'Experimental',
+  'settings.experimental.raymarch': 'True-colour ear model: speed test (development)',
+  'settings.experimental.note': 'A draft test of 3D rendering in the specimen\'s real colours. It is not the surgical view yet.',
 
   'viewer.title': 'Viewer',
   'viewer.phantomBadge': 'Synthetic test phantom, not anatomy',

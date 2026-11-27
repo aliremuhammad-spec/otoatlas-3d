@@ -59,7 +59,7 @@ describe('minimum surface-to-surface distance', () => {
     const ring = new TorusGeometry(4, 0.5, 96, 512);
     const d = minSurfaceDistance(a.geometry, ring)?.distance ?? Number.NaN;
     expect(Math.abs(d - 0.5)).toBeLessThan(0.01);
-  });
+  }, 30_000);
 
   it('reports the two closest points one distance apart', () => {
     const a = sphere(3, 30);

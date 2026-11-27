@@ -201,6 +201,7 @@ soft tissue; or bake colour onto mesh textures.
   (cut 0): 0.2 mm 190 to 217 fps, 0.15 mm 102 to 116 fps, 0.1 mm 47 to 53 fps; typical (cut 0.4):
   0.2 and 0.15 mm 280 to 300 fps, 0.1 mm 67 to 81 fps. The PC half of Gate 0 (60 fps) is met at 0.2
   and 0.15 mm. Still to measure: the iPad and a phone. Naive marching, no empty-space skipping yet.
+- App access: Settings → «تجريبي» (Experimental) has a link to `dev/raymarch.html` (`data-testid="raymarch-link"`). It is only the speed test, not the surgical view (WP1 onward not built).
 - PWA trap: the app's service worker (registerType 'prompt') used to precache `/dev/raymarch.html`
   and answer any other `/dev/` URL with the app's index.html (a white page). `vite.config.ts` now
   has `globIgnores: ['dev/**']` and `navigateFallbackDenylist: [/\/dev\//]`. A browser that already

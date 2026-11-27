@@ -46,6 +46,13 @@ export function Settings({ onBack }: Props) {
             <span>{t('settings.numerals.eastern')}</span>
           </label>
         </fieldset>
+        <fieldset>
+          <legend>{t('settings.experimental')}</legend>
+          <p>{t('settings.experimental.note')}</p>
+          <a href={`${import.meta.env.BASE_URL}dev/raymarch.html`} data-testid="raymarch-link">
+            {t('settings.experimental.raymarch')}
+          </a>
+        </fieldset>
       </main>
     </div>
   );

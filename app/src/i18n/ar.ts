@@ -38,6 +38,9 @@ export const ar: Record<MessageKey, string> = {
   'settings.numerals': 'الأرقام',
   'settings.numerals.western': 'غربية (0-9)',
   'settings.numerals.eastern': 'عربية مشرقية (٠-٩)',
+  'settings.experimental': 'تجريبي',
+  'settings.experimental.raymarch': 'نموذج الأذن بالألوان الحقيقية: اختبار السرعة (تطوير)',
+  'settings.experimental.note': 'اختبار مسودة لعرض ثلاثي الأبعاد بألوان العينة الحقيقية، وهو ليس المنظور الجراحي بعد.',
 
   'viewer.title': 'العارض',
   'viewer.phantomBadge': 'مجسّم اختباري اصطناعي، ليس تشريحاً',
