@@ -291,6 +291,10 @@ def main(specimen: str, out: Path) -> None:
                      opaque_pct=round(float((rgba[3] > 127).mean() * 100), 1), source=SOURCE)
         (out / f"{specimen}_colour_{tag}.bricks").write_bytes(blob)
         (out / f"{specimen}_colour_{tag}.json").write_text(json.dumps(index, separators=(",", ":")))
+        back = colour.bricks_decode((out / f"{specimen}_colour_{tag}.bricks").read_bytes(), json.loads((out / f"{specimen}_colour_{tag}.json").read_text()))
+        if not np.array_equal(back, rgba):
+            raise RuntimeError(f"{specimen} tier {tag}: the bricks read back differ from what was written")
+        del back
         sizes[tag] = round(len(blob) / 2**20, 2)
         meta["tiers"][tag] = {k: index[k] for k in ("dims", "spacing_mm", "origin_mm", "bricks_total", "bricks_stored", "opaque_pct")}
         meta["tiers"][tag]["bricks_mb"] = sizes[tag]
@@ -307,6 +311,9 @@ def main(specimen: str, out: Path) -> None:
     index.update(spacing_mm=[0.4] * 3, origin_mm=(borg - shift + 0.1).round(4).tolist(), source=SOURCE, normal_source=meta["normal_source"])
     (out / f"{specimen}_normal.bricks").write_bytes(blob)
     (out / f"{specimen}_normal.json").write_text(json.dumps(index, separators=(",", ":")))
+    if not np.array_equal(colour.bricks_decode((out / f"{specimen}_normal.bricks").read_bytes(), json.loads((out / f"{specimen}_normal.json").read_text())), nrm):
+        raise RuntimeError(f"{specimen}: the normal bricks read back differ from what was written")
+    meta["bricks_roundtrip_ok"] = True
     sizes["normal"] = round(len(blob) / 2**20, 2)
     meta["sizes_mb"] = sizes
     meta["build"] = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%d%H%M%S")
