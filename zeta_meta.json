@@ -1,0 +1,113 @@
+{
+ "volumes": {
+  "0p20": {
+   "files": [
+    {
+     "name": "zeta_0p20_colour.rgba.gz",
+     "bytes": 29538432
+    }
+   ],
+   "dims": [
+    162,
+    176,
+    259
+   ],
+   "spacing_mm": [
+    0.2,
+    0.2,
+    0.2
+   ],
+   "origin_mm": [
+    3.8750000000000004,
+    2.4750000000000005,
+    0.0
+   ],
+   "opaque_pct": 42.0
+  },
+  "0p15": {
+   "files": [
+    {
+     "name": "zeta_0p15_colour.rgba.gz",
+     "bytes": 70577080
+    }
+   ],
+   "dims": [
+    217,
+    235,
+    346
+   ],
+   "spacing_mm": [
+    0.15,
+    0.15,
+    0.15
+   ],
+   "origin_mm": [
+    3.8,
+    2.4499999999999997,
+    0.0
+   ],
+   "opaque_pct": 41.6
+  },
+  "0p10": {
+   "files": [
+    {
+     "name": "zeta_0p10_colour.part0.rgba.gz",
+     "bytes": 125452800
+    },
+    {
+     "name": "zeta_0p10_colour.part1.rgba.gz",
+     "bytes": 110854656
+    }
+   ],
+   "dims": [
+    324,
+    352,
+    518
+   ],
+   "spacing_mm": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "origin_mm": [
+    3.825,
+    2.4250000000000003,
+    0.0
+   ],
+   "opaque_pct": 42.0
+  }
+ },
+ "normal": {
+  "files": [
+   {
+    "name": "zeta_normal.rgba.gz",
+    "bytes": 3678048
+   }
+  ],
+  "dims": [
+   81,
+   88,
+   129
+  ],
+  "spacing_mm": [
+   0.4,
+   0.4,
+   0.4
+  ],
+  "origin_mm": [
+   3.9750000000000005,
+   2.5750000000000006,
+   0.1
+  ]
+ },
+ "build": "20261127182320",
+ "specimen": "OPENEAR ZETA",
+ "shift_mm_colour_minus_label": [
+  -0.075,
+  -0.05,
+  0.125
+ ],
+ "source": "OpenEar (Sieber et al. 2019, doi:10.5281/zenodo.1473724), CC BY 4.0",
+ "credit": "Designed under the supervision of Dr. Ali R. Muhammad",
+ "layout": "RGBA8, x fastest, then y, then z"
+}
