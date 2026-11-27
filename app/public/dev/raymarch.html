@@ -135,9 +135,9 @@ const VS = `#version 300 es
 void main() { vec2 p = vec2((gl_VertexID << 1) & 2, gl_VertexID & 2); gl_Position = vec4(p * 2.0 - 1.0, 0.0, 1.0); }`;
 const FS = `#version 300 es
 precision highp float; precision highp sampler3D;
-uniform sampler3D uCol; uniform sampler3D uNrm;
+uniform sampler3D uCol; uniform sampler3D uNrm; uniform sampler3D uOcc;
 uniform vec3 uBoxMin, uBoxSize, uNMin, uNSize, uCam;
-uniform mat4 uInvVP; uniform vec2 uRes; uniform float uStep, uMode, uCut;
+uniform mat4 uInvVP; uniform vec2 uRes; uniform float uStep, uMode, uCut, uSkip;
 out vec4 o;
 float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
 void main() {
@@ -154,7 +154,9 @@ void main() {
   for (int i = 0; i < 2400; i++) {
     if (t > tf) break;
     vec3 p = uCam + d * t;
-    vec4 c = texture(uCol, (p - uBoxMin) / uBoxSize);
+    vec3 uvw = (p - uBoxMin) / uBoxSize;
+    if (uSkip > 0.5 && texture(uOcc, uvw).r < 0.5) { t += uStep * 3.0; continue; }
+    vec4 c = texture(uCol, uvw);
     if (c.a > 0.04) {
       vec4 n = texture(uNrm, (p - uNMin) / uNSize);
       vec3 N = normalize(n.xyz * 2.0 - 1.0);
@@ -178,8 +180,8 @@ function sh(type, src) { const s = gl.createShader(type); gl.shaderSource(s, src
 const prog = gl.createProgram(); gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(prog);
 if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
 gl.useProgram(prog); gl.bindVertexArray(gl.createVertexArray());
-const U = Object.fromEntries(['uCol','uNrm','uBoxMin','uBoxSize','uNMin','uNSize','uCam','uInvVP','uRes','uStep','uMode','uCut'].map((k) => [k, gl.getUniformLocation(prog, k)]));
-gl.uniform1i(U.uCol, 0); gl.uniform1i(U.uNrm, 1);
+const U = Object.fromEntries(['uCol','uNrm','uBoxMin','uBoxSize','uNMin','uNSize','uCam','uInvVP','uRes','uStep','uMode','uCut','uSkip','uOcc'].map((k) => [k, gl.getUniformLocation(prog, k)]));
+gl.uniform1i(U.uCol, 0); gl.uniform1i(U.uNrm, 1); gl.uniform1i(U.uOcc, 2); gl.uniform1f(U.uSkip, new URLSearchParams(location.search).has('noskip') ? 0 : 1);
 
 // ---------- matrices (column-major) ----------
 function perspective(fovy, aspect, n, f) { const t = 1 / Math.tan(fovy / 2); return [t / aspect,0,0,0, 0,t,0,0, 0,0,(f+n)/(n-f),-1, 0,0,2*f*n/(n-f),0]; }
@@ -221,7 +223,7 @@ function loaderError(e) {
 }
 
 // ---------- data ----------
-let meta, buildId = '', texCol = null, texNrm = null, vol = null, nvol = null, busyLoading = false, allCached = true;
+let meta, buildId = '', texOcc = null, texCol = null, texNrm = null, vol = null, nvol = null, busyLoading = false, allCached = true;
 async function getResponse(url) {
   try {
     const c = await caches.open('otoatlas-ray-' + buildId);
@@ -249,12 +251,34 @@ function upload(unit, dims, data) {
   gl.texImage3D(gl.TEXTURE_3D, 0, gl.RGBA8, dims[0], dims[1], dims[2], 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
   const err = gl.getError(); if (err) throw new Error('texImage3D error ' + err); return t;
 }
+// Coarse occupancy (8^3 voxel blocks, dilated by one block) so empty space is crossed in big steps.
+function buildOcc(dims, data) {
+  const B = 8, od = dims.map((d) => Math.ceil(d / B)), occ = new Uint8Array(od[0] * od[1] * od[2]);
+  for (let z = 0; z < dims[2]; z++) for (let y = 0; y < dims[1]; y++) {
+    const row = (z * dims[1] + y) * dims[0], orow = ((z / B | 0) * od[1] + (y / B | 0)) * od[0];
+    for (let x = 0; x < dims[0]; x++) if (data[(row + x) * 4 + 3] > 10) occ[orow + (x / B | 0)] = 1;
+  }
+  const out = new Uint8Array(occ.length);
+  for (let z = 0; z < od[2]; z++) for (let y = 0; y < od[1]; y++) for (let x = 0; x < od[0]; x++) {
+    if (!occ[(z * od[1] + y) * od[0] + x]) continue;
+    for (let k = -1; k <= 1; k++) for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) {
+      const xx = x + i, yy = y + j, zz = z + k;
+      if (xx >= 0 && yy >= 0 && zz >= 0 && xx < od[0] && yy < od[1] && zz < od[2]) out[(zz * od[1] + yy) * od[0] + xx] = 255;
+    }
+  }
+  if (texOcc) gl.deleteTexture(texOcc);
+  texOcc = gl.createTexture(); gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_3D, texOcc);
+  gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+  gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MIN_FILTER, gl.NEAREST); gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  for (const w of [gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_T, gl.TEXTURE_WRAP_R]) gl.texParameteri(gl.TEXTURE_3D, w, gl.CLAMP_TO_EDGE);
+  gl.texImage3D(gl.TEXTURE_3D, 0, gl.R8, od[0], od[1], od[2], 0, gl.RED, gl.UNSIGNED_BYTE, out);
+}
 const bytesOf = (files) => files.reduce((a, f) => a + f.bytes, 0);
 async function loadColour(tag) {
   const v = meta.volumes[tag]; stepText = `تحميل الألوان بدقة ${tag.replace('p', '.')} مم`; paint();
   const data = await fetchGz(v.files, 'colour');
   if (texCol) { gl.deleteTexture(texCol); texCol = null; }
-  texCol = upload(0, v.dims, data); vol = v; vol.tag = tag;
+  texCol = upload(0, v.dims, data); buildOcc(v.dims, data); vol = v; vol.tag = tag;
   const size = v.dims.map((d, i) => d * v.spacing_mm[i]), min = v.origin_mm.map((o, i) => o - v.spacing_mm[i] / 2);
   gl.uniform3fv(U.uBoxMin, min); gl.uniform3fv(U.uBoxSize, size);
   center = min.map((m, i) => m + size[i] / 2); radius = Math.hypot(...size) / 2; if (dist === 0) dist = radius * 3.0;
@@ -373,7 +397,7 @@ $('copy').onclick = async () => {
   try { await navigator.clipboard.writeText(t); $('busy').textContent = ' تم النسخ'; } catch { $('busy').textContent = ' تعذّر النسخ، حدّد النص في الأسفل وانسخه يدوياً'; $('results').textContent = t; }
 };
 $('res').onchange = () => { if (!benchRunning) switchRes($('res').value); };
-window.__ray = { get ready() { return !!(texCol && texNrm); }, measure, setView(y, p, d) { yaw = y; pitch = p; if (d) dist = d; } };
+window.__ray = { get ready() { return !!(texCol && texNrm); }, measure, setSkip(v) { gl.uniform1f(U.uSkip, v ? 1 : 0); }, setView(y, p, d) { yaw = y; pitch = p; if (d) dist = d; } };
 init();
 </script>
 </body>

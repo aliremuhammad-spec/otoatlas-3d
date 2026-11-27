@@ -190,7 +190,7 @@ soft tissue; or bake colour onto mesh textures.
   normals on a 0.2 mm grid, 0.1 mm colour in two parts that join by concatenation). Rebuild with the
   workflows `dev-extract-colour-products.yml`, then `dev-colour-web.yml`.
 - Speed test: `https://aliremuhammad-spec.github.io/otoatlas-3d/dev/raymarch.html` (source
-  `app/public/dev/raymarch.html`; plain WebGL2, Arabic UI, not linked from the app). Loading screen
+  `app/public/dev/raymarch.html`; plain WebGL2, Arabic UI, linked only from Settings → تجريبي). Loading screen
   with percentage and steps; three tabs: التعليمات (what it is, how to navigate, what is shown),
   العرض (resolution, opaque/translucent, render scale, step, cut into block, auto-orbit, live fps)
   and قياس السرعة (Benchmark: GPU time with a 1-pixel readback, 0.2/0.15 and optionally 0.1 mm x cut
@@ -211,8 +211,7 @@ soft tissue; or bake colour onto mesh textures.
   `gh api -X POST repos/aliremuhammad-spec/otoatlas-3d/actions/workflows/<file>/dispatches -f ref=main`
   (`gh workflow run` fails: GraphQL is blocked); git push and clone of the repo work.
 - CI note: `src/measure/surfaceDistance.test.ts` "sphere centred in a ring" took 5.5 s against its
-  5 s limit on the runner and failed the app job on 27 Nov (twice); code untouched by WP0. Raise its
-  timeout or speed it up.
+  5 s limit on the runner and failed the app job on 27 Nov (twice); timeout raised to 30 s (fixed).
 - Next: read the iPad and phone results; if 0.15 mm holds 30 fps go on to WP1, otherwise use 0.2 mm or half
   render scale, or bake colour onto mesh textures. Also open: tighten the specimen mask, and the
   five landmarks need his review (lateral canal and round window are proxies).
