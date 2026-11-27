@@ -162,7 +162,11 @@ export function SurgicalView({ specimen, quality, translucent, cut }: Props) {
     return a && b ? Math.hypot(a[0] - b[0], a[1] - b[1]) : 0;
   };
   const onPointerDown = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
-    e.currentTarget.setPointerCapture(e.pointerId);
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      // Capture is a convenience; turning must keep working without it.
+    }
     pointers.current.set(e.pointerId, [e.clientX, e.clientY]);
     if (pointers.current.size === 2) pinch.current = spread();
   }, []);
