@@ -175,6 +175,66 @@ describe('content manifest', () => {
   });
 });
 
+function colourBlock(): Record<string, unknown> {
+  const vol = (spacing: number, tag: string, extra: Record<string, unknown> = {}) => ({
+    spacing_mm: spacing,
+    dims: [161, 175, 259],
+    origin_mm: [4.05, 2.6, -0.1],
+    index: `colour/ZETA_colour_${tag}.json`,
+    bricks: `colour/ZETA_colour_${tag}.bricks`,
+    bytes: 1234,
+    ...extra,
+  });
+  const hf = `https://huggingface.co/datasets/zero019/otoatlas-3d-content/resolve/${'b'.repeat(40)}/OPENEAR-ZETA/colour/ZETA_colour_0p10.bricks`;
+  return {
+    alpha_source: 'colour+cbct',
+    levelled: true,
+    shift_mm: [-0.15, 0.05, 0.1],
+    brick: 64,
+    tiers: [vol(0.1, '0p10', { on_site: false, url: hf }), vol(0.15, '0p15'), vol(0.2, '0p20')],
+    normals: vol(0.4, 'normal'),
+  };
+}
+
+describe('colour block', () => {
+  it('is absent for a specimen without colour', () => {
+    expect(parseManifest(validManifest()).colour).toBeNull();
+  });
+
+  it('parses tiers fine to coarse, with the finest published only on Hugging Face', () => {
+    const c = parseManifest({ ...validManifest(), colour: colourBlock() }).colour;
+    expect(c?.tiers.map((t) => t.spacingMm)).toEqual([0.1, 0.15, 0.2]);
+    expect(c?.tiers[0]?.onSite).toBe(false);
+    expect(c?.tiers[1]?.onSite).toBe(true);
+    expect(c?.normals?.spacingMm).toBe(0.4);
+    expect(c?.shiftMm).toEqual([-0.15, 0.05, 0.1]);
+  });
+
+  it('refuses files outside colour/ and tiers that are not ordered', () => {
+    const c = colourBlock();
+    const tiers = c.tiers as Record<string, unknown>[];
+    expect(() => parseManifest({ ...validManifest(), colour: { ...c, tiers: [{ ...tiers[1], bricks: '../x.bricks' }] } })).toThrow(/colour\//);
+    expect(() => parseManifest({ ...validManifest(), colour: { ...c, tiers: [tiers[1], tiers[2], tiers[1]] } })).toThrow(/fine to coarse/);
+    expect(() => parseManifest({ ...validManifest(), colour: { ...c, tiers: [] } })).toThrow(/empty/);
+  });
+
+  it('refuses a tier that is neither on the site nor pinned on Hugging Face', () => {
+    const c = colourBlock();
+    const tiers = c.tiers as Record<string, unknown>[];
+    expect(() => parseManifest({ ...validManifest(), colour: { ...c, tiers: [{ ...tiers[0], url: null }] } })).toThrow(/no url/);
+    expect(() =>
+      parseManifest({ ...validManifest(), colour: { ...c, tiers: [{ ...tiers[0], url: 'https://example.com/a.bricks' }] } }),
+    ).toThrow(/pinned/);
+  });
+
+  it('refuses unknown alpha sources and fractional dimensions', () => {
+    const c = colourBlock();
+    const tiers = c.tiers as Record<string, unknown>[];
+    expect(() => parseManifest({ ...validManifest(), colour: { ...c, alpha_source: 'magic' } })).toThrow(/alpha_source/);
+    expect(() => parseManifest({ ...validManifest(), colour: { ...c, tiers: [{ ...tiers[1], dims: [1.5, 2, 3] }] } })).toThrow(/whole/);
+  });
+});
+
 describe('specimen index', () => {
   it('parses the list of installed specimens', () => {
     expect(parseSpecimenIndex({ specimens: [{ id: 'OPENEAR-ZETA', path: 'OPENEAR-ZETA' }] })).toEqual([

@@ -18,6 +18,7 @@ jobs:
     timeout-minutes: 10
     outputs:
       specimens: ${{ steps.list.outputs.specimens }}
+      colour: ${{ steps.list.outputs.colour }}
     steps:
       - uses: actions/checkout@v4
       - id: list
@@ -26,13 +27,16 @@ jobs:
           import json, os
           # The chosen specimens (.github/specimens.json) are built; the list does not depend
           # on Zenodo answering, which it sometimes refuses to GitHub's runners (HTTP 403).
-          items = []
+          items, colour = [], []
           for e in json.load(open(".github/specimens.json"))["specimens"]:
               kind, _, ident = e["pkg"].partition("-")
               items.append({"kind": kind.lower(), "id": ident, "pkg": e["pkg"]})
+              if e.get("colour"):
+                  colour.append({"id": ident, "pkg": e["pkg"]})
           print(json.dumps(items, indent=1))
           with open(os.environ["GITHUB_OUTPUT"], "a") as out:
               out.write("specimens=" + json.dumps(items) + "\n")
+              out.write("colour=" + json.dumps(colour) + "\n")
 
   content:
     needs: plan
@@ -69,8 +73,44 @@ jobs:
           path: content-out
           if-no-files-found: error
 
+  # True-colour volume (Phase 2B WP1) of the specimens marked `colour` in .github/specimens.json. It runs after the
+  # content jobs so that Zenodo never sees more than a few downloads at once, and a failure here leaves the specimen
+  # on meshes without holding back the site.
+  colour:
+    needs: [plan, content]
+    if: ${{ !cancelled() && needs.plan.outputs.colour != '[]' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        specimen: ${{ fromJSON(needs.plan.outputs.colour) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - id: cache
+        uses: actions/cache@v4
+        with:
+          path: colour-out
+          key: colour-v1-${{ matrix.specimen.id }}-${{ hashFiles('DATA_PIPELINE/otopipe/colour.py', 'DATA_PIPELINE/otopipe/fetch.py', 'DATA_PIPELINE/otopipe/openear.py', 'DATA_PIPELINE/otopipe/scan.py', 'DATA_PIPELINE/build_content.py', '.github/scripts/build_colour.py') }}
+      - if: steps.cache.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          pip install -e DATA_PIPELINE pillow
+          python -u .github/scripts/build_colour.py "${{ matrix.specimen.id }}" colour-out | tee -a "$GITHUB_STEP_SUMMARY"
+      # The montage and the diagnostics are for review, not for the site.
+      - run: rm -f colour-out/*_diag_0p20.npz colour-out/*_montage_*.png; du -sh colour-out | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: colour-${{ matrix.specimen.id }}
+          path: colour-out
+          if-no-files-found: error
+
   site:
-    needs: content
+    needs: [content, colour]
     # Publish whatever was built, even when a specimen failed.
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
@@ -105,6 +145,16 @@ jobs:
           name: content-all
           pattern: content-*
           delete-merged: true
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: colour-*
+          path: colour-staging
+          merge-multiple: true
+      - name: Attach the true-colour volumes
+        run: |
+          mkdir -p colour-staging
+          python3 .github/scripts/attach_colour.py attach app/dist/content colour-staging | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Write the specimen index
         shell: python
         run: |
@@ -127,6 +177,10 @@ jobs:
         run: |
           python3 -m pip install --quiet --user "huggingface_hub>=0.25"
           python3 .github/scripts/publish_scans_hf.py app/dist/content | tee -a "$GITHUB_STEP_SUMMARY"
+      # The finest colour tier is published only on Hugging Face: off the site, and out of the manifest without a url.
+      - name: Take the finest colour tier off the site
+        if: ${{ !cancelled() }}
+        run: python3 .github/scripts/attach_colour.py finish app/dist/content | tee -a "$GITHUB_STEP_SUMMARY"
       - run: du -sh app/dist/content | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

@@ -1,6 +1,6 @@
 # OtoAtlas 3D: handoff for the next session
 
-Last updated 28 November 2026, WP0 finished, WP1 next (new session). Read this file first;
+Last updated 28 November 2026, WP0 and WP1 finished (merged to `main`), WP2 (renderer in the app) next in a new session. Read this file first;
 it replaces re-reading the long earlier conversations. Update the "State" and "Next step"
 sections at the end of every session.
 
@@ -104,7 +104,7 @@ cd DATA_PIPELINE && pip install -e ".[dev]" && python -m pytest -q
 - The shell cannot reach github.io. Check the live site with Claude in Chrome; the app shows an
   update banner («حدّث الآن») that must be clicked to load the new build. Restore any setting
   you change in his browser.
-- At last count: 69 pipeline tests, 80 unit tests, and the e2e suites all pass.
+- At last count: 94 pipeline tests, 80 unit tests, and the e2e suites all pass.
 
 ## Dev data for checking a rule on real specimens
 
@@ -150,23 +150,41 @@ Use `DATA_PIPELINE/devtools/devdata.py` (docstring shows how). New extracts: cop
    surgeon position, microscope working distance and magnifications, landmarks per station,
    VES 3.5 installed on a Windows PC for the comparison, raters, stereo hardware.
 
-## Next step: Phase 2B, WP1 (colour pipeline for six specimens), two sessions, start in a NEW session
+## Next step: Phase 2B, WP2 (renderer in the app; start in a NEW session)
 
-Gate 0 was accepted by the user on 28 Nov as «approved with caveats»: speed met on PC (60 fps at 0.2 and
-0.15 mm) and on a low-tier phone at half render scale (30 fps at 0.2 mm, 0.15 mm opaque); iPad unmeasured, to be
-confirmed later and not blocking; alignment borderline (4 of 5 landmarks by median, lateral canal 0.275 mm).
-Approved tier rule: phone 0.2 mm at half render scale, PC and tablet 0.15 mm (0.1 mm optional on strong GPUs),
-automatic render-scale drop under 30 fps.
+WP1 (colour pipeline) is finished and merged to `main` (PR #1). Gate 0 was accepted 28 Nov «approved with caveats» (PC 60 fps at
+0.2 and 0.15 mm; low-tier phone 30 fps at half render scale; iPad unmeasured, not blocking). Tier rule: phone 0.2 mm at half
+render scale, PC and tablet 0.15 mm (0.1 mm optional), automatic render-scale drop under 30 fps. Check first that the first deploy
+with colour went green (see "WP1 result"); if not, fix that before anything else.
 
-WP1 from the plan (tab "Phase 2B plan", table row 1): colour pipeline for six specimens (OpenEar candidates;
-ETA's CBCT has a known artefact; VES integrated six of eight): resample to the segmentation frame, crop to bone,
-epoxy removal, slice-wise colour levelling, three tiers, bricks, built in CI. Accepted when: a slice montage per
-specimen that he approves, sizes within the budget. Reuse `.github/scripts/build_colour_web.py` and
-`extract_colour_products.py` (ZETA only so far; apply the same global shift check per specimen with the MI
-scripts in `.github/scripts/wp0/`, do not assume ZETA's shift). Open items to fold in: tighten the specimen mask
-(cylinder-edge strip), better epoxy mask, normals from CBCT per specimen, which specimens are in the six.
-Plan document: not yet updated with the PC and phone benchmark numbers or this decision (the Arabic WP0 section
-there still says the iPad decides); update it at the end of WP1.
+## WP1 result (done 27/28 Nov, one build session after the WP0 session; the user approved the specimen list, the size budget and the montages)
+
+- Six colour specimens: ZETA, ALPHA, DELTA, ETA, EPSILON, THETA (`.github/colour-specimens.json` for dev builds; `colour: true` in
+  `.github/specimens.json`, which now also lists EPSILON and THETA, so they get meshes too; BETA stays mesh-only: no CBCT, sparse
+  olive colour block). GAMMA dropped (rotated grid).
+- Code: `DATA_PIPELINE/otopipe/colour.py` (+ `tests/test_colour.py`, 20 tests), `.github/scripts/build_colour.py` (stage A:
+  alignment on the full 0.2 tier; stage B: CBCT alpha; tiers, bricks, read-back check, normals, montages, meta),
+  `.github/scripts/attach_colour.py` (+ `tests/test_attach_colour.py`; copies products to `<pkg>/colour/`, writes the manifest
+  `colour` block; `finish` removes the 0.1 bricks from the site), `publish_scans_hf.py` (uploads colour bricks, pinned urls),
+  `deploy.yml` (job `colour` after `content`, max 3 parallel, cache key `colour-v1-<id>-hashFiles(colour.py, fetch.py, openear.py,
+  scan.py, build_content.py, build_colour.py)`; `site` needs content and colour), `colour-build.yml` (dev run, outputs to
+  `dev-data-colour-wp1-<SPEC>` branches), `app/src/viewer/manifest.ts` (optional `colour` block parser, 5 tests).
+- Where the files go: tiers 0.2 and 0.15 mm and normals on the site (`<pkg>/colour/`); the 0.1 mm tier only on the HF mirror
+  (manifest tier has `on_site: false` and a pinned HF url). Sizes MB (0.2 / 0.15 / 0.1 / normals): ZETA 9.1/20.6/64.2/3.3, ALPHA
+  11.0/25.2/80.9/4.4, DELTA 8.5/19.2/60.5/3.9, ETA 9.6/21.9/68.7/3.8, EPSILON 11.2/25.4/79.4/3.8, THETA 6.8/15.5/48.5/3.2.
+- Alpha rule: saturation ramp, plus (where there is a CBCT) pale voxels split by an isodata threshold on CBCT density. Two traps
+  fixed in session 2: (1) **cupping** (ETA): a radial baseline from confident-epoxy voxels (bright, saturation < 0.12, 1 mm radial
+  bins, 2 sigma clipping) is subtracted first, which made ETA usable; (2) **real air** among the pale voxels dragged the threshold
+  below the epoxy level, so values below median - 3 sigma are dropped before the split. The rule switches itself off when
+  epoxy and bone are not separable: ZETA and EPSILON (complete anyway) say so in `warnings`. Final: ALPHA, DELTA, ETA, THETA use it
+  (thresholds 23.5, 25.4, 19.8, 21.5).
+- Seam check: the rectangle with a round hole seen in ZETA coronal slices is a feature of the source images (probably a marker
+  or fiducial), not a pipeline seam, and there are faint horizontal streaks in the epoxy. Left unmasked on purpose; epoxy is
+  transparent so they do not show in the rendered volume.
+- Alignment shifts (mm, subtracted from `origin_mm`) are listed above under session 1; all below the noise floor.
+- Tests at the end: 94 pipeline tests; app unit tests include the colour manifest parser; CI green.
+- Not yet verified when this was written: the first real `deploy.yml` run with the colour job (attach, HF upload of the 0.1 tier,
+  finish). Merging rebuilt all content, about 12 minutes plus the colour job.
 
 ## WP0 (feasibility on ZETA), finished 28 Nov, kept for reference
 

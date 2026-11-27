@@ -1,0 +1,56 @@
+name: colour-build
+# Phase 2B WP1: true-colour products (levelled, three tiers, bricked) of OpenEar specimens, built from the
+# micro-slicing volume. Specimens come from .github/colour-specimens.json. Large products are kept as a workflow
+# artifact; the montage, the measurements and the README go to the branch dev-data-colour-wp1-<specimen>.
+on:
+  workflow_dispatch:
+  push:
+    branches: [wp1-colour-pipeline]
+    paths:
+      - .github/colour-specimens.json
+      - .github/workflows/colour-build.yml
+      - .github/scripts/build_colour.py
+      - DATA_PIPELINE/otopipe/colour.py
+permissions:
+  contents: write
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      specimens: ${{ steps.list.outputs.specimens }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: list
+        run: echo "specimens=$(jq -c .specimens .github/colour-specimens.json)" >> "$GITHUB_OUTPUT"
+  build:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        specimen: ${{ fromJSON(needs.plan.outputs.specimens) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: |
+          pip install -e DATA_PIPELINE pillow
+          python -u .github/scripts/build_colour.py "${{ matrix.specimen }}" out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: colour-${{ matrix.specimen }}
+          path: out
+          retention-days: 14
+      - run: |
+          mkdir small && cp out/*.png out/*_meta.json out/*.json out/*_diag_0p20.npz out/README.md small/ 2>/dev/null || true
+          rm -f small/*_colour_0p*.json small/*_normal.json
+          cd small
+          git init -q -b dev-data-colour-wp1-${{ matrix.specimen }}
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add -A
+          git commit -q -m "WP1 colour build ${{ matrix.specimen }}: montage and measurements"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" dev-data-colour-wp1-${{ matrix.specimen }}

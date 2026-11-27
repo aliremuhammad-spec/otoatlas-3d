@@ -1,0 +1,20 @@
+name: dev-colour-survey
+# Development only: lists the micro-slicing colour volume of every OpenEar specimen with its NRRD header
+# (no data download).
+on:
+  workflow_dispatch:
+  push:
+    branches: [wp1-colour-pipeline]
+    paths: [.github/workflows/dev-colour-survey.yml, .github/scripts/colour_survey.py]
+jobs:
+  survey:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: |
+          pip install -e DATA_PIPELINE
+          python -u .github/scripts/colour_survey.py

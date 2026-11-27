@@ -55,6 +55,32 @@ export interface ManifestScan {
   modality: string;
 }
 
+/** One bricked colour (or normal) volume, see DATA_PIPELINE/otopipe/colour.py `bricks_encode`. */
+export interface ManifestColourVolume {
+  spacingMm: number;
+  dims: readonly [number, number, number];
+  /** Centre of the first voxel, specimen (label) frame, mm; the colour-to-label shift is already taken out. */
+  originMm: readonly [number, number, number];
+  /** JSON brick index and the brick file, relative to the package folder. */
+  index: string;
+  bricks: string;
+  bytes: number;
+  /** False when the bricks are published only on Hugging Face (the finest tier), then `url` is set. */
+  onSite: boolean;
+  url: string | null;
+}
+
+/** The true-colour volume of a specimen: tiers fine to coarse, and normals for lighting. */
+export interface ManifestColour {
+  alphaSource: 'colour' | 'colour+cbct';
+  levelled: boolean;
+  /** Measured colour = label + shift (mm); informative, already applied to every origin. */
+  shiftMm: readonly [number, number, number];
+  brick: number;
+  tiers: readonly ManifestColourVolume[];
+  normals: ManifestColourVolume | null;
+}
+
 /** Measurements the pipeline makes on a specimen; ids the app does not know are skipped. */
 export const MEASUREMENT_IDS = [
   'cochlear_a_value',
@@ -92,6 +118,8 @@ export interface Manifest {
   anatomicalFrame: AnatomicalFrame | null;
   /** The specimen's own scan for the slice view, when the package has one. */
   scan: ManifestScan | null;
+  /** The true-colour volume for the surgical view, when the specimen has one. */
+  colour: ManifestColour | null;
   specimenId: string;
   dataset: string;
   side: 'left' | 'right' | null;
@@ -266,6 +294,7 @@ export function parseManifest(value: unknown): Manifest {
     },
     structures: o.structures.map(parseStructure),
     scan: parseScan(o.scan),
+    colour: parseColour(o.colour),
     measurements: parseMeasurements(o.measurements),
     anatomicalFrame: parseFrame(o.anatomical_frame),
   };
@@ -331,6 +360,54 @@ function parseScan(value: unknown): ManifestScan | null {
     spacingMm: triple(o.spacing_mm, 'scan.spacing_mm', true),
     originMm: triple(o.origin_mm, 'scan.origin_mm', false),
     modality: str(o.modality, 'scan.modality'),
+  };
+}
+
+const BRICK_URL = /^https:\/\/huggingface\.co\/datasets\/[\w.-]+\/[\w.-]+\/resolve\/[0-9a-f]{40}\/[\w./-]+\.bricks$/;
+
+function parseColourVolume(value: unknown, what: string): ManifestColourVolume {
+  const o = obj(value, what);
+  const index = str(o.index, `${what}.index`);
+  const bricks = str(o.bricks, `${what}.bricks`);
+  if (!/^colour\/[A-Za-z0-9._-]+\.json$/.test(index)) fail(`${what}.index is not a plain file in colour/`);
+  if (!/^colour\/[A-Za-z0-9._-]+\.bricks$/.test(bricks)) fail(`${what}.bricks is not a plain file in colour/`);
+  const dims = triple(o.dims, `${what}.dims`, true);
+  if (!dims.every(Number.isInteger)) fail(`${what}.dims must be whole numbers`);
+  const onSite = o.on_site === undefined ? true : o.on_site;
+  if (typeof onSite !== 'boolean') fail(`${what}.on_site is not true or false`);
+  let url: string | null = null;
+  if (o.url !== undefined && o.url !== null) {
+    url = str(o.url, `${what}.url`);
+    if (!BRICK_URL.test(url)) fail(`${what}.url is not a pinned Hugging Face dataset file`);
+  }
+  if (!onSite && url === null) fail(`${what} is not on the site and has no url`);
+  const spacing = num(o.spacing_mm, `${what}.spacing_mm`);
+  if (!(spacing > 0)) fail(`${what}.spacing_mm must be positive`);
+  const bytes = num(o.bytes, `${what}.bytes`);
+  if (!(bytes >= 0)) fail(`${what}.bytes must not be negative`);
+  return { spacingMm: spacing, dims, originMm: triple(o.origin_mm, `${what}.origin_mm`, false), index, bricks, bytes, onSite, url };
+}
+
+function parseColour(value: unknown): ManifestColour | null {
+  if (value === undefined || value === null) return null;
+  const o = obj(value, 'colour');
+  if (o.alpha_source !== 'colour' && o.alpha_source !== 'colour+cbct') fail('colour.alpha_source is not known');
+  if (typeof o.levelled !== 'boolean') fail('colour.levelled is not true or false');
+  const brick = num(o.brick, 'colour.brick');
+  if (!Number.isInteger(brick) || brick < 8) fail('colour.brick must be a whole number of at least 8');
+  if (!Array.isArray(o.tiers) || o.tiers.length === 0) fail('colour.tiers is empty');
+  const tiers = o.tiers.map((t, i) => parseColourVolume(t, `colour.tiers[${i}]`));
+  tiers.forEach((t, i) => {
+    const before = tiers[i - 1];
+    if (before && !(t.spacingMm > before.spacingMm)) fail('colour.tiers must run from fine to coarse');
+  });
+  return {
+    alphaSource: o.alpha_source,
+    levelled: o.levelled,
+    shiftMm: triple(o.shift_mm, 'colour.shift_mm', false),
+    brick,
+    tiers,
+    normals: o.normals === undefined || o.normals === null ? null : parseColourVolume(o.normals, 'colour.normals'),
   };
 }
 

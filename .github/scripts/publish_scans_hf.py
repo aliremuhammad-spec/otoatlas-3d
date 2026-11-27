@@ -34,7 +34,9 @@ tags:
 Cropped, 8-bit copies of specimen scans used by the OtoAtlas 3D teaching app
 (https://aliremuhammad-spec.github.io/otoatlas-3d/). Each `scan.u8.gz` is gzip-compressed
 uint8 with x varying fastest; shape, voxel size, origin and grey window are in the
-specimen's `manifest.json` in the app.
+specimen's `manifest.json` in the app. `<package>/colour/*.bricks` hold the true-colour volume
+of the OpenEar specimens (levelled micro-slicing images in 64-voxel gzip bricks, 0.1, 0.15 and
+0.2 mm, with normals); the brick index of each file is in the app's copy of the package.
 
 Designed under the supervision of Dr. Ali R. Muhammad.
 
@@ -55,6 +57,14 @@ mapped to 8 bits between the 0.5th and 99.8th percentile of each crop.
 """
 
 
+def colour_volumes(manifest: dict) -> list[dict]:
+    """The colour tiers and normals of a manifest, as the dicts inside it (empty without a colour block)."""
+    colour = manifest.get("colour")
+    if not colour:
+        return []
+    return [*colour["tiers"], *([colour["normals"]] if colour.get("normals") else [])]
+
+
 def main(content: Path) -> None:
     api = HfApi()
     repo = f"{api.whoami()['name']}/{REPO_NAME}"
@@ -66,15 +76,21 @@ def main(content: Path) -> None:
         for path in manifests:
             manifest = json.loads(path.read_text(encoding="utf-8"))
             scan = manifest.get("scan")
-            if not scan:
-                continue
-            local = path.parent / scan["file"]
-            if not local.exists():
-                continue
-            target = stage / path.parent.name / scan["file"]
-            target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(local, target)
-            moved.append((path, manifest, local))
+            local = path.parent / scan["file"] if scan else None
+            if local is not None and local.exists():
+                target = stage / path.parent.name / scan["file"]
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(local, target)
+                moved.append((path, manifest, local))
+            # The true-colour bricks (WP1): the finest tier lives only here, the others are mirrored too.
+            for vol in colour_volumes(manifest):
+                src = path.parent / vol["bricks"]
+                if src.exists():
+                    target = stage / path.parent.name / vol["bricks"]
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(src, target)
+                    if not any(m[0] == path for m in moved):
+                        moved.append((path, manifest, src))
         (stage / "README.md").write_text(CARD, encoding="utf-8")
         commit = api.upload_folder(
             repo_id=repo,
@@ -82,14 +98,18 @@ def main(content: Path) -> None:
             folder_path=str(stage),
             path_in_repo="",
             commit_message="Update specimen scans",
-            delete_patterns=["*/scan.u8.gz"],
+            delete_patterns=["*/scan.u8.gz", "*/colour/*.bricks"],
         )
     revision = getattr(commit, "oid", None) or api.repo_info(repo, repo_type="dataset").sha
     for path, manifest, local in moved:
         package = path.parent.name
-        manifest["scan"]["url"] = (
-            f"https://huggingface.co/datasets/{repo}/resolve/{revision}/{package}/{manifest['scan']['file']}"
-        )
+        if manifest.get("scan") and (path.parent / manifest["scan"]["file"]).exists():
+            manifest["scan"]["url"] = (
+                f"https://huggingface.co/datasets/{repo}/resolve/{revision}/{package}/{manifest['scan']['file']}"
+            )
+        for vol in colour_volumes(manifest):
+            if (path.parent / vol["bricks"]).exists():
+                vol["url"] = f"https://huggingface.co/datasets/{repo}/resolve/{revision}/{package}/{vol['bricks']}"
         path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"{len(moved)} scans mirrored to https://huggingface.co/datasets/{repo} at {revision}")
 
