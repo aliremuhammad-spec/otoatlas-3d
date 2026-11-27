@@ -190,18 +190,29 @@ soft tissue; or bake colour onto mesh textures.
   normals on a 0.2 mm grid, 0.1 mm colour in two parts that join by concatenation). Rebuild with the
   workflows `dev-extract-colour-products.yml`, then `dev-colour-web.yml`.
 - Speed test: `https://aliremuhammad-spec.github.io/otoatlas-3d/dev/raymarch.html` (source
-  `app/public/dev/raymarch.html`; plain WebGL2, no framework, not linked from the app). Panel:
-  resolution, opaque/translucent, render scale, step, cut into block, Benchmark (GPU time with a
-  1-pixel readback, 0.2/0.15/0.1 mm x cut 0 and 0.4 x two modes x scale 0.5 and 1), Copy results.
-  Checked only on software GL in headless Chrome (draws correctly); the iPad numbers (Gate 0: 30 fps
-  at phone tier, 60 on a PC) are still to come. Naive marching, no empty-space skipping yet.
+  `app/public/dev/raymarch.html`; plain WebGL2, Arabic UI, not linked from the app). Loading screen
+  with percentage and steps; three tabs: التعليمات (what it is, how to navigate, what is shown),
+  العرض (resolution, opaque/translucent, render scale, step, cut into block, auto-orbit, live fps)
+  and قياس السرعة (Benchmark: GPU time with a 1-pixel readback, 0.2/0.15 and optionally 0.1 mm x cut
+  0 and 0.4 x two modes x scale 0.5 and 1, a verdict for 30 and 60 fps, Copy results). Downloads go
+  through Cache Storage (`otoatlas-ray-<build>`), so the second visit opens at once. Normals are now
+  on a 0.4 mm grid (3.4 MB instead of 27 MB); first load of 0.2 mm is about 20 MB.
+  Measured on his Windows PC (AMD Radeon integrated, Chrome), full screen 1920x799, worst case
+  (cut 0): 0.2 mm 190 to 217 fps, 0.15 mm 102 to 116 fps, 0.1 mm 47 to 53 fps; typical (cut 0.4):
+  0.2 and 0.15 mm 280 to 300 fps, 0.1 mm 67 to 81 fps. The PC half of Gate 0 (60 fps) is met at 0.2
+  and 0.15 mm. Still to measure: the iPad and a phone. Naive marching, no empty-space skipping yet.
+- PWA trap: the app's service worker (registerType 'prompt') used to precache `/dev/raymarch.html`
+  and answer any other `/dev/` URL with the app's index.html (a white page). `vite.config.ts` now
+  has `globIgnores: ['dev/**']` and `navigateFallbackDenylist: [/\/dev\//]`. A browser that already
+  has the old worker keeps the stale page until it updates (banner «حدّث الآن») or the worker is
+  unregistered; when doing that, delete only the `workbox-precache*` cache, never `specimen-content`.
 - Shell facts: the shell cannot reach Zenodo, so extraction runs as dev workflows, dispatched with
   `gh api -X POST repos/aliremuhammad-spec/otoatlas-3d/actions/workflows/<file>/dispatches -f ref=main`
   (`gh workflow run` fails: GraphQL is blocked); git push and clone of the repo work.
 - CI note: `src/measure/surfaceDistance.test.ts` "sphere centred in a ring" took 5.5 s against its
   5 s limit on the runner and failed the app job on 27 Nov (twice); code untouched by WP0. Raise its
   timeout or speed it up.
-- Next: read the iPad results; if 0.15 mm holds 30 fps go on to WP1, otherwise use 0.2 mm or half
+- Next: read the iPad and phone results; if 0.15 mm holds 30 fps go on to WP1, otherwise use 0.2 mm or half
   render scale, or bake colour onto mesh textures. Also open: tighten the specimen mask, and the
   five landmarks need his review (lateral canal and round window are proxies).
 
