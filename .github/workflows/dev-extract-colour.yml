@@ -1,0 +1,32 @@
+name: dev-extract-colour
+# Development only: ZETA's micro-slicing colour volume (not registered to the specimen frame),
+# block-averaged to 0.2 mm, pushed to the `dev-data-colour` branch for registration work.
+on:
+  workflow_dispatch:
+    inputs:
+      specimen:
+        description: OpenEar specimen name
+        default: ZETA
+permissions:
+  contents: write
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: |
+          pip install -e DATA_PIPELINE
+          python -u .github/scripts/extract_colour_dev.py "${{ inputs.specimen }}" dev-out
+      - run: |
+          cd dev-out
+          printf '%s\n' "Micro-slicing colour volume extracted from OpenEar (Sieber et al., Scientific Data 2019," "doi:10.1038/sdata.2018.297; data doi:10.5281/zenodo.1473724), CC BY 4.0." "Development data for OtoAtlas 3D, designed under the supervision of Dr. Ali R. Muhammad." > README.md
+          git init -q -b dev-data-colour
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add -A
+          git commit -q -m "OpenEar micro-slicing colour volume (0.2 mm) for development"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" dev-data-colour
