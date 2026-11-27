@@ -1,0 +1,242 @@
+{
+ "specimen": "OPENEAR DELTA",
+ "source": "OpenEar (Sieber et al. 2019, doi:10.5281/zenodo.1473724), CC BY 4.0",
+ "credit": "Designed under the supervision of Dr. Ali R. Muhammad",
+ "warnings": [],
+ "source_space": "left-posterior-superior",
+ "native_step_mm": [
+  0.05,
+  0.05,
+  0.14999999999999997
+ ],
+ "native_shape": [
+  3,
+  792,
+  792,
+  375
+ ],
+ "native_origin_mm": [
+  -0.0,
+  -0.0,
+  0.0
+ ],
+ "cylinder_mm": {
+  "cx": 19.71,
+  "cy": 19.66,
+  "radius": 19.42
+ },
+ "levelling": {
+  "slices": 375,
+  "slices_with_epoxy": 375,
+  "levelled": true,
+  "target_rgb": [
+   196.1,
+   194.6,
+   181.8
+  ],
+  "epoxy_range_before": [
+   166.3,
+   206.4
+  ],
+  "epoxy_range_after": [
+   169.0,
+   205.3
+  ],
+  "gain_min": 0.959,
+  "gain_max": 1.049
+ },
+ "cbct": {
+  "file": "CBCT_EMBEDDED_Delta.nrrd",
+  "crop_shape": [
+   358,
+   359,
+   490
+  ],
+  "spacing_mm": [
+   0.1252357720561089,
+   0.1252357720561089,
+   0.1252357720561089
+  ]
+ },
+ "alignment": {
+  "applied_shift_mm_colour_minus_label": [
+   -0.025,
+   0.1,
+   0.1
+  ],
+  "source": "labels (mean of luminance and alpha, mutual information, 0.05 mm search grid)",
+  "by_luminance": {
+   "shift_mm": [
+    -0.0,
+    0.1,
+    0.05
+   ],
+   "mi_zero": 0.09412,
+   "mi_best": 0.09914,
+   "at_search_edge": false
+  },
+  "by_alpha": {
+   "shift_mm": [
+    -0.05,
+    0.1,
+    0.15
+   ],
+   "mi_zero": 0.08594,
+   "mi_best": 0.09504,
+   "at_search_edge": false
+  },
+  "orientation_vs_labels": {
+   "identity": 0.09412,
+   "flip_x": 0.01196,
+   "flip_y": 0.02101,
+   "flip_z": 0.023,
+   "identity_wins": true
+  },
+  "vs_cbct": {
+   "shift_mm": [
+    -0.0,
+    0.1,
+    0.1
+   ],
+   "mi_zero": 0.27887,
+   "mi_best": 0.29068,
+   "at_search_edge": false,
+   "orientation": {
+    "identity": 0.27887,
+    "flip_x": 0.01258,
+    "flip_y": 0.01193,
+    "flip_z": 0.01528,
+    "identity_wins": true
+   }
+  }
+ },
+ "cbct_alpha": {
+  "usable": true,
+  "epoxy_level": 1.0,
+  "threshold": 25.4,
+  "ramp": [
+   19.3,
+   31.5
+  ],
+  "sample_voxels": 5228803,
+  "pale_above_threshold_pct": 9.8,
+  "baseline_mm_to_value": [
+   [
+    0.5,
+    102.1
+   ],
+   [
+    3.5,
+    102.0
+   ],
+   [
+    6.5,
+    102.1
+   ],
+   [
+    9.5,
+    102.6
+   ],
+   [
+    12.5,
+    103.6
+   ],
+   [
+    15.5,
+    103.7
+   ],
+   [
+    18.5,
+    104.6
+   ],
+   [
+    21.5,
+    104.6
+   ],
+   [
+    24.5,
+    104.6
+   ],
+   [
+    27.5,
+    104.6
+   ]
+  ],
+  "new_opaque_pct_of_block": 4.67
+ },
+ "tiers": {
+  "0p20": {
+   "dims": [
+    171,
+    177,
+    281
+   ],
+   "spacing_mm": [
+    0.2,
+    0.2,
+    0.2
+   ],
+   "origin_mm": [
+    3.1,
+    2.775,
+    -0.1
+   ],
+   "bricks_total": 45,
+   "bricks_stored": 43,
+   "opaque_pct": 28.8,
+   "bricks_mb": 8.44
+  },
+  "0p15": {
+   "dims": [
+    228,
+    237,
+    374
+   ],
+   "spacing_mm": [
+    0.15,
+    0.15,
+    0.15
+   ],
+   "origin_mm": [
+    3.075,
+    2.65,
+    -0.1
+   ],
+   "bricks_total": 96,
+   "bricks_stored": 88,
+   "opaque_pct": 28.6,
+   "bricks_mb": 19.17
+  },
+  "0p10": {
+   "dims": [
+    342,
+    354,
+    561
+   ],
+   "spacing_mm": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "origin_mm": [
+    3.05,
+    2.725,
+    -0.1
+   ],
+   "bricks_total": 324,
+   "bricks_stored": 241,
+   "opaque_pct": 28.8,
+   "bricks_mb": 60.3
+  }
+ },
+ "normal_source": "cbct",
+ "bricks_roundtrip_ok": true,
+ "sizes_mb": {
+  "0p20": 8.44,
+  "0p15": 19.17,
+  "0p10": 60.3,
+  "normal": 3.9
+ },
+ "build": "20261127214200",
+ "layout": "bricks: see index json; RGBA8 interleaved x fastest; normals RGB = n * 0.5 + 0.5, A = edge strength"
+}
