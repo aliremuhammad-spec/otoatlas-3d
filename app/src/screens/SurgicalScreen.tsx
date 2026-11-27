@@ -74,8 +74,7 @@ export function SurgicalScreen({ onBack }: Props) {
       )}
       {specimen && (
         <>
-          <fieldset className="surgical__controls">
-            <legend>{t('surgical.controls')}</legend>
+          <div className="surgical__controls" role="group" aria-label={t('surgical.controls')}>
             <label>
               <span>{t('surgical.mode')}</span>
               <select
@@ -107,7 +106,7 @@ export function SurgicalScreen({ onBack }: Props) {
                 data-testid="surgical-cut"
               />
             </label>
-          </fieldset>
+          </div>
           <SurgicalView key={specimen.path} specimen={specimen} quality={quality} translucent={translucent} cut={cut} />
           {specimen.draft && <p className="note">{t('surgical.draft')}</p>}
         </>

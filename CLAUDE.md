@@ -1,6 +1,6 @@
 # OtoAtlas 3D: handoff for the next session
 
-Last updated 28 November 2026, WP0 and WP1 finished (merged to `main`), WP2 part 1 (surgical view as its own entry, colour renderer) is on branch `wp2-surgical-view`, waiting for the user's approval to merge; WP2 part 2 (labels) next. Read this file first;
+Last updated 28 November 2026, WP0 and WP1 finished (merged to `main`), WP2 part 1 (surgical view as its own entry, colour renderer) is merged and live; WP2 part 2 (labels) next in a new session. Read this file first;
 it replaces re-reading the long earlier conversations. Update the "State" and "Next step"
 sections at the end of every session.
 
@@ -152,8 +152,11 @@ Use `DATA_PIPELINE/devtools/devdata.py` (docstring shows how). New extracts: cop
 
 ## Next step: Phase 2B, WP2 part 2 (label-aware renderer; start in a NEW session)
 
-WP2 part 1 is on branch `wp2-surgical-view` (PR #2, CI green; **merge needs the user's approval**: it deploys to the live app and
-the auto-mode classifier refused the merge on 28 Nov). Check `gh api repos/aliremuhammad-spec/otoatlas-3d/pulls/2 -q .state`.
+WP2 part 1 is merged (PRs #2 and the polish PR) and live. Verified live on 28 Nov in his Chrome (Windows PC, DPR 1.25): the surgical
+screen opens ZETA at 0.15 mm, canvas 1440x408, no errors, the HUD reads 60 frames per second at render scale 1 (vsync cap); the
+controls changed the picture. Not yet seen: a phone, an iPad, the other five specimens (the manifests are the same shape).
+Trap in tests: a synthetic `PointerEvent` has no valid pointer id, so `setPointerCapture` throws (now guarded); use wheel events to
+drive the view in a page script.
 
 **Rule from the user (28 Nov): the surgical view is a separate option from the anatomical models.** Home has two sections
 (`home-anatomy`: viewer and topics; `home-surgical`: its own button), `ScreenId` has `'surgical'`, the screen is
@@ -173,7 +176,12 @@ controls, draws only when something changed, adapts scale while moving), and the
 Unit tests 100, e2e 34 (all pass).
 
 Not done (WP2 part 2, in this order):
-1. **Label volume.** The renderer cannot hide, show, tint or isolate a structure yet because the browser has no label volume.
+1. **Label volume.** Design note: the label ids must include the *computed* parts (scala vestibuli, membrane quadrants, ossicle parts,
+   facial nerve segments, air spaces), and those masks exist only inside `build_content.py` while the specimen package is built, not in
+   `build_colour.py`. So write one label volume per specimen in the content job (uint8 ids on the segmentation grid, 0.125 mm, cropped
+   to the ear, plus the id table), upload it with the package, and let the colour job resample it nearest-neighbour onto each tier
+   grid (the colour grid is shifted from the label frame by the stored `shift_mm`; origins already include it). Structure ids in the
+   table must be the manifest structure ids so the surgical list can reuse the names and colours. The renderer cannot hide, show, tint or isolate a structure yet because the browser has no label volume. The renderer cannot hide, show, tint or isolate a structure yet because the browser has no label volume.
    Pipeline job: resample the segmentation labels onto each colour tier grid (nearest neighbour, uint8 id per voxel with an
    id table in the manifest), brick it like the colour (single channel, or pack into the alpha of a second texture), build in
    `build_colour.py`, publish like the normals. Mind the size budget (site is 514 MB of 1 GB).
