@@ -1,6 +1,6 @@
 # OtoAtlas 3D: handoff for the next session
 
-Last updated 28 November 2026, WP0 and WP1 finished (merged to `main`), WP2 part 1 (surgical view as its own entry, colour renderer) is merged and live; WP2 part 2 (labels) next in a new session. Read this file first;
+Last updated 28 November 2026, WP0 and WP1 finished (merged to `main`), WP2 part 1 (surgical view as its own entry, colour renderer) and part 2a (label volume, per-structure show/hide/isolate/tint) are merged and live; part 2b (picking, ambient occlusion, mesh fallback) next in a new session. Read this file first;
 it replaces re-reading the long earlier conversations. Update the "State" and "Next step"
 sections at the end of every session.
 
@@ -150,7 +150,7 @@ Use `DATA_PIPELINE/devtools/devdata.py` (docstring shows how). New extracts: cop
    surgeon position, microscope working distance and magnifications, landmarks per station,
    VES 3.5 installed on a Windows PC for the comparison, raters, stereo hardware.
 
-## Next step: Phase 2B, WP2 part 2 (label-aware renderer; start in a NEW session)
+## Next step: Phase 2B, WP2 part 2b (picking and finishing the renderer; start in a NEW session)
 
 WP2 part 1 is merged (PRs #2 and the polish PR) and live. Verified live on 28 Nov in his Chrome (Windows PC, DPR 1.25): the surgical
 screen opens ZETA at 0.15 mm, canvas 1440x408, no errors, the HUD reads 60 frames per second at render scale 1 (vsync cap); the
@@ -175,21 +175,27 @@ controls, draws only when something changed, adapts scale while moving), and the
 `app/e2e/fixtures/content-colour/TEST-COLOUR-01` (generated with `colour.bricks_encode`; a pink ball with a dark core).
 Unit tests 100, e2e 34 (all pass).
 
-Not done (WP2 part 2, in this order):
-1. **Label volume.** Design note: the label ids must include the *computed* parts (scala vestibuli, membrane quadrants, ossicle parts,
-   facial nerve segments, air spaces), and those masks exist only inside `build_content.py` while the specimen package is built, not in
-   `build_colour.py`. So write one label volume per specimen in the content job (uint8 ids on the segmentation grid, 0.125 mm, cropped
-   to the ear, plus the id table), upload it with the package, and let the colour job resample it nearest-neighbour onto each tier
-   grid (the colour grid is shifted from the label frame by the stored `shift_mm`; origins already include it). Structure ids in the
-   table must be the manifest structure ids so the surgical list can reuse the names and colours. The renderer cannot hide, show, tint or isolate a structure yet because the browser has no label volume. The renderer cannot hide, show, tint or isolate a structure yet because the browser has no label volume.
-   Pipeline job: resample the segmentation labels onto each colour tier grid (nearest neighbour, uint8 id per voxel with an
-   id table in the manifest), brick it like the colour (single channel, or pack into the alpha of a second texture), build in
-   `build_colour.py`, publish like the normals. Mind the size budget (site is 514 MB of 1 GB).
-2. Shader: per-label visibility and tint (a 256-entry lookup texture), isolate, then picking (ray cast to the first opaque
-   labelled voxel; must agree with the meshes within 0.2 mm), then ambient occlusion and progressive refinement, and the fallback
-   to meshes when WebGL2 or the texture size is not available (today the screen shows a message).
-3. Structure list and card inside the surgical screen, built for that screen (not shared with the viewer's list).
-4. Check live on real specimens (ZETA 0.15 mm first), on his PC and phone, and read the fps the HUD shows.
+Done in part 2a (merged as PR #4, deployed and checked live on ZETA in his Chrome on 28 Nov):
+- **Label volume**: `DATA_PIPELINE/otopipe/labelvol.py` builds one uint8 volume per OpenEar specimen inside the content job (0.125 mm, cropped to
+  the union of the masks, computed parts included, schematic structures excluded, largest painted first so smaller parts win); file
+  `labels.u8.gz` (about 0.7 to 2.1 MB) and manifest block `label_volume` (dims, spacing_mm, origin_mm, structures `{id,value}`,
+  excluded_schematic). 26 to 31 structures per specimen; Bern specimens have none yet (the Bern builder does not pass `label_volume=True`; the
+  surgical view is OpenEar colour only, so nothing is lost). Parser: `parseLabelVolume` in `manifest.ts`. Fixture generator:
+  `app/e2e/fixtures/make_colour_fixture.py`.
+- **Renderer**: R8 label texture (unit 3) and a 256x2 style table texture (unit 4, `surgical/lut.ts`: shown/hidden and tint strength; row 1
+  the tint colour) read in the ray-marcher; hidden structures are skipped, tint mixes the atlas colour 50 percent.
+- **Surgical-only structure list** (`SurgicalStructures.tsx`, shown only when labels are loaded): toggle, "only this", "show all", tint switch,
+  grouped like the atlas; the loading overlay has four steps with labels (`loadLabelVolume`; a failed label download only removes the list).
+- Layout (PR after #4): the surgical screen scrolls as a page and puts the picture and the list side by side (stacked on phones).
+- Known limits: hiding bone exposes inner structures whose lighting comes from CBCT gradients (weak); no true occlusion yet; the list shows
+  structure names from the manifest and has no search.
+
+Not done (WP2 part 2b, in this order):
+1. **Picking**: ray cast to the first opaque, visible, labelled voxel; must agree with the meshes within 0.2 mm; a card for the picked
+   structure built for the surgical screen (names, group, no shared component with the viewer's list).
+2. Ambient occlusion and progressive refinement; fallback to meshes when WebGL2 or the texture size is not available (today a message).
+3. Check on his phone and iPad and the other five specimens (the manifests have the same shape); read the fps the HUD shows.
+4. Bern labels if Bern gets colour.
 
 ## WP1 result (done 27/28 Nov, one build session after the WP0 session; the user approved the specimen list, the size budget and the montages)
 

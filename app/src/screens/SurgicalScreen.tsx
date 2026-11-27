@@ -44,7 +44,7 @@ export function SurgicalScreen({ onBack }: Props) {
   const standard = tiers.find((x) => Math.abs(x.spacingMm - 0.2) < 0.01);
 
   return (
-    <div className="viewer surgical" data-testid="surgical-screen">
+    <div className="surgical" data-testid="surgical-screen">
       <header className="page__header">
         <button type="button" onClick={onBack}>
           {t('nav.back')}
@@ -115,18 +115,20 @@ export function SurgicalScreen({ onBack }: Props) {
               />
             </label>
           </div>
-          <SurgicalView
-            key={specimen.path}
-            specimen={specimen}
-            quality={quality}
-            translucent={translucent}
-            cut={cut}
-            structures={structureState}
-            onLabels={setLabelsReady}
-          />
-          {labelsReady && specimen.structures.length > 0 && (
-            <SurgicalStructures structures={specimen.structures} state={structureState} onChange={setStructureState} />
-          )}
+          <div className="surgical__body">
+            <SurgicalView
+              key={specimen.path}
+              specimen={specimen}
+              quality={quality}
+              translucent={translucent}
+              cut={cut}
+              structures={structureState}
+              onLabels={setLabelsReady}
+            />
+            {labelsReady && specimen.structures.length > 0 && (
+              <SurgicalStructures structures={specimen.structures} state={structureState} onChange={setStructureState} />
+            )}
+          </div>
           {specimen.draft && <p className="note">{t('surgical.draft')}</p>}
         </>
       )}
