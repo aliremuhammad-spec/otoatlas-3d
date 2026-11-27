@@ -180,6 +180,7 @@ def main(specimen: str, out: Path) -> None:
     # Stage A: the whole 0.2 mm tier, colour alpha only. Alignment is measured on it.
     full02, org02 = colour.build_tier(vol, step, first, 0.2, gains, cyl)
     colour_alpha02 = full02[3].copy()
+    colour_rgb02 = full02[:3].copy()
     segments, cbct_u8, cbct_sp, cbct_org = {}, None, None, None
     try:
         with tempfile.TemporaryDirectory() as tmp:
@@ -316,6 +317,11 @@ def main(specimen: str, out: Path) -> None:
     meta["bricks_roundtrip_ok"] = True
     sizes["normal"] = round(len(blob) / 2**20, 2)
     meta["sizes_mb"] = sizes
+    if cbct_smooth is not None:  # small arrays for experiments on the CBCT rule without another CI round
+        c_dbg = colour.sample_on_grid(cbct_smooth, cbct_sp, cbct_org, org02 - shift, 0.2, colour_alpha02.shape)
+        np.savez_compressed(out / f"{specimen}_diag_0p20.npz", colour_alpha=colour_alpha02, cbct=np.clip(np.rint(c_dbg), 0, 255).astype(np.uint8),
+                            rgb=colour_rgb02, origin=org02 - shift, cap=cap02)
+        del c_dbg
     meta["build"] = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%d%H%M%S")
     meta["layout"] = "bricks: see index json; RGBA8 interleaved x fastest; normals RGB = n * 0.5 + 0.5, A = edge strength"
     (out / f"{specimen}_colour_meta.json").write_text(json.dumps(meta, indent=1))

@@ -45,7 +45,7 @@ jobs:
           path: out
           retention-days: 14
       - run: |
-          mkdir small && cp out/*.png out/*_meta.json out/*.json out/README.md small/ 2>/dev/null || true
+          mkdir small && cp out/*.png out/*_meta.json out/*.json out/*_diag_0p20.npz out/README.md small/ 2>/dev/null || true
           rm -f small/*_colour_0p*.json small/*_normal.json
           cd small
           git init -q -b dev-data-colour-wp1-${{ matrix.specimen }}
