@@ -106,3 +106,40 @@ def test_parts_carry_their_whole_structure_as_group():
     assert package.group_of(ONTOLOGY, by_id["tympanic_membrane_anterosuperior"])["id"] == "tympanic_membrane"
     # A whole bone's parent is a group of structures, not a structure: no group entry.
     assert package.group_of(ONTOLOGY, by_id["malleus"]) is None
+
+
+def test_label_volume_is_written_on_request_and_skips_schematic_structures(tmp_path):
+    from otopipe import labelvol
+
+    spacing = (0.125, 0.125, 0.125)
+    a, oa = P.ellipsoid((1.5, 1.0, 1.0), spacing, centre=(0.0, 0.0, 0.0))
+    b, ob = P.ellipsoid((1.0, 1.0, 1.0), spacing, centre=(5.0, 0.0, 0.0))
+    schematic = next(
+        s for s in ONTOLOGY["structures"]
+        if s["provenance_tier"] == "schematic" and any(x["dataset"] == "openear" for x in s["sources"])
+    )
+    src = next(x for x in schematic["sources"] if x["dataset"] == "openear")
+    c, oc = P.ellipsoid((0.8, 0.8, 0.8), spacing, centre=(0.0, 4.0, 0.0))
+    labels = [
+        package.LabelInput("Malleus", a, spacing, oa),
+        package.LabelInput("Scala Tympani", b, spacing, ob),
+        package.LabelInput(src["label"], c, spacing, oc, part=src.get("part")),
+    ]
+    manifest = package.build_package(tmp_path, "TEST-02", src["dataset"], labels, ONTOLOGY, samples=4000, label_volume=True)
+    block = manifest["label_volume"]
+    assert block["excluded_schematic"] == [schematic["id"]]
+    assert [s["id"] for s in block["structures"]] == ["malleus", "scala_tympani"]
+    blob = (tmp_path / block["file"]).read_bytes()
+    assert len(blob) == block["bytes"]
+    data = labelvol.decode(blob, tuple(block["dims"]))
+    values = {s["id"]: s["value"] for s in block["structures"]}
+    # The voxel at the centre of each ellipsoid carries that structure's value.
+    def value_at(p):
+        i = [round((p[k] - block["origin_mm"][k]) / block["spacing_mm"]) for k in range(3)]
+        return int(data[i[2], i[1], i[0]])
+
+    assert value_at((0.0, 0.0, 0.0)) == values["malleus"]
+    assert value_at((5.0, 0.0, 0.0)) == values["scala_tympani"]
+    # Not asked for: no file and no block.
+    plain = package.build_package(tmp_path / "plain", "TEST-03", "openear", labels[:2], ONTOLOGY, samples=4000)
+    assert "label_volume" not in plain and not (tmp_path / "plain" / "labels.u8.gz").exists()

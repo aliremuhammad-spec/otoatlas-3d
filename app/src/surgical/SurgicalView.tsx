@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useI18n } from '../i18n/I18nProvider';
-import { loadColourVolume, type ColourSpecimen } from './loadColour';
+import { loadColourVolume, loadLabelVolume, type ColourSpecimen } from './loadColour';
+import { buildLut, type StructureState } from './lut';
 import { chooseTier, adaptScale, type DeviceProfile, type Quality } from './tier';
 import { NoWebGL2Error, VolumeRenderer } from './VolumeRenderer';
 
@@ -16,18 +17,33 @@ type Phase =
   | { kind: 'error' }
   | { kind: 'nowebgl' };
 
-const STEPS = 3;
-const STEP_KEYS = ['surgical.step.lighting', 'surgical.step.colour', 'surgical.step.prepare'] as const;
+type StepKey =
+  | 'surgical.step.lighting'
+  | 'surgical.step.colour'
+  | 'surgical.step.prepare'
+  | 'surgical.step.labels';
+
+/** With labels the steps are lighting, labels, colour, prepare; without, lighting, colour, prepare. */
+function stepKey(step: number, labels: boolean): StepKey {
+  const order = labels
+    ? (['surgical.step.lighting', 'surgical.step.labels', 'surgical.step.colour', 'surgical.step.prepare'] as const)
+    : (['surgical.step.lighting', 'surgical.step.colour', 'surgical.step.prepare'] as const);
+  return order[step - 1] ?? order[0];
+}
 
 interface Props {
   specimen: ColourSpecimen;
   quality: Quality;
   translucent: boolean;
   cut: number;
+  /** Which structures are hidden or tinted; used when the specimen has a label volume. */
+  structures: StructureState;
+  /** Tells the screen whether the structure labels are loaded, so it can offer the structure list. */
+  onLabels: (available: boolean) => void;
 }
 
 /** The picture of one specimen: owns the canvas, the renderer, loading and the pointer controls. */
-export function SurgicalView({ specimen, quality, translucent, cut }: Props) {
+export function SurgicalView({ specimen, quality, translucent, cut, structures, onLabels }: Props) {
   const { t } = useI18n();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const rendererRef = useRef<VolumeRenderer | null>(null);
@@ -36,6 +52,9 @@ export function SurgicalView({ specimen, quality, translucent, cut }: Props) {
   const [stats, setStats] = useState<{ fps: number; mm: number; scale: number } | null>(null);
   const [reduced, setReduced] = useState(false);
   const normalsFor = useRef<string | null>(null);
+  const labelsFor = useRef<string | null>(null);
+  const onLabelsRef = useRef(onLabels);
+  onLabelsRef.current = onLabels;
   const dirty = useRef(true);
   const scaleRef = useRef(1);
   const ceilingRef = useRef(1);
@@ -105,6 +124,7 @@ export function SurgicalView({ specimen, quality, translucent, cut }: Props) {
       renderer.dispose();
       rendererRef.current = null;
       normalsFor.current = null;
+      labelsFor.current = null;
     };
   }, []);
 
@@ -125,12 +145,34 @@ export function SurgicalView({ specimen, quality, translucent, cut }: Props) {
         renderer.setNormals(data);
         normalsFor.current = specimen.path;
       }
-      setPhase({ kind: 'loading', step: 2, fraction: 0 });
+      if (labelsFor.current !== specimen.path) {
+        labelsFor.current = null;
+        renderer.setLabels(null);
+        onLabelsRef.current(false);
+        const block = specimen.labels;
+        if (block) {
+          setPhase({ kind: 'loading', step: 2, fraction: 0 });
+          try {
+            const labels = await loadLabelVolume(specimen.path, block, (p) =>
+              !cancelled && setPhase({ kind: 'loading', step: 2, fraction: p.fraction }),
+            );
+            if (cancelled) return;
+            renderer.setLabels(labels);
+            labelsFor.current = specimen.path;
+          } catch {
+            // The picture works without labels; only the structure list is lost.
+            if (cancelled) return;
+          }
+        }
+      }
+      onLabelsRef.current(labelsFor.current === specimen.path);
+      const colourStep = specimen.labels ? 3 : 2;
+      setPhase({ kind: 'loading', step: colourStep, fraction: 0 });
       const colour = await loadColourVolume(specimen.path, tier.volume, (p) =>
-        !cancelled && setPhase({ kind: 'loading', step: 2, fraction: p.fraction }),
+        !cancelled && setPhase({ kind: 'loading', step: colourStep, fraction: p.fraction }),
       );
       if (cancelled) return;
-      setPhase({ kind: 'loading', step: 3, fraction: 1 });
+      setPhase({ kind: 'loading', step: colourStep + 1, fraction: 1 });
       // Let the "preparing" message paint before the upload blocks the thread for a moment.
       await new Promise((resolve) => setTimeout(resolve, 30));
       if (cancelled) return;
@@ -153,6 +195,22 @@ export function SurgicalView({ specimen, quality, translucent, cut }: Props) {
     // `tier` is derived from the specimen and quality; its spacing identifies it.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [specimen, tierMm, attempt]);
+
+  // The structure list drives the style table.
+  useEffect(() => {
+    const renderer = rendererRef.current;
+    if (!renderer || phase.kind !== 'ready' || !renderer.hasLabels) return;
+    renderer.setStyles(
+      buildLut(
+        specimen.structures.map((st) => ({
+          value: st.value,
+          visible: !structures.hidden.has(st.id),
+          tint: structures.tinted ? st.color : null,
+        })),
+      ),
+    );
+    dirty.current = true;
+  }, [structures, specimen, phase.kind]);
 
   // Pointer controls: one pointer turns, two pinch.
   const pointers = useRef(new Map<number, [number, number]>());
@@ -217,8 +275,8 @@ export function SurgicalView({ specimen, quality, translucent, cut }: Props) {
           <p>
             {t('surgical.loadingStep', {
               step: phase.step,
-              steps: STEPS,
-              what: t(STEP_KEYS[phase.step - 1] ?? STEP_KEYS[0]),
+              steps: specimen.labels ? 4 : 3,
+              what: t(stepKey(phase.step, specimen.labels !== null)),
             })}
           </p>
           <progress max={1} value={phase.fraction} aria-label={t('surgical.loading', { mb: 0 })} />

@@ -267,7 +267,7 @@ def build_openear(specimen: str, out: Path) -> dict:
         extra["side_determined_by"] = {"reviewer": by, "date": on}
     manifest = package.build_package(
         out, f"OPENEAR-{specimen.upper()}", "openear", labels, package.load_ontology(ONTOLOGY), side=side, extra=extra,
-        publish_shown_only=True,
+        publish_shown_only=True, label_volume=True,
     )
     print(f"{specimen}: peak memory after meshing: {peak_memory_gb():.1f} GB", flush=True)
     return manifest
