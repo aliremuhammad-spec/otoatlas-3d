@@ -171,18 +171,39 @@ in the plan document's "Phase 2B plan" tab.
 Fallbacks if Gate 0 fails: re-register colour to CBCT; colour only the bone and keep meshes for
 soft tissue; or bake colour onto mesh textures.
 
-**WP0 status, 27 Nov (stopped after step 1's header check, waiting for the reviewer's decision):**
-the micro-slicing volume is NOT in the segmentation/CBCT space. Its NRRD header (read with
-`.github/workflows/dev-extract-colour-header.yml`, no data download) says: LPS, 4D
-`3 x 792 x 792 x 346`, `kinds: vector domain domain domain`, uint8, gzip, steps 0.05 / 0.05 /
-0.15 mm, `space origin (0,0,0)`, no registration. `Transformations_Zeta.CSV` (221 rows) holds
-per-raw-photo 2D affines (pixels) used to stack the sections to a target outline, and
-`Layer_Positions_ZETA.csv` the z position in mm of each of the 221 sections (uneven spacing);
-neither maps the volume into the specimen frame. So "resample onto the segmentation grid" needs
-a new 3D registration of colour to CBCT/labels (the first fallback), which was not budgeted.
-The shell cannot reach Zenodo (agent proxy), so all extraction runs as dev workflows on GitHub
-Actions, dispatched with `gh api repos/.../actions/workflows/<file>/dispatches -f ref=main`
-(`gh workflow run` fails: GraphQL is blocked). Nothing else of WP0 is built yet.
+**WP0 status, 27 Nov (alignment measured, speed test page live, waiting for the iPad numbers):**
+- Space: the micro-slicing NRRD header says LPS with `space origin (0,0,0)`, which looked
+  unregistered, but a mutual-information search against the embedded CBCT (24 flips x z offsets x
+  rotations, then rigid refinement; scripts in `.github/scripts/wp0/`) found no flip, no rotation
+  and a shift under 0.1 mm. The colour volume is already in the specimen frame (RAS mm, voxel
+  centre i at i x step; a block average of f voxels is centred (f-1)/2 steps later). An earlier note
+  in this file, that it was not registered, was wrong.
+- Alignment at the native crop (0.05 x 0.05 x 0.15 mm), median |label boundary - colour edge| along
+  the normal after one global shift colour = label + (-0.075, -0.05, +0.125) mm: umbo 0.125,
+  footplate 0.175, second genu 0.15, lateral canal 0.275 (computed proxy), round window 0.10 (proxy:
+  ZETA has no RW label); 75th percentiles 0.28 to 0.45 mm. Gate 0 (0.25 mm) is met by the median at
+  4 of 5, on the noise floor (label voxel 0.125, section step 0.15): borderline, not decisive. The
+  per-patch best translation is unreliable (aperture problem); use the normal offsets.
+- Colour data: branch `dev-data-colour-products` (native ear crop, RGBA at 0.1/0.15/0.2 mm; alpha is
+  a saturation ramp, epoxy transparent, so epoxy-filled air cells read as air; the bbox crop there
+  is not tight) and `dev-data-colour-web` (browser volumes cropped to 32 x 35 x 53 mm, CBCT-gradient
+  normals on a 0.2 mm grid, 0.1 mm colour in two parts that join by concatenation). Rebuild with the
+  workflows `dev-extract-colour-products.yml`, then `dev-colour-web.yml`.
+- Speed test: `https://aliremuhammad-spec.github.io/otoatlas-3d/dev/raymarch.html` (source
+  `app/public/dev/raymarch.html`; plain WebGL2, no framework, not linked from the app). Panel:
+  resolution, opaque/translucent, render scale, step, cut into block, Benchmark (GPU time with a
+  1-pixel readback, 0.2/0.15/0.1 mm x cut 0 and 0.4 x two modes x scale 0.5 and 1), Copy results.
+  Checked only on software GL in headless Chrome (draws correctly); the iPad numbers (Gate 0: 30 fps
+  at phone tier, 60 on a PC) are still to come. Naive marching, no empty-space skipping yet.
+- Shell facts: the shell cannot reach Zenodo, so extraction runs as dev workflows, dispatched with
+  `gh api -X POST repos/aliremuhammad-spec/otoatlas-3d/actions/workflows/<file>/dispatches -f ref=main`
+  (`gh workflow run` fails: GraphQL is blocked); git push and clone of the repo work.
+- CI note: `src/measure/surfaceDistance.test.ts` "sphere centred in a ring" took 5.5 s against its
+  5 s limit on the runner and failed the app job on 27 Nov (twice); code untouched by WP0. Raise its
+  timeout or speed it up.
+- Next: read the iPad results; if 0.15 mm holds 30 fps go on to WP1, otherwise use 0.2 mm or half
+  render scale, or bake colour onto mesh textures. Also open: tighten the specimen mask, and the
+  five landmarks need his review (lateral canal and round window are proxies).
 
 ## Later phases
 

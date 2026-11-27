@@ -1,0 +1,109 @@
+{
+ "global_shift_mm": [
+  -0.07500000000000012,
+  -0.05000000000000013,
+  0.12499999999999983
+ ],
+ "landmarks": {
+  "umbo": {
+   "structure": "malleus",
+   "point_mm": [
+    25.07,
+    24.38,
+    32.51
+   ],
+   "boundary_points": 396,
+   "edge_found_pct": 64.0,
+   "normal_offset_median_mm": 0.025,
+   "normal_offset_abs_median_mm": 0.125,
+   "normal_offset_p75_abs_mm": 0.294,
+   "best_translation_mm": [
+    -0.125,
+    0.225,
+    0.2
+   ],
+   "best_translation_norm_mm": 0.326,
+   "edge_gain_pct": 4.7
+  },
+  "footplate": {
+   "structure": "stapes",
+   "point_mm": [
+    20.96,
+    20.81,
+    34.83
+   ],
+   "boundary_points": 997,
+   "edge_found_pct": 72.0,
+   "normal_offset_median_mm": -0.1,
+   "normal_offset_abs_median_mm": 0.175,
+   "normal_offset_p75_abs_mm": 0.375,
+   "best_translation_mm": [
+    -0.0,
+    0.525,
+    0.075
+   ],
+   "best_translation_norm_mm": 0.53,
+   "edge_gain_pct": 4.7
+  },
+  "second_genu": {
+   "structure": "facial_nerve",
+   "point_mm": [
+    19.1,
+    22.1,
+    28.45
+   ],
+   "boundary_points": 1168,
+   "edge_found_pct": 94.0,
+   "normal_offset_median_mm": 0.075,
+   "normal_offset_abs_median_mm": 0.15,
+   "normal_offset_p75_abs_mm": 0.275,
+   "best_translation_mm": [
+    -0.1,
+    -0.1,
+    0.1
+   ],
+   "best_translation_norm_mm": 0.173,
+   "edge_gain_pct": 13.7
+  },
+  "lateral_canal": {
+   "structure": "scala_vestibuli_vestibular",
+   "point_mm": [
+    22.19,
+    23.13,
+    35.01
+   ],
+   "boundary_points": 540,
+   "edge_found_pct": 69.0,
+   "normal_offset_median_mm": 0.1,
+   "normal_offset_abs_median_mm": 0.275,
+   "normal_offset_p75_abs_mm": 0.45,
+   "best_translation_mm": [
+    0.275,
+    0.1,
+    -0.0
+   ],
+   "best_translation_norm_mm": 0.293,
+   "edge_gain_pct": 34.3
+  },
+  "round_window": {
+   "structure": "scala_tympani",
+   "point_mm": [
+    20.32,
+    22.63,
+    34.89
+   ],
+   "boundary_points": 778,
+   "edge_found_pct": 87.0,
+   "normal_offset_median_mm": 0.025,
+   "normal_offset_abs_median_mm": 0.1,
+   "normal_offset_p75_abs_mm": 0.3,
+   "best_translation_mm": [
+    0.1,
+    0.25,
+    0.325
+   ],
+   "best_translation_norm_mm": 0.422,
+   "edge_gain_pct": 8.8
+  }
+ }
+}
