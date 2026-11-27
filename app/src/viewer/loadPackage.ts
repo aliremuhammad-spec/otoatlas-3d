@@ -6,7 +6,7 @@ import { parseManifest, parseSpecimenIndex, type Manifest, type SpecimenIndexEnt
 /** Folder that holds specimen packages, relative to the app. */
 export const CONTENT_BASE = './content';
 
-async function fetchJson(url: string): Promise<unknown> {
+export async function fetchJson(url: string): Promise<unknown> {
   const response = await fetch(url, { cache: 'no-cache' });
   if (!response.ok) throw new Error(`${url}: HTTP ${response.status}`);
   return (await response.json()) as unknown;
@@ -99,7 +99,7 @@ export interface ScanProgress {
 }
 
 /** Fetches one URL, giving up when no data arrives for STALL_MS. */
-async function fetchBytes(
+export async function fetchBytes(
   url: string,
   onBytes: (received: number, total: number | null) => void,
 ): Promise<Uint8Array<ArrayBuffer>> {
@@ -137,7 +137,7 @@ async function fetchBytes(
   }
 }
 
-async function gunzip(compressed: Uint8Array<ArrayBuffer>): Promise<Uint8Array> {
+export async function gunzip(compressed: Uint8Array<ArrayBuffer>): Promise<Uint8Array> {
   if (typeof DecompressionStream === 'function') {
     const stream = new Blob([compressed]).stream().pipeThrough(new DecompressionStream('gzip'));
     return new Uint8Array(await new Response(stream).arrayBuffer());

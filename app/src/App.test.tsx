@@ -79,3 +79,27 @@ describe('language and direction', () => {
     expect(document.documentElement.dir).toBe('rtl');
   });
 });
+
+describe.each(['en', 'ar'] as const)('surgical view is a separate entry (%s)', (locale) => {
+  it('has its own button, apart from the anatomical models', () => {
+    renderApp(locale, 'home');
+    const anatomy = screen.getByTestId('home-anatomy');
+    const surgical = screen.getByTestId('home-surgical');
+    expect(anatomy).toHaveTextContent(locale === 'en' ? en['home.anatomy.title'] : ar['home.anatomy.title']);
+    expect(surgical).toHaveTextContent(locale === 'en' ? en['home.surgical.title'] : ar['home.surgical.title']);
+    expect(anatomy.contains(surgical)).toBe(false);
+    expect(surgical.contains(screen.getByTestId('open-surgical'))).toBe(true);
+    expect(anatomy.contains(screen.getByTestId('open-surgical'))).toBe(false);
+    expect(anatomy.contains(screen.getByTestId('open-topics'))).toBe(true);
+  });
+
+  it('opens its own screen, which has none of the viewer controls', async () => {
+    renderApp(locale, 'surgical');
+    const surgical = await screen.findByTestId('surgical-screen');
+    expect(surgical).toHaveTextContent(locale === 'en' ? en['surgical.title'] : ar['surgical.title']);
+    expect(screen.queryByTestId('viewer-screen')).toBeNull();
+    expect(screen.queryByTestId('specimen-select')).toBeNull();
+    expect(surgical).toHaveTextContent(CREDIT[locale]);
+    expect(await screen.findByTestId('surgical-empty')).toBeInTheDocument();
+  });
+});

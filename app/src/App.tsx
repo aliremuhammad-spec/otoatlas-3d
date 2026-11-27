@@ -3,10 +3,11 @@ import { About } from './screens/About';
 import { Home } from './screens/Home';
 import { Settings } from './screens/Settings';
 import { Splash } from './screens/Splash';
+import { SurgicalScreen } from './screens/SurgicalScreen';
 import { TopicsScreen } from './screens/TopicsScreen';
 import { ViewerScreen } from './screens/ViewerScreen';
 
-export type ScreenId = 'splash' | 'home' | 'viewer' | 'about' | 'settings' | 'topics';
+export type ScreenId = 'splash' | 'home' | 'viewer' | 'about' | 'settings' | 'topics' | 'surgical';
 
 interface Props {
   /** First screen to show. Tests start on a specific screen. */
@@ -31,6 +32,8 @@ export function App({ initialScreen = 'splash' }: Props) {
       return <Splash onDone={goHome} />;
     case 'viewer':
       return <ViewerScreen onBack={goHome} focus={focus} />;
+    case 'surgical':
+      return <SurgicalScreen onBack={goHome} />;
     case 'topics':
       return <TopicsScreen onBack={goHome} onShowIn3d={showIn3d} />;
     case 'about':
