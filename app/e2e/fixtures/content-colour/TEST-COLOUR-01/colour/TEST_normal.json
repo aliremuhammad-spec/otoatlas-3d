@@ -1,0 +1,1 @@
+{"channels": 4, "dims": [20, 20, 20], "brick": 64, "bricks_total": 1, "bricks_stored": 1, "bricks": [[0, 0, 0, 0, 26979]], "layout": "per brick: gzip of [z][y][x][channel] uint8; bricks without any non-zero value are not stored", "spacing_mm": [0.4, 0.4, 0.4], "origin_mm": [-4.0, -4.0, -4.0]}

@@ -1,6 +1,6 @@
 # OtoAtlas 3D: handoff for the next session
 
-Last updated 28 November 2026, WP0 and WP1 finished (merged to `main`), WP2 (renderer in the app) next in a new session. Read this file first;
+Last updated 28 November 2026, WP0 and WP1 finished (merged to `main`), WP2 part 1 (surgical view as its own entry, colour renderer) is on branch `wp2-surgical-view`, waiting for the user's approval to merge; WP2 part 2 (labels) next. Read this file first;
 it replaces re-reading the long earlier conversations. Update the "State" and "Next step"
 sections at the end of every session.
 
@@ -104,7 +104,7 @@ cd DATA_PIPELINE && pip install -e ".[dev]" && python -m pytest -q
 - The shell cannot reach github.io. Check the live site with Claude in Chrome; the app shows an
   update banner («حدّث الآن») that must be clicked to load the new build. Restore any setting
   you change in his browser.
-- At last count: 94 pipeline tests, 80 unit tests, and the e2e suites all pass.
+- At last count: 94 pipeline tests, 100 unit tests, and the e2e suites all pass.
 
 ## Dev data for checking a rule on real specimens
 
@@ -150,12 +150,38 @@ Use `DATA_PIPELINE/devtools/devdata.py` (docstring shows how). New extracts: cop
    surgeon position, microscope working distance and magnifications, landmarks per station,
    VES 3.5 installed on a Windows PC for the comparison, raters, stereo hardware.
 
-## Next step: Phase 2B, WP2 (renderer in the app; start in a NEW session)
+## Next step: Phase 2B, WP2 part 2 (label-aware renderer; start in a NEW session)
 
-WP1 (colour pipeline) is finished and merged to `main` (PR #1). Gate 0 was accepted 28 Nov «approved with caveats» (PC 60 fps at
-0.2 and 0.15 mm; low-tier phone 30 fps at half render scale; iPad unmeasured, not blocking). Tier rule: phone 0.2 mm at half
-render scale, PC and tablet 0.15 mm (0.1 mm optional), automatic render-scale drop under 30 fps. Check first that the first deploy
-with colour went green (see "WP1 result"); if not, fix that before anything else.
+WP2 part 1 is on branch `wp2-surgical-view` (PR #2, CI green; **merge needs the user's approval**: it deploys to the live app and
+the auto-mode classifier refused the merge on 28 Nov). Check `gh api repos/aliremuhammad-spec/otoatlas-3d/pulls/2 -q .state`.
+
+**Rule from the user (28 Nov): the surgical view is a separate option from the anatomical models.** Home has two sections
+(`home-anatomy`: viewer and topics; `home-surgical`: its own button), `ScreenId` has `'surgical'`, the screen is
+`app/src/screens/SurgicalScreen.tsx` and shares nothing with `ViewerScreen`/`SpecimenView` except package loading. No viewer
+control may appear on the surgical screen and no surgical control in the viewer (tests in `App.test.tsx` and `e2e/surgical.spec.ts`
+check both). Keep it that way in every later work package; topics "Show in 3D" still opens the anatomical viewer.
+
+Done in part 1 (`app/src/surgical/`): `bricks.ts` (index parser and decoder; golden test against the Python writer,
+`fixtures/bricks_golden.json`, node environment because jsdom's Blob has no `stream()`), `tier.ts` (Gate 0 rule: phone =
+small touch screen = 0.2 mm at render scale 0.5, others 0.15 mm; 0.1 mm never chosen; adaptive scale: below 30 fps minus 0.1 down to
+0.35, above 52 fps plus 0.05 up to the start scale), `VolumeRenderer.ts` (WebGL2 ray-marcher ported from `public/dev/raymarch.html`,
+orbit around the specimen using the anatomical frame, opaque or translucent, cut into the block, context-loss recovery,
+`maxTextureSize` check), `loadColour.ts` (lists specimens whose manifest has `colour`, loads bricks from the site then the pinned
+Hugging Face url), `SurgicalView.tsx` (canvas, loading overlay with three steps, error and no-WebGL2 states, pointer and wheel
+controls, draws only when something changed, adapts scale while moving), and the e2e fixture package
+`app/e2e/fixtures/content-colour/TEST-COLOUR-01` (generated with `colour.bricks_encode`; a pink ball with a dark core).
+Unit tests 100, e2e 34 (all pass).
+
+Not done (WP2 part 2, in this order):
+1. **Label volume.** The renderer cannot hide, show, tint or isolate a structure yet because the browser has no label volume.
+   Pipeline job: resample the segmentation labels onto each colour tier grid (nearest neighbour, uint8 id per voxel with an
+   id table in the manifest), brick it like the colour (single channel, or pack into the alpha of a second texture), build in
+   `build_colour.py`, publish like the normals. Mind the size budget (site is 514 MB of 1 GB).
+2. Shader: per-label visibility and tint (a 256-entry lookup texture), isolate, then picking (ray cast to the first opaque
+   labelled voxel; must agree with the meshes within 0.2 mm), then ambient occlusion and progressive refinement, and the fallback
+   to meshes when WebGL2 or the texture size is not available (today the screen shows a message).
+3. Structure list and card inside the surgical screen, built for that screen (not shared with the viewer's list).
+4. Check live on real specimens (ZETA 0.15 mm first), on his PC and phone, and read the fps the HUD shows.
 
 ## WP1 result (done 27/28 Nov, one build session after the WP0 session; the user approved the specimen list, the size budget and the montages)
 

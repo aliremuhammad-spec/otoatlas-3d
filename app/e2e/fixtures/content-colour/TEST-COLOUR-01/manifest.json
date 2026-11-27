@@ -1,0 +1,209 @@
+{
+ "schema": 1,
+ "specimen_id": "TEST-COLOUR-01",
+ "dataset": "openear",
+ "side": "right",
+ "synthetic": true,
+ "units": "mm",
+ "attribution": {
+  "data_doi": "10.5281/zenodo.1473724",
+  "paper_doi": "10.1038/sdata.2018.297",
+  "license": "CC BY 4.0"
+ },
+ "generated": {
+  "pipeline_version": "0.1.0",
+  "date": "2026-11-17"
+ },
+ "structures": [
+  {
+   "id": "malleus",
+   "source_label": "Malleus",
+   "names": {
+    "en": "Malleus",
+    "ar": "\u0627\u0644\u0645\u0637\u0631\u0642\u0629",
+    "latin": "Malleus"
+   },
+   "ar_status": "unverified",
+   "content_status": "draft",
+   "provenance_tier": "specimen-derived",
+   "system": "ossicles",
+   "color": "#E69F00",
+   "mesh_error_limit_mm": 0.1,
+   "source_voxel_mm": [
+    0.125,
+    0.125,
+    0.125
+   ],
+   "bounds_mm": [
+    [
+     -1.5132,
+     -1.014,
+     -1.014
+    ],
+    [
+     1.5132,
+     1.014,
+     1.014
+    ]
+   ],
+   "volume_mm3": 6.215,
+   "lods": [
+    {
+     "level": 0,
+     "file": "malleus.lod0.glb",
+     "triangles": 3160,
+     "within_limit": true,
+     "hausdorff_mm": 0.04935,
+     "p95_mm": 0.02534,
+     "mean_mm": 0.01076,
+     "samples": 11164
+    }
+   ]
+  },
+  {
+   "id": "scala_tympani",
+   "source_label": "Scala Tympani",
+   "names": {
+    "en": "Scala tympani",
+    "ar": "\u0627\u0644\u0633\u0642\u0627\u0644\u0629 \u0627\u0644\u0637\u0628\u0644\u064a\u0629",
+    "latin": "Scala tympani"
+   },
+   "ar_status": "unverified",
+   "content_status": "draft",
+   "provenance_tier": "specimen-derived",
+   "system": "inner_ear_fluid_spaces",
+   "color": "#0072B2",
+   "mesh_error_limit_mm": 0.05,
+   "source_voxel_mm": [
+    0.125,
+    0.125,
+    0.125
+   ],
+   "bounds_mm": [
+    [
+     3.9865,
+     -1.0135,
+     -1.0135
+    ],
+    [
+     6.0135,
+     1.0135,
+     1.0135
+    ]
+   ],
+   "volume_mm3": 4.1077,
+   "lods": [
+    {
+     "level": 0,
+     "file": "scala_tympani.lod0.glb",
+     "triangles": 2360,
+     "within_limit": true,
+     "hausdorff_mm": 0.04903,
+     "p95_mm": 0.02501,
+     "mean_mm": 0.01055,
+     "samples": 10364
+    }
+   ],
+   "plain_color": "#888888"
+  }
+ ],
+ "scan": {
+  "file": "scan.u8.gz",
+  "format": "uint8, gzip, x fastest",
+  "shape": [
+   40,
+   18,
+   18
+  ],
+  "spacing_mm": [
+   0.25,
+   0.25,
+   0.25
+  ],
+  "origin_mm": [
+   -2.513152,
+   -2.013969,
+   -2.013969
+  ],
+  "modality": "synthetic",
+  "source": "test fixture",
+  "window": {
+   "low": 20.0,
+   "high": 200.0,
+   "rule": "0.5th to 99.8th percentile of the crop"
+  }
+ },
+ "measurements": [
+  {
+   "id": "cochlear_a_value",
+   "value_mm": 9.0,
+   "structures": [
+    "scala_tympani"
+   ],
+   "method": "synthetic fixture"
+  }
+ ],
+ "colour": {
+  "alpha_source": "colour",
+  "levelled": true,
+  "shift_mm": [
+   0,
+   0,
+   0
+  ],
+  "brick": 64,
+  "tiers": [
+   {
+    "spacing_mm": 0.15,
+    "dims": [
+     54,
+     54,
+     54
+    ],
+    "origin_mm": [
+     -4.0,
+     -4.0,
+     -4.0
+    ],
+    "index": "colour/TEST_colour_0p15.json",
+    "bricks": "colour/TEST_colour_0p15.bricks",
+    "bytes": 4862,
+    "on_site": true
+   },
+   {
+    "spacing_mm": 0.2,
+    "dims": [
+     40,
+     40,
+     40
+    ],
+    "origin_mm": [
+     -4.0,
+     -4.0,
+     -4.0
+    ],
+    "index": "colour/TEST_colour_0p20.json",
+    "bricks": "colour/TEST_colour_0p20.bricks",
+    "bytes": 2598,
+    "on_site": true
+   }
+  ],
+  "normals": {
+   "spacing_mm": 0.4,
+   "dims": [
+    20,
+    20,
+    20
+   ],
+   "origin_mm": [
+    -4.0,
+    -4.0,
+    -4.0
+   ],
+   "index": "colour/TEST_normal.json",
+   "bricks": "colour/TEST_normal.bricks",
+   "bytes": 26979,
+   "on_site": true
+  }
+ }
+}
