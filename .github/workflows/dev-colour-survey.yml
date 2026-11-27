@@ -3,6 +3,9 @@ name: dev-colour-survey
 # (no data download).
 on:
   workflow_dispatch:
+  push:
+    branches: [wp1-colour-pipeline]
+    paths: [.github/workflows/dev-colour-survey.yml, .github/scripts/colour_survey.py]
 jobs:
   survey:
     runs-on: ubuntu-latest
