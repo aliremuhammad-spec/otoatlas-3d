@@ -1,0 +1,173 @@
+"""Phase 2B WP1: the colour pipeline on synthetic volumes (no Zenodo needed)."""
+import numpy as np
+import pytest
+from scipy import ndimage
+
+from otopipe import colour
+
+STEP = (0.2, 0.2, 0.6)  # coarse stand-in for 0.05 x 0.05 x 0.15 mm, same 1:1:3 anisotropy
+
+
+def synthetic(nx=100, ny=100, nz=40, drift=0.0, seed=0):
+    """A resin cylinder (cream epoxy), a brown tissue block and a black surround, in uint8 [3, x, y, z]."""
+    rng = np.random.default_rng(seed)
+    x, y = np.meshgrid(np.arange(nx), np.arange(ny), indexing="ij")
+    cx, cy, R = nx / 2 - 0.5, ny / 2 - 0.5, 0.45 * nx
+    disk = np.hypot(x - cx, y - cy) < R
+    vol = np.zeros((3, nx, ny, nz), np.float32)
+    for k in range(nz):
+        g = 1 + drift * np.sin(k / nz * 2 * np.pi)
+        sl = np.zeros((3, nx, ny), np.float32)
+        sl[:, disk] = np.array([222, 224, 208])[:, None]
+        tissue = (abs(x - cx) < 0.18 * nx) & (abs(y - cy) < 0.2 * ny)
+        sl[:, tissue] = np.array([170, 140, 70])[:, None]
+        vol[:, :, :, k] = np.clip(sl * g + rng.normal(0, 1.5, sl.shape), 0, 255)
+    return vol.astype(np.uint8), Cyl(cx * STEP[0], cy * STEP[1], R * STEP[0])
+
+
+Cyl = colour.Cylinder
+
+
+def test_alpha_epoxy_tissue_black():
+    rgb = np.array([[222, 170, 5], [224, 140, 5], [208, 70, 5]], np.float32)[:, :, None]
+    a = colour.alpha_of(rgb)[:, 0]
+    assert a[0] == 0.0 and a[1] == 1.0 and a[2] == 0.0
+
+
+def test_fit_cylinder_recovers_axis_and_radius():
+    vol, cyl = synthetic()
+    got = colour.fit_cylinder(vol.astype(np.float32), STEP[0], (0.0, 0.0), every=4)
+    assert abs(got.cx - cyl.cx) < 0.15 and abs(got.cy - cyl.cy) < 0.15
+    assert abs(got.radius - cyl.radius) < 0.2
+
+
+def test_cap_weight_zero_near_wall_one_inside():
+    cyl = Cyl(10.0, 10.0, 8.0)
+    w = colour.cap_weight((100, 100), 0.2, (0.0, 0.0), cyl)
+    assert w[50, 50] == 1.0 and w[50, 98] == 0.0 and w[0, 0] == 0.0
+    assert w[50, 50 + int(round((8.0 - 0.9) / 0.2))] == 1.0 or w[50, 50 + 34] > 0.5
+
+
+def test_levelling_removes_epoxy_drift():
+    vol, cyl = synthetic(drift=0.06)
+    f = vol.astype(np.float32)
+    ref = colour.epoxy_reference(f, STEP[0], (0.0, 0.0), cyl)
+    before = np.nanmax(ref[:, 0]) - np.nanmin(ref[:, 0])
+    gains, diag = colour.level_gains(ref)
+    assert diag["levelled"]
+    after = ref * gains
+    assert np.nanmax(after[:, 0]) - np.nanmin(after[:, 0]) < 0.35 * before
+    assert gains.min() >= 0.9 - 1e-6 and gains.max() <= 1.1 + 1e-6
+
+
+def test_levelling_leaves_data_alone_without_epoxy():
+    gains, diag = colour.level_gains(np.full((50, 3), np.nan))
+    assert not diag["levelled"] and np.all(gains == 1)
+
+
+def test_tier_voxel_centres_match_positions():
+    """A colour ramp along x and z: the tier value at a voxel centre equals the ramp at that position."""
+    nx, ny, nz = 80, 80, 30
+    step = (0.05, 0.05, 0.15)
+    xs = (np.arange(nx) * step[0])[:, None, None]
+    zs = (np.arange(nz) * step[2])[None, None, :]
+    vol = np.zeros((3, nx, ny, nz), np.uint8)
+    vol[0] = np.broadcast_to(np.clip(xs * 50, 0, 255), (nx, ny, nz))
+    vol[1] = np.broadcast_to(np.clip(zs * 40, 0, 255), (nx, ny, nz))
+    vol[2] = 90
+    cyl = Cyl(2.0, 2.0, 1000.0)  # cap far away: no effect
+    for target in (0.2, 0.15, 0.1):
+        rgba, org = colour.build_tier(vol, step, (0.0, 0.0, 0.0), target, None, cyl)
+        i, k = 7, 5
+        px, pz = org[0] + i * target, org[2] + k * target
+        assert abs(rgba[0, i, 3, 3] - px * 50) < 1.0, target
+        assert abs(rgba[1, 3, 3, k] - pz * 40) < 1.0, target
+
+
+def test_tier_rejects_non_multiple():
+    vol = np.zeros((3, 20, 20, 6), np.uint8)
+    with pytest.raises(ValueError):
+        colour.build_tier(vol, (0.05, 0.05, 0.15), (0, 0, 0), 0.12, None, Cyl(0, 0, 1))
+
+
+def test_main_tissue_drops_floaters_and_crop_box():
+    a = np.zeros((60, 60, 60), np.uint8)
+    a[10:30, 10:30, 10:30] = 255
+    a[50:53, 50:53, 50:53] = 255  # debris
+    keep = colour.main_tissue(a)
+    assert keep[20, 20, 20] and not keep[51, 51, 51]
+    lo, hi = colour.box_of(keep, (1.0, 1.0, 1.0), 0.2, 0.0)
+    assert np.allclose(lo, 1.0 + 10 * 0.2) and np.allclose(hi, 1.0 + 29 * 0.2)
+    sub, org = colour.crop_mm(a, (1.0, 1.0, 1.0), 0.2, lo, hi)
+    assert sub.shape == (20, 20, 20) and np.allclose(org, lo)
+
+
+def test_sample_mask_between_grids():
+    m = np.zeros((20, 20, 20), bool)
+    m[5:10, 5:10, 5:10] = True
+    out = colour.sample_mask(m, (0, 0, 0), 0.4, (40, 40, 40), (0, 0, 0), 0.2)
+    assert out[12, 12, 12] and not out[2, 2, 2] and not out[30, 30, 30]
+
+
+def test_bricks_roundtrip_and_empty_bricks_left_out():
+    rng = np.random.default_rng(1)
+    arr = np.zeros((4, 150, 90, 70), np.uint8)
+    arr[:, 0:50, 0:50, 0:40] = rng.integers(1, 255, (4, 50, 50, 40))
+    blob, idx = colour.bricks_encode(arr)
+    assert idx["bricks_stored"] < idx["bricks_total"]
+    assert idx["bricks_total"] == 3 * 2 * 2
+    assert np.array_equal(colour.bricks_decode(blob, idx), arr)
+
+
+def test_bricks_all_zero_stores_nothing():
+    blob, idx = colour.bricks_encode(np.zeros((4, 70, 70, 70), np.uint8))
+    assert blob == b"" and idx["bricks_stored"] == 0
+
+
+def smooth_asymmetric(shape=(60, 70, 50), seed=3):
+    v = ndimage.gaussian_filter(np.random.default_rng(seed).normal(size=shape), 3)
+    return (255 * (v - v.min()) / (v.max() - v.min())).astype(np.float32)
+
+
+def test_estimate_shift_recovers_known_translation():
+    ref = smooth_asymmetric()
+    step, org = 0.2, np.zeros(3)
+    true = np.array([0.15, -0.10, 0.05])  # colour at p matches reference at p - true
+
+    def reference_at(pts):
+        q = (pts - org) / step
+        ok = np.all((q >= 0) & (q <= np.array(ref.shape) - 1), 1)
+        return ndimage.map_coordinates(ref, q.clip(0, np.array(ref.shape) - 1).T, order=1), ok
+
+    rng = np.random.default_rng(4)
+    pts = org + rng.uniform(3, 8, (40000, 3))
+    colour_vals = reference_at(pts - true)[0]
+    got = colour.estimate_shift(pts, colour_vals, reference_at, 32, (0, 256), search=0.3)
+    assert np.allclose(got["shift_mm"], true, atol=0.051)
+    assert got["mi_best"] >= got["mi_zero"]
+
+
+def test_orientation_check_identity_wins_and_flip_is_caught():
+    ref = smooth_asymmetric()
+    step = 0.2
+
+    def reference_at(pts):
+        q = pts / step
+        ok = np.all((q >= 0) & (q <= np.array(ref.shape) - 1), 1)
+        return ndimage.map_coordinates(ref, q.clip(0, np.array(ref.shape) - 1).T, order=1), ok
+
+    pts = np.random.default_rng(5).uniform(2, 9, (40000, 3))
+    vals = reference_at(pts)[0]
+    assert colour.orientation_check(pts, vals, reference_at, 32, (0, 256))["identity_wins"]
+    flipped = reference_at(pts.mean(0) + (pts - pts.mean(0)) * np.array([-1, 1, 1]))[0]
+    assert not colour.orientation_check(pts, flipped, reference_at, 32, (0, 256))["identity_wins"]
+
+
+def test_normals_point_away_from_a_bright_ball():
+    n = 40
+    g = np.indices((n, n, n)).astype(np.float32) - n / 2
+    ball = (np.linalg.norm(g, axis=0) < 10) * 200.0
+    nrm = colour.normals_volume(ball, 0.2, smooth=1.0, coarsen=2)
+    assert nrm.shape == (4, 20, 20, 20)
+    # a point on the +x side of the ball, outside surface: the normal's x component is positive
+    assert nrm[0, 15, 10, 10] > 140 and nrm[0, 5, 10, 10] < 115
