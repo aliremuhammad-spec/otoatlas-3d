@@ -1,61 +1,134 @@
 <!doctype html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>OtoAtlas 3D · colour volume ray-march test (development)</title>
+<title>OtoAtlas 3D · اختبار العرض الملوّن (تطوير)</title>
 <style>
-  html, body { margin: 0; height: 100%; background: #0e1418; color: #e6edf2; font: 13px/1.35 system-ui, sans-serif; overflow: hidden; }
+  html, body { margin: 0; height: 100%; background: #0e1418; color: #e6edf2; font: 14px/1.5 system-ui, "Segoe UI", Tahoma, sans-serif; overflow: hidden; }
   canvas { position: fixed; inset: 0; width: 100%; height: 100%; touch-action: none; display: block; }
-  #panel { position: fixed; top: max(8px, env(safe-area-inset-top)); left: 8px; max-width: min(420px, calc(100vw - 16px)); background: rgba(14,20,24,.86);
-    border: 1px solid #2c3a44; border-radius: 10px; padding: 8px 10px; }
-  #panel summary { cursor: pointer; font-weight: 600; }
-  #panel label { display: inline-flex; gap: 4px; align-items: center; margin: 3px 8px 3px 0; }
-  select, button, input[type=number] { font: inherit; color: inherit; background: #1b2830; border: 1px solid #355060; border-radius: 6px; padding: 3px 6px; }
-  button { cursor: pointer; padding: 5px 10px; }
-  #stats { font: 12px ui-monospace, Menlo, monospace; white-space: pre; margin-top: 6px; }
-  #log { font: 11px ui-monospace, Menlo, monospace; white-space: pre-wrap; max-height: 36vh; overflow: auto; margin-top: 6px; user-select: text; }
+  #panel { position: fixed; top: max(8px, env(safe-area-inset-top)); right: 8px; width: min(430px, calc(100vw - 16px)); max-height: calc(100vh - 56px); display: flex; flex-direction: column;
+    background: rgba(14,20,24,.9); border: 1px solid #2c3a44; border-radius: 12px; z-index: 5; }
+  #tabs { display: flex; gap: 4px; padding: 6px; border-bottom: 1px solid #2c3a44; }
+  #tabs button { flex: 1; padding: 8px 4px; font-weight: 600; background: #16222a; border: 1px solid #2c3a44; border-radius: 8px; color: #b8c7d2; }
+  #tabs button[aria-selected=true] { background: #2b6cb0; border-color: #4a90d9; color: #fff; }
+  .tabpage { display: none; padding: 10px 12px; overflow: auto; }
+  .tabpage.on { display: block; }
+  .tabpage h3 { margin: 10px 0 4px; font-size: 14px; color: #8fc1f0; }
+  .tabpage h3:first-child { margin-top: 0; }
+  .tabpage p, .tabpage ul { margin: 4px 0; } .tabpage ul { padding-inline-start: 20px; }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin: 6px 0; }
+  label { display: inline-flex; gap: 6px; align-items: center; }
+  select, button, input[type=number] { font: inherit; color: inherit; background: #1b2830; border: 1px solid #355060; border-radius: 6px; padding: 5px 8px; }
+  button { cursor: pointer; } button.primary { background: #2b6cb0; border-color: #4a90d9; color: #fff; font-weight: 600; padding: 8px 14px; }
+  .mono { font: 12px ui-monospace, Menlo, Consolas, monospace; direction: ltr; text-align: left; white-space: pre-wrap; }
+  #results { max-height: 30vh; overflow: auto; user-select: text; margin-top: 6px; }
+  #verdict { margin-top: 8px; padding: 8px; border-radius: 8px; background: #16222a; display: none; }
+  #fps { position: fixed; top: max(8px, env(safe-area-inset-top)); left: 8px; z-index: 4; background: rgba(14,20,24,.8); border: 1px solid #2c3a44; border-radius: 8px; padding: 4px 8px; direction: ltr; display: none; }
+  #loader { position: fixed; z-index: 6; left: calc((100% - 446px) / 2); top: 50%; transform: translate(-50%, -50%); width: min(400px, calc(100vw - 32px));
+    background: rgba(14,20,24,.94); border: 1px solid #355060; border-radius: 14px; padding: 18px 20px; text-align: center; }
+  #loader h2 { margin: 0 0 6px; font-size: 17px; }
+  #bar { height: 12px; background: #1b2830; border-radius: 6px; overflow: hidden; margin: 12px 0 6px; }
+  #barfill { height: 100%; width: 0; background: linear-gradient(90deg, #2b6cb0, #4fd1c5); transition: width .2s; }
+  #loader.error { border-color: #e53e3e; } #loader.error h2 { color: #fc8181; }
+  @media (max-width: 900px) { #loader { left: 50%; top: auto; bottom: 44px; transform: translateX(-50%); } }
   #credit { position: fixed; bottom: max(6px, env(safe-area-inset-bottom)); left: 0; right: 0; text-align: center; font-size: 11px; opacity: .75; pointer-events: none; }
 </style>
 </head>
 <body>
 <canvas id="c"></canvas>
+<div id="fps" class="mono">—</div>
+
+<div id="loader">
+  <h2 id="ltitle">جارٍ تحميل نموذج الأذن الملوّن</h2>
+  <div id="lstep">…</div>
+  <div id="bar"><div id="barfill"></div></div>
+  <div id="lpct" class="mono" style="text-align:center">0%</div>
+  <div id="lnote" style="font-size:12px;opacity:.8;margin-top:6px">التحميل الأول يحتاج نحو 20 ميغابايت (دقة 0.2 مم) ثم يُحفظ في المتصفح فيفتح بعدها فوراً. يمكنك قراءة تبويب «التعليمات» أثناء الانتظار.</div>
+  <button id="retry" style="display:none;margin-top:10px">إعادة المحاولة</button>
+</div>
+
 <div id="panel">
-  <details open>
-    <summary>Colour volume ray-march test (development, draft)</summary>
-    <div>
-      <label>Resolution <select id="res"><option value="0p20">0.20 mm</option><option value="0p15">0.15 mm</option><option value="0p10">0.10 mm</option></select></label>
-      <label>Mode <select id="mode"><option value="0">opaque first hit</option><option value="1">translucent</option></select></label>
-      <label>Render scale <select id="scale"><option>0.5</option><option>0.75</option><option selected>1</option></select></label>
-      <label>Step (voxels) <select id="stepmul"><option>0.5</option><option selected>1</option><option>1.5</option><option>2</option></select></label>
-      <label>Cut into block <input type="range" id="cut" min="0" max="0.9" step="0.01" value="0.35"></label>
-      <label><input type="checkbox" id="orbit"> auto-orbit</label>
+  <div id="tabs" role="tablist">
+    <button role="tab" data-tab="help">التعليمات</button>
+    <button role="tab" data-tab="view">العرض</button>
+    <button role="tab" data-tab="bench">قياس السرعة</button>
+  </div>
+
+  <div class="tabpage" id="tab-help">
+    <h3>ما هذه الصفحة؟</h3>
+    <p>اختبار تطويري (مسودة) يعرض كتلة عظم صدغي حقيقية <b>بألوانها الأصلية</b> من مقاطع التقطيع الدقيق لعيّنة OpenEar ZETA، لنعرف هل يستطيع جهازك رسمها بسلاسة. ليست هذه واجهة التطبيق النهائية.</p>
+    <h3>كيف تتنقّل؟</h3>
+    <ul>
+      <li><b>تدوير:</b> اسحب بإصبع واحد أو بالفأرة.</li>
+      <li><b>تقريب وتبعيد:</b> اقرص بإصبعين، أو عجلة الفأرة.</li>
+      <li><b>الدخول داخل الكتلة:</b> في تبويب «العرض» حرّك شريط «القطع داخل الكتلة»؛ تُرى عندها المقاطع الداخلية (الخلايا الهوائية، القنوات، القوقعة). ثم دوّر لترى من زوايا مختلفة.</li>
+      <li><b>الدقة:</b> 0.2 مم هي الأسرع والأخف تحميلاً. 0.15 و0.1 مم أدق لكن تحميلهما أكبر (نحو 36 و110 ميغابايت).</li>
+    </ul>
+    <h3>ماذا ترى؟</h3>
+    <ul>
+      <li>ألوان النسج كما صُوّرت، والإضاءة محسوبة من تدرّج صورة الطبقي المقطعي (CBCT) لتظهر التضاريس.</li>
+      <li>الإيبوكسي الذي ملأ الفجوات شفاف عمداً، فتبدو الخلايا الهوائية فارغة.</li>
+      <li>الشريط الرفيع بجانب الكتلة بقايا من حافة الأسطوانة وسيُزال لاحقاً.</li>
+    </ul>
+    <h3>كيف تقيس سرعة جهازك؟</h3>
+    <p>اذهب إلى تبويب «قياس السرعة» واضغط «ابدأ القياس»، وانتظر حتى ينتهي (قد يطول لأنه يحمّل الدقتين الأدق)، ثم اضغط «نسخ النتائج» وأرسلها.</p>
+    <p style="opacity:.75;font-size:12px">برنامج تعليمي وليس جهازاً طبياً. البيانات: OpenEar، رخصة CC BY 4.0.</p>
+  </div>
+
+  <div class="tabpage" id="tab-view">
+    <div class="row">
+      <label>الدقة <select id="res"><option value="0p20">0.20 مم</option><option value="0p15">0.15 مم</option><option value="0p10">0.10 مم</option></select></label>
+      <label>النمط <select id="mode"><option value="0">معتم (أول سطح)</option><option value="1">شفاف</option></select></label>
     </div>
-    <div>
-      <button id="bench">Benchmark</button>
-      <button id="copy">Copy results</button>
+    <div class="row">
+      <label>جودة العرض <select id="scale"><option value="0.5">نصف</option><option value="0.75">0.75</option><option value="1" selected>كاملة</option></select></label>
+      <label>حجم الخطوة <select id="stepmul"><option>0.5</option><option selected>1</option><option>1.5</option><option>2</option></select></label>
+    </div>
+    <div class="row">
+      <label>القطع داخل الكتلة <input type="range" id="cut" min="0" max="0.9" step="0.01" value="0.35"></label>
+      <label><input type="checkbox" id="orbit"> دوران تلقائي</label>
+    </div>
+    <div class="mono" id="stats">—</div>
+  </div>
+
+  <div class="tabpage" id="tab-bench">
+    <p>يقيس زمن الرسم الفعلي على معالج الرسوم عند عدة إعدادات، ثم يلخّص هل جهازك يبلغ 30 و60 إطاراً في الثانية.</p>
+    <div class="row"><label><input type="checkbox" id="with010"> تضمين دقة 0.1 مم (تحميل نحو 225 ميغابايت)</label></div>
+    <div class="row">
+      <button id="bench" class="primary">ابدأ القياس</button>
+      <button id="copy">نسخ النتائج</button>
       <span id="busy"></span>
     </div>
-    <div id="stats">loading…</div>
-    <div id="log"></div>
-  </details>
+    <div id="verdict"></div>
+    <div class="mono" id="results"></div>
+  </div>
 </div>
 <div id="credit">تم تصميم التطبيق بإشراف د. علي ر. محمد · Designed under the supervision of Dr. Ali R. Muhammad · educational software, not a medical device · OpenEar ZETA, CC BY 4.0</div>
 <script type="module">
 const DEFAULT_DATA = 'https://raw.githubusercontent.com/aliremuhammad-spec/otoatlas-3d/dev-data-colour-web/';
 const base = (new URLSearchParams(location.search).get('data') || DEFAULT_DATA).replace(/\/?$/, '/');
 const $ = (id) => document.getElementById(id);
-const logEl = $('log');
 const results = [];
-function log(s) { logEl.textContent += s + '\n'; logEl.scrollTop = logEl.scrollHeight; }
-
+const info = [];
 const canvas = $('c');
 const gl = canvas.getContext('webgl2', { antialias: false, alpha: false, powerPreference: 'high-performance', preserveDrawingBuffer: false });
-if (!gl) { $('stats').textContent = 'WebGL2 is not available on this device.'; throw new Error('no webgl2'); }
+if (!gl) { $('ltitle').textContent = 'جهازك لا يدعم WebGL2'; $('lstep').textContent = 'جرّب متصفحاً أحدث (Chrome أو Safari 15+).'; $('bar').style.display = 'none'; $('lpct').style.display = 'none'; throw new Error('no webgl2'); }
 const dbg = gl.getExtension('WEBGL_debug_renderer_info');
 const gpu = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : 'masked';
-log(`GPU: ${gpu}\nMAX_3D_TEXTURE_SIZE: ${gl.getParameter(gl.MAX_3D_TEXTURE_SIZE)}\nDPR: ${devicePixelRatio}\nUA: ${navigator.userAgent}`);
+info.push(`GPU: ${gpu}`, `MAX_3D_TEXTURE_SIZE: ${gl.getParameter(gl.MAX_3D_TEXTURE_SIZE)}`, `DPR: ${devicePixelRatio}`, `UA: ${navigator.userAgent}`);
+
+// ---------- tabs ----------
+const tabButtons = [...document.querySelectorAll('#tabs button')];
+function selectTab(name) {
+  const same = tabButtons.find((b) => b.dataset.tab === name).getAttribute('aria-selected') === 'true';
+  tabButtons.forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === name && !same)));
+  document.querySelectorAll('.tabpage').forEach((p) => p.classList.toggle('on', p.id === 'tab-' + name && !same));
+}
+tabButtons.forEach((b) => b.addEventListener('click', () => selectTab(b.dataset.tab)));
+let seen = false; try { seen = localStorage.getItem('otoatlas.raymarchHelpSeen') === '1'; localStorage.setItem('otoatlas.raymarchHelpSeen', '1'); } catch { /* storage may be unavailable */ }
+selectTab(seen ? 'view' : 'help');
 
 // ---------- shaders ----------
 const VS = `#version 300 es
@@ -130,45 +203,89 @@ function invert(m) {
   return inv;
 }
 
+// ---------- loading screen ----------
+const loader = $('loader'); let job = { total: 1, done: 0 }, stepText = '';
+function showLoader(title, note) {
+  loader.classList.remove('error'); loader.style.display = 'block'; $('retry').style.display = 'none'; $('bar').style.display = ''; $('lpct').style.display = '';
+  $('ltitle').textContent = title; if (note) $('lnote').textContent = note; job = { total: 1, done: 0 }; paint();
+}
+function paint() {
+  const pct = Math.min(100, Math.round((job.done / job.total) * 100));
+  $('barfill').style.width = pct + '%'; $('lpct').textContent = `${pct}%  ·  ${(job.done / 2**20).toFixed(0)} / ${(job.total / 2**20).toFixed(0)} MB`; $('lstep').textContent = stepText;
+}
+function hideLoader() { loader.style.display = 'none'; }
+function loaderError(e) {
+  loader.classList.add('error'); loader.style.display = 'block'; $('ltitle').textContent = 'تعذّر التحميل'; $('lstep').textContent = String(e.message || e);
+  $('bar').style.display = 'none'; $('lpct').style.display = 'none'; $('retry').style.display = 'inline-block';
+  $('lnote').textContent = 'تأكد من الاتصال بالإنترنت ثم أعد المحاولة. إن تكرر الخطأ أرسل لي النص أعلاه.';
+}
+
 // ---------- data ----------
-let meta, texCol = null, texNrm = null, vol = null, nvol = null;
+let meta, buildId = '', texCol = null, texNrm = null, vol = null, nvol = null, busyLoading = false, allCached = true;
+async function getResponse(url) {
+  try {
+    const c = await caches.open('otoatlas-ray-' + buildId);
+    for (const k of await caches.keys()) if (k.startsWith('otoatlas-ray-') && k !== 'otoatlas-ray-' + buildId) caches.delete(k);
+    const hit = await c.match(url); if (hit) return hit;
+    const r = await fetch(url); if (!r.ok) throw new Error(`${url}: HTTP ${r.status}`);
+    allCached = false; c.put(url, r.clone()).catch(() => {}); return r;
+  } catch (e) { if (String(e.message).includes('HTTP')) throw e; allCached = false; const r = await fetch(url); if (!r.ok) throw new Error(`${url}: HTTP ${r.status}`); return r; }
+}
 async function fetchGz(files, label) {
-  const total = files.reduce((a, f) => a + f.bytes, 0), out = new Uint8Array(total); let n = 0; const t0 = performance.now();
+  const total = files.reduce((a, f) => a + f.bytes, 0), out = new Uint8Array(total); let n = 0;
   for (const f of files) {
-    const r = await fetch(base + f.name, { cache: 'force-cache' });
-    if (!r.ok) throw new Error(`${f.name}: HTTP ${r.status}`);
+    const r = await getResponse(base + f.name);
     const rd = r.body.pipeThrough(new DecompressionStream('gzip')).getReader(); const start = n;
-    for (;;) { const { done, value } = await rd.read(); if (done) break; if (n + value.length > start + f.bytes) throw new Error('data longer than expected'); out.set(value, n); n += value.length;
-      $('stats').textContent = `loading ${label}: ${(n / 2**20).toFixed(0)} / ${(total / 2**20).toFixed(0)} MB`; }
+    for (;;) { const { done, value } = await rd.read(); if (done) break; if (n + value.length > start + f.bytes) throw new Error('data longer than expected'); out.set(value, n); n += value.length; job.done += value.length; paint(); }
     if (n - start !== f.bytes) throw new Error(`${f.name}: ${n - start} bytes, expected ${f.bytes}`);
   }
-  log(`${label}: ${(total / 2**20).toFixed(0)} MB in ${((performance.now() - t0) / 1000).toFixed(1)} s`); return out;
+  return out;
 }
 function upload(unit, dims, data) {
   const t = gl.createTexture(); gl.activeTexture(gl.TEXTURE0 + unit); gl.bindTexture(gl.TEXTURE_3D, t);
   gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
   gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   for (const w of [gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_T, gl.TEXTURE_WRAP_R]) gl.texParameteri(gl.TEXTURE_3D, w, gl.CLAMP_TO_EDGE);
-  const t0 = performance.now();
   gl.texImage3D(gl.TEXTURE_3D, 0, gl.RGBA8, dims[0], dims[1], dims[2], 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
-  const err = gl.getError(); if (err) throw new Error('texImage3D error ' + err);
-  log(`texture ${dims.join('x')} uploaded in ${(performance.now() - t0).toFixed(0)} ms`); return t;
+  const err = gl.getError(); if (err) throw new Error('texImage3D error ' + err); return t;
 }
-async function loadVolume(tag) {
+const bytesOf = (files) => files.reduce((a, f) => a + f.bytes, 0);
+async function loadColour(tag) {
+  const v = meta.volumes[tag]; stepText = `تحميل الألوان بدقة ${tag.replace('p', '.')} مم`; paint();
+  const data = await fetchGz(v.files, 'colour');
   if (texCol) { gl.deleteTexture(texCol); texCol = null; }
-  const v = meta.volumes[tag]; vol = v; vol.tag = tag;
-  const data = await fetchGz(v.files, `colour ${tag}`);
-  texCol = upload(0, v.dims, data);
+  texCol = upload(0, v.dims, data); vol = v; vol.tag = tag;
   const size = v.dims.map((d, i) => d * v.spacing_mm[i]), min = v.origin_mm.map((o, i) => o - v.spacing_mm[i] / 2);
   gl.uniform3fv(U.uBoxMin, min); gl.uniform3fv(U.uBoxSize, size);
   center = min.map((m, i) => m + size[i] / 2); radius = Math.hypot(...size) / 2; if (dist === 0) dist = radius * 3.0;
-  gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_3D, texCol);
 }
 async function loadNormals() {
-  const n = meta.normal; nvol = n; const data = await fetchGz(n.files, 'normals');
-  texNrm = upload(1, n.dims, data);
+  const n = meta.normal; stepText = 'تحميل بيانات الإضاءة (تدرّج الـ CBCT)'; paint();
+  const data = await fetchGz(n.files, 'normals'); texNrm = upload(1, n.dims, data); nvol = n;
   gl.uniform3fv(U.uNMin, n.origin_mm.map((o, i) => o - n.spacing_mm[i] / 2)); gl.uniform3fv(U.uNSize, n.dims.map((d, i) => d * n.spacing_mm[i]));
 }
+// Changes the colour resolution (with the loading screen); resolves when drawn data is ready.
+async function switchRes(tag, quiet) {
+  if (busyLoading) return; busyLoading = true;
+  try {
+    const mb = Math.round(bytesOf(meta.volumes[tag].files) / 2**20);
+    if (!quiet) { showLoader(`جارٍ تحميل دقة ${tag.replace('p', '.')} مم`, `حجم هذه الدقة نحو ${mb} ميغابايت (بعد فك الضغط)، وتُحفظ في المتصفح بعد المرة الأولى.`); job.total = bytesOf(meta.volumes[tag].files); }
+    await loadColour(tag); if (!quiet) hideLoader();
+  } catch (e) { if (!quiet) loaderError(e); else throw e; } finally { busyLoading = false; }
+}
+async function init() {
+  try {
+    showLoader('جارٍ تحميل نموذج الأذن الملوّن');
+    meta = await (await fetch(base + 'zeta_meta.json', { cache: 'no-cache' })).json(); buildId = meta.build || 'dev';
+    for (const k of ['0p20', '0p15', '0p10']) if (!meta.volumes[k]) [...$('res').options].find((o) => o.value === k)?.remove();
+    const tag = $('res').value; job.total = bytesOf(meta.normal.files) + bytesOf(meta.volumes[tag].files);
+    $('lnote').textContent = `التحميل الأول نحو ${Math.round(job.total / 2**20)} ميغابايت ثم يُحفظ في المتصفح فيفتح بعدها فوراً. يمكنك قراءة تبويب «التعليمات» أثناء الانتظار.`;
+    await loadNormals(); await loadColour(tag);
+    if (allCached) $('lnote').textContent = 'تم التحميل من ذاكرة المتصفح.';
+    hideLoader(); $('fps').style.display = 'block'; requestAnimationFrame(loop);
+  } catch (e) { console.error(e); loaderError(e); }
+}
+$('retry').onclick = () => { texNrm = null; init(); };
 
 // ---------- camera and drawing ----------
 let center = [20, 20, 26], radius = 40, dist = 0, yaw = 0.6, pitch = 0.35;
@@ -201,12 +318,14 @@ canvas.addEventListener('wheel', (e) => { e.preventDefault(); dist = Math.max(ra
 // ---------- live loop with FPS ----------
 let last = performance.now(), frames = 0, acc = 0, worst = 0, benchRunning = false;
 function loop(now) {
-  if (!benchRunning && vol && texNrm) {
+  if (!benchRunning && texCol && texNrm) {
     if ($('orbit').checked) yaw += 0.004 * Math.min(4, (now - last) / 16.7);
     draw();
     const dt = now - last; frames++; acc += dt; worst = Math.max(worst, dt);
     if (acc >= 1000) {
-      $('stats').textContent = `${(frames * 1000 / acc).toFixed(1)} fps · ${(acc / frames).toFixed(1)} ms/frame (worst ${worst.toFixed(0)} ms)\ncanvas ${canvas.width}x${canvas.height} · ${vol.tag} mm volume ${vol.dims.join('x')}`;
+      const t = `${(frames * 1000 / acc).toFixed(0)} fps · ${(acc / frames).toFixed(1)} ms/frame (worst ${worst.toFixed(0)} ms)`;
+      $('fps').textContent = `${(frames * 1000 / acc).toFixed(0)} fps · ${(acc / frames).toFixed(1)} ms`;
+      $('stats').textContent = `${t}\ncanvas ${canvas.width}x${canvas.height} · ${vol.tag.replace('p', '.')} mm · volume ${vol.dims.join('x')}\n${info.join('\n')}`;
       frames = 0; acc = 0; worst = 0;
     }
   }
@@ -220,33 +339,42 @@ async function measure(n = 60) {
   for (let i = 0; i < n; i++) { yaw += 0.02; const t = performance.now(); draw(); gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px); ts.push(performance.now() - t); if (i % 10 === 9) await tick(); }
   ts.sort((a, b) => a - b); return { median: ts[n >> 1], p95: ts[Math.floor(n * 0.95)], worst: ts[n - 1] };
 }
+const mark = (fps, t) => (fps >= t ? '✓' : '✗');
 $('bench').onclick = async () => {
-  if (benchRunning) return; benchRunning = true; $('busy').textContent = ' running…'; const keep = { res: $('res').value, mode: $('mode').value, scale: $('scale').value, cut: $('cut').value };
+  if (benchRunning || busyLoading || !texCol) return; benchRunning = true; results.length = 0; $('results').textContent = ''; $('verdict').style.display = 'none';
+  const keep = { res: $('res').value, mode: $('mode').value, scale: $('scale').value, cut: $('cut').value }; const rows = [];
+  const tags = ['0p20', '0p15', ...($('with010').checked ? ['0p10'] : [])].filter((t) => meta.volumes[t]);
   try {
-    for (const tag of ['0p20', '0p15', '0p10']) {
-      if (!meta.volumes[tag]) continue; $('res').value = tag; await loadVolume(tag);
+    for (const tag of tags) {
+      $('busy').textContent = ` تحميل ${tag.replace('p', '.')} مم…`; showLoader(`جارٍ تحميل دقة ${tag.replace('p', '.')} مم للقياس`); job.total = bytesOf(meta.volumes[tag].files);
+      await loadColour(tag); hideLoader(); $('res').value = tag;
       for (const cut of ['0', '0.4']) for (const mode of ['0', '1']) for (const scale of ['0.5', '1']) {
-        $('cut').value = cut; $('mode').value = mode; $('scale').value = scale; $('busy').textContent = ` ${tag} cut ${cut} mode ${mode} scale ${scale}`; await tick();
+        $('cut').value = cut; $('mode').value = mode; $('scale').value = scale; $('busy').textContent = ` ${tag.replace('p', '.')} مم · قطع ${cut} · ${mode === '0' ? 'معتم' : 'شفاف'} · ${scale}`; await tick();
         const m = await measure(); resize();
         const line = `${tag.replace('p', '.')} mm | ${mode === '0' ? 'opaque' : 'translucent'} | cut ${cut} | ${canvas.width}x${canvas.height} | median ${m.median.toFixed(1)} ms = ${(1000 / m.median).toFixed(0)} fps | p95 ${m.p95.toFixed(1)} ms | worst ${m.worst.toFixed(0)} ms`;
-        results.push(line); log(line);
+        results.push(line); $('results').textContent = results.join('\n'); rows.push({ tag, cut, scale, ms: m.median });
       }
     }
-  } catch (e) { log('benchmark failed: ' + e.message); }
-  $('res').value = keep.res; $('mode').value = keep.mode; $('scale').value = keep.scale; $('cut').value = keep.cut; await loadVolume(keep.res);
-  benchRunning = false; $('busy').textContent = ' done';
+    const v = tags.map((tag) => {
+      const full = rows.filter((r) => r.tag === tag && r.scale === '1');
+      const w = Math.max(...full.filter((r) => r.cut === '0').map((r) => r.ms)), t = Math.max(...full.filter((r) => r.cut === '0.4').map((r) => r.ms));
+      const fw = 1000 / w, ft = 1000 / t;
+      return `${tag.replace('p', '.')} مم، شاشة كاملة: أسوأ حالة ${fw.toFixed(0)} إطار/ث (30 ${mark(fw, 30)} · 60 ${mark(fw, 60)})، حالة عادية ${ft.toFixed(0)} إطار/ث (30 ${mark(ft, 30)} · 60 ${mark(ft, 60)})`;
+    });
+    $('verdict').innerHTML = '<b>الخلاصة</b><br>' + v.join('<br>'); $('verdict').style.display = 'block'; results.push('', ...v);
+    $('busy').textContent = ' انتهى القياس. اضغط «نسخ النتائج».';
+  } catch (e) { results.push('benchmark failed: ' + e.message); $('busy').textContent = ' فشل القياس: ' + e.message; }
+  $('mode').value = keep.mode; $('scale').value = keep.scale; $('cut').value = keep.cut;
+  if (vol.tag !== keep.res) { $('res').value = keep.res; showLoader('إعادة الدقة السابقة'); job.total = bytesOf(meta.volumes[keep.res].files); try { await loadColour(keep.res); hideLoader(); } catch (e) { loaderError(e); } }
+  benchRunning = false;
 };
-$('copy').onclick = async () => { const t = `OtoAtlas ray-march test\nGPU: ${gpu}\nDPR ${devicePixelRatio}\n${results.join('\n')}`; try { await navigator.clipboard.writeText(t); $('busy').textContent = ' copied'; } catch { $('busy').textContent = ' copy failed, select the log text'; } };
-$('res').onchange = () => loadVolume($('res').value).catch((e) => log('load failed: ' + e.message));
-
-(async () => {
-  try {
-    meta = await (await fetch(base + 'zeta_meta.json', { cache: 'no-cache' })).json();
-    for (const k of ['0p20', '0p15', '0p10']) if (!meta.volumes[k]) [...$('res').options].find((o) => o.value === k)?.remove();
-    await loadNormals(); await loadVolume($('res').value); requestAnimationFrame(loop);
-  } catch (e) { $('stats').textContent = 'load failed: ' + e.message; log(String(e.stack || e)); }
-})();
-window.__ray = { get ready() { return !!(vol && texNrm); }, measure, setView(y, p, d) { yaw = y; pitch = p; if (d) dist = d; } };
+$('copy').onclick = async () => {
+  const t = `OtoAtlas ray-march test\n${info.join('\n')}\n${results.join('\n')}`;
+  try { await navigator.clipboard.writeText(t); $('busy').textContent = ' تم النسخ'; } catch { $('busy').textContent = ' تعذّر النسخ، حدّد النص في الأسفل وانسخه يدوياً'; $('results').textContent = t; }
+};
+$('res').onchange = () => { if (!benchRunning) switchRes($('res').value); };
+window.__ray = { get ready() { return !!(texCol && texNrm); }, measure, setView(y, p, d) { yaw = y; pitch = p; if (d) dist = d; } };
+init();
 </script>
 </body>
 </html>
