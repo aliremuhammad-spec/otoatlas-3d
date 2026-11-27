@@ -236,13 +236,24 @@ def main(specimen: str, out: Path) -> None:
     # Stage B: CBCT density makes cortex opaque where its colour is as pale as epoxy.
     cbct_smooth = ndimage.gaussian_filter(cbct_u8.astype(np.float32), 0.8) if cbct_u8 is not None else None
     cap02 = colour.cap_weight(full02.shape[1:3], 0.2, org02[:2], cyl)
-    bone_ramp = None
+    bone_ramp, cbct_profile = None, None
     if cbct_smooth is not None:
         c02 = colour.sample_on_grid(cbct_smooth, cbct_sp, cbct_org, org02 - shift, 0.2, full02.shape[1:])
+        r02 = colour.radial_distance(full02.shape[1:3], 0.2, org02[:2], cyl)
+        mx02 = colour_rgb02.max(0)
+        sat02 = (mx02 - colour_rgb02.min(0)) / np.maximum(mx02, 1.0)
+        epoxy_conf = (colour_alpha02 < 128) & (cap02 > 0.99)[:, :, None] & (mx02 > 170) & (sat02 < 0.12)
+        try:
+            cbct_profile = colour.radial_profile(c02, epoxy_conf, r02)
+            c02 = c02 - colour.baseline_xy(*cbct_profile, r02)[:, :, None]
+        except ValueError as e:
+            meta["warnings"].append(f"CBCT baseline: {e}")
         levels = colour.cbct_alpha_levels(c02, colour_alpha02, cap02 > 0.99)
+        if cbct_profile is not None:
+            levels["baseline_mm_to_value"] = [[round(float(a), 1), round(float(b), 1)] for a, b in zip(*cbct_profile)][::3]
         meta["cbct_alpha"] = levels
-        print("cbct alpha", levels, flush=True)
-        if levels["usable"]:
+        print("cbct alpha", {k: v for k, v in levels.items() if k != "baseline_mm_to_value"}, flush=True)
+        if levels["usable"] and cbct_profile is not None:
             bone_ramp = levels["ramp"]
             gained = colour.apply_bone_alpha(full02, c02, bone_ramp, cap02)
             meta["cbct_alpha"]["new_opaque_pct_of_block"] = round(gained * 100, 2)
@@ -265,6 +276,7 @@ def main(specimen: str, out: Path) -> None:
             rgba, org = colour.build_tier(vol, step, first, target, gains, cyl)
             if bone_ramp is not None:
                 ct = colour.sample_on_grid(cbct_smooth, cbct_sp, cbct_org, org - shift, target, rgba.shape[1:])
+                ct -= colour.baseline_xy(*cbct_profile, colour.radial_distance(rgba.shape[1:3], target, org[:2], cyl))[:, :, None]
                 colour.apply_bone_alpha(rgba, ct, bone_ramp, colour.cap_weight(rgba.shape[1:3], target, org[:2], cyl))
                 del ct
         rgba, org_t = colour.crop_mm(rgba, org, target, *box)

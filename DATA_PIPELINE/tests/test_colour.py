@@ -207,3 +207,27 @@ def test_cbct_alpha_unusable_without_two_classes():
     cb = np.random.default_rng(3).normal(60, 4, (40, 40, 20)).astype(np.float32)
     lv = colour.cbct_alpha_levels(cb, np.zeros(cb.shape, np.uint8), np.ones(cb.shape[:2], bool))
     assert not lv["usable"]
+
+
+def test_radial_baseline_rescues_a_cupped_cbct():
+    """Epoxy reads 100 at the axis and 60 at the wall; pale cortex is +45 above the local epoxy. A single global
+    threshold cannot separate them, the radial baseline can."""
+    rng = np.random.default_rng(7)
+    n = 80
+    cyl = Cyl(8.0, 8.0, 7.5)
+    r = colour.radial_distance((n, n), 0.2, (0.0, 0.0), cyl)
+    base = 100 - 40 * (r / 7.5) ** 2
+    cb = base[:, :, None] + rng.normal(0, 3, (n, n, 12))
+    bone = np.zeros((n, n, 12), bool)
+    bone[30:40, 10:25, :] = True      # near the axis
+    bone[55:65, 40:60, :] = True      # near the wall
+    cb[bone] += 45
+    epoxy = ~bone & (r < 7.0)[:, :, None]
+    centres, prof = colour.radial_profile(cb, epoxy, r)
+    assert abs(np.interp(0.0, centres, prof) - 100) < 4 and abs(np.interp(6.5, centres, prof) - 70) < 8
+    resid = cb - colour.baseline_xy(centres, prof, r)[:, :, None]
+    inside = r < 7.0
+    lv = colour.cbct_alpha_levels(resid, np.zeros(cb.shape, np.uint8), inside)
+    assert lv["usable"] and 10 < lv["threshold"] < 40
+    # the same data without the baseline: not separable
+    assert not colour.cbct_alpha_levels(cb, np.zeros(cb.shape, np.uint8), inside)["usable"]

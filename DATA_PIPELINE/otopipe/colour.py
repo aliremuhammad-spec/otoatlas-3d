@@ -372,3 +372,41 @@ def apply_bone_alpha(rgba: np.ndarray, cbct_on_grid: np.ndarray, ramp, cap_xy: n
     gained = float(((new > 127) & (rgba[3] <= 127)).mean())
     rgba[3] = np.maximum(rgba[3], new)
     return gained
+
+def radial_distance(shape_xy, step_xy: float, origin_xy, cyl: Cylinder) -> np.ndarray:
+    """[x, y] distance (mm) from the cylinder axis."""
+    x = origin_xy[0] + np.arange(shape_xy[0]) * step_xy - cyl.cx
+    y = origin_xy[1] + np.arange(shape_xy[1]) * step_xy - cyl.cy
+    return np.hypot(x[:, None], y[None, :])
+
+
+def radial_profile(cbct: np.ndarray, epoxy: np.ndarray, r_xy: np.ndarray, width: float = 1.0, rounds: int = 3):
+    """CBCT value of the epoxy by distance from the cylinder axis (cupping: the embedding medium reads darker towards
+    the wall on some scans, ETA most). Per radial bin the median of the confident-epoxy voxels, with voxels more than
+    two robust sigmas above it dropped over a few rounds so that cortex that looks like epoxy cannot lift it.
+    Returns (bin centres mm, profile); bins with too few voxels are filled by interpolation."""
+    edges = np.arange(0.0, float(r_xy.max()) + width, width)
+    centres = (edges[:-1] + edges[1:]) / 2
+    idx = np.clip(np.digitize(r_xy, edges) - 1, 0, len(centres) - 1)
+    sel = epoxy.copy()
+    prof = np.full(len(centres), np.nan)
+    for _ in range(rounds):
+        sig = np.full(len(centres), np.nan)
+        for k in range(len(centres)):
+            v = cbct[sel & (idx == k)[:, :, None]]
+            if len(v) >= 200:
+                prof[k] = np.median(v)
+                sig[k] = max(1.4826 * np.median(np.abs(v - prof[k])), 2.0)
+        good = ~np.isnan(prof)
+        if good.sum() < 3:
+            raise ValueError("too little epoxy to measure the CBCT baseline")
+        pxy = np.interp(r_xy, centres[good], prof[good])
+        sxy = np.interp(r_xy, centres[good], np.where(np.isnan(sig), np.nanmedian(sig), sig)[good])
+        sel = epoxy & (cbct < (pxy + 2 * sxy)[:, :, None])
+    good = ~np.isnan(prof)
+    return centres, np.interp(centres, centres[good], prof[good])
+
+
+def baseline_xy(centres: np.ndarray, profile: np.ndarray, r_xy: np.ndarray) -> np.ndarray:
+    """[x, y] baseline from a radial profile (constant beyond its ends)."""
+    return np.interp(r_xy, centres, profile).astype(np.float32)
