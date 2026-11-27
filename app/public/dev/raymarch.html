@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>OtoAtlas 3D · colour volume ray-march test (development)</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #0e1418; color: #e6edf2; font: 13px/1.35 system-ui, sans-serif; overflow: hidden; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; touch-action: none; display: block; }
+  #panel { position: fixed; top: max(8px, env(safe-area-inset-top)); left: 8px; max-width: min(420px, calc(100vw - 16px)); background: rgba(14,20,24,.86);
+    border: 1px solid #2c3a44; border-radius: 10px; padding: 8px 10px; }
+  #panel summary { cursor: pointer; font-weight: 600; }
+  #panel label { display: inline-flex; gap: 4px; align-items: center; margin: 3px 8px 3px 0; }
+  select, button, input[type=number] { font: inherit; color: inherit; background: #1b2830; border: 1px solid #355060; border-radius: 6px; padding: 3px 6px; }
+  button { cursor: pointer; padding: 5px 10px; }
+  #stats { font: 12px ui-monospace, Menlo, monospace; white-space: pre; margin-top: 6px; }
+  #log { font: 11px ui-monospace, Menlo, monospace; white-space: pre-wrap; max-height: 36vh; overflow: auto; margin-top: 6px; user-select: text; }
+  #credit { position: fixed; bottom: max(6px, env(safe-area-inset-bottom)); left: 0; right: 0; text-align: center; font-size: 11px; opacity: .75; pointer-events: none; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="panel">
+  <details open>
+    <summary>Colour volume ray-march test (development, draft)</summary>
+    <div>
+      <label>Resolution <select id="res"><option value="0p20">0.20 mm</option><option value="0p15">0.15 mm</option><option value="0p10">0.10 mm</option></select></label>
+      <label>Mode <select id="mode"><option value="0">opaque first hit</option><option value="1">translucent</option></select></label>
+      <label>Render scale <select id="scale"><option>0.5</option><option>0.75</option><option selected>1</option></select></label>
+      <label>Step (voxels) <select id="stepmul"><option>0.5</option><option selected>1</option><option>1.5</option><option>2</option></select></label>
+      <label>Cut into block <input type="range" id="cut" min="0" max="0.9" step="0.01" value="0.35"></label>
+      <label><input type="checkbox" id="orbit"> auto-orbit</label>
+    </div>
+    <div>
+      <button id="bench">Benchmark</button>
+      <button id="copy">Copy results</button>
+      <span id="busy"></span>
+    </div>
+    <div id="stats">loading…</div>
+    <div id="log"></div>
+  </details>
+</div>
+<div id="credit">تم تصميم التطبيق بإشراف د. علي ر. محمد · Designed under the supervision of Dr. Ali R. Muhammad · educational software, not a medical device · OpenEar ZETA, CC BY 4.0</div>
+<script type="module">
+const DEFAULT_DATA = 'https://raw.githubusercontent.com/aliremuhammad-spec/otoatlas-3d/dev-data-colour-web/';
+const base = (new URLSearchParams(location.search).get('data') || DEFAULT_DATA).replace(/\/?$/, '/');
+const $ = (id) => document.getElementById(id);
+const logEl = $('log');
+const results = [];
+function log(s) { logEl.textContent += s + '\n'; logEl.scrollTop = logEl.scrollHeight; }
+
+const canvas = $('c');
+const gl = canvas.getContext('webgl2', { antialias: false, alpha: false, powerPreference: 'high-performance', preserveDrawingBuffer: false });
+if (!gl) { $('stats').textContent = 'WebGL2 is not available on this device.'; throw new Error('no webgl2'); }
+const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+const gpu = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : 'masked';
+log(`GPU: ${gpu}\nMAX_3D_TEXTURE_SIZE: ${gl.getParameter(gl.MAX_3D_TEXTURE_SIZE)}\nDPR: ${devicePixelRatio}\nUA: ${navigator.userAgent}`);
+
+// ---------- shaders ----------
+const VS = `#version 300 es
+void main() { vec2 p = vec2((gl_VertexID << 1) & 2, gl_VertexID & 2); gl_Position = vec4(p * 2.0 - 1.0, 0.0, 1.0); }`;
+const FS = `#version 300 es
+precision highp float; precision highp sampler3D;
+uniform sampler3D uCol; uniform sampler3D uNrm;
+uniform vec3 uBoxMin, uBoxSize, uNMin, uNSize, uCam;
+uniform mat4 uInvVP; uniform vec2 uRes; uniform float uStep, uMode, uCut;
+out vec4 o;
+float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+void main() {
+  vec2 ndc = gl_FragCoord.xy / uRes * 2.0 - 1.0;
+  vec4 f = uInvVP * vec4(ndc, 1.0, 1.0); vec3 far = f.xyz / f.w;
+  vec3 d = normalize(far - uCam);
+  vec3 inv = 1.0 / d, t0 = (uBoxMin - uCam) * inv, t1 = (uBoxMin + uBoxSize - uCam) * inv;
+  vec3 tmn = min(t0, t1), tmx = max(t0, t1);
+  float tn = max(max(tmn.x, tmn.y), max(tmn.z, 0.0)), tf = min(min(tmx.x, tmx.y), tmx.z);
+  vec3 bg = vec3(0.055, 0.078, 0.094);
+  if (tf <= tn) { o = vec4(bg, 1.0); return; }
+  float t = tn + (tf - tn) * uCut + hash(gl_FragCoord.xy) * uStep;
+  vec3 col = vec3(0.0); float T = 1.0;
+  for (int i = 0; i < 2400; i++) {
+    if (t > tf) break;
+    vec3 p = uCam + d * t;
+    vec4 c = texture(uCol, (p - uBoxMin) / uBoxSize);
+    if (c.a > 0.04) {
+      vec4 n = texture(uNrm, (p - uNMin) / uNSize);
+      vec3 N = normalize(n.xyz * 2.0 - 1.0);
+      float lit = 0.35 + 0.65 * abs(dot(N, d));            // headlight
+      float flat_ = clamp(n.a * 4.0, 0.0, 1.0);
+      lit = mix(1.0, lit, flat_);
+      if (uMode < 0.5) {
+        if (c.a > 0.5) { col = c.rgb * lit; T = 0.0; break; }
+      } else {
+        float a = smoothstep(0.3, 0.7, c.a) * (1.0 - exp(-uStep * 30.0));
+        col += T * a * c.rgb * lit; T *= 1.0 - a;
+        if (T < 0.02) break;
+      }
+    }
+    t += uStep;
+  }
+  o = vec4(col + T * bg, 1.0);
+}`;
+function sh(type, src) { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; }
+const prog = gl.createProgram(); gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(prog);
+if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+gl.useProgram(prog); gl.bindVertexArray(gl.createVertexArray());
+const U = Object.fromEntries(['uCol','uNrm','uBoxMin','uBoxSize','uNMin','uNSize','uCam','uInvVP','uRes','uStep','uMode','uCut'].map((k) => [k, gl.getUniformLocation(prog, k)]));
+gl.uniform1i(U.uCol, 0); gl.uniform1i(U.uNrm, 1);
+
+// ---------- matrices (column-major) ----------
+function perspective(fovy, aspect, n, f) { const t = 1 / Math.tan(fovy / 2); return [t / aspect,0,0,0, 0,t,0,0, 0,0,(f+n)/(n-f),-1, 0,0,2*f*n/(n-f),0]; }
+function lookAt(e, c, u) {
+  const z = norm(sub(e, c)), x = norm(cross(u, z)), y = cross(z, x);
+  return [x[0],y[0],z[0],0, x[1],y[1],z[1],0, x[2],y[2],z[2],0, -dot(x,e),-dot(y,e),-dot(z,e),1];
+}
+const sub = (a,b) => [a[0]-b[0],a[1]-b[1],a[2]-b[2]], dot = (a,b) => a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+const cross = (a,b) => [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]];
+const norm = (a) => { const l = Math.hypot(...a); return [a[0]/l,a[1]/l,a[2]/l]; };
+function mul(a, b) { const o = new Array(16).fill(0); for (let c = 0; c < 4; c++) for (let r = 0; r < 4; r++) for (let k = 0; k < 4; k++) o[c*4+r] += a[k*4+r] * b[c*4+k]; return o; }
+function invert(m) {
+  const inv = new Array(16), [a00,a01,a02,a03,a10,a11,a12,a13,a20,a21,a22,a23,a30,a31,a32,a33] = m;
+  const b00=a00*a11-a01*a10,b01=a00*a12-a02*a10,b02=a00*a13-a03*a10,b03=a01*a12-a02*a11,b04=a01*a13-a03*a11,b05=a02*a13-a03*a12,
+        b06=a20*a31-a21*a30,b07=a20*a32-a22*a30,b08=a20*a33-a23*a30,b09=a21*a32-a22*a31,b10=a21*a33-a23*a31,b11=a22*a33-a23*a32;
+  let det = b00*b11-b01*b10+b02*b09+b03*b08-b04*b07+b05*b06; det = 1 / det;
+  inv[0]=(a11*b11-a12*b10+a13*b09)*det; inv[1]=(a02*b10-a01*b11-a03*b09)*det; inv[2]=(a31*b05-a32*b04+a33*b03)*det; inv[3]=(a22*b04-a21*b05-a23*b03)*det;
+  inv[4]=(a12*b08-a10*b11-a13*b07)*det; inv[5]=(a00*b11-a02*b08+a03*b07)*det; inv[6]=(a32*b02-a30*b05-a33*b01)*det; inv[7]=(a20*b05-a22*b02+a23*b01)*det;
+  inv[8]=(a10*b10-a11*b08+a13*b06)*det; inv[9]=(a01*b08-a00*b10-a03*b06)*det; inv[10]=(a30*b04-a31*b02+a33*b00)*det; inv[11]=(a21*b02-a20*b04-a23*b00)*det;
+  inv[12]=(a11*b07-a10*b09-a12*b06)*det; inv[13]=(a00*b09-a01*b07+a02*b06)*det; inv[14]=(a31*b01-a30*b03-a32*b00)*det; inv[15]=(a20*b03-a21*b01+a22*b00)*det;
+  return inv;
+}
+
+// ---------- data ----------
+let meta, texCol = null, texNrm = null, vol = null, nvol = null;
+async function fetchGz(files, label) {
+  const total = files.reduce((a, f) => a + f.bytes, 0), out = new Uint8Array(total); let n = 0; const t0 = performance.now();
+  for (const f of files) {
+    const r = await fetch(base + f.name, { cache: 'force-cache' });
+    if (!r.ok) throw new Error(`${f.name}: HTTP ${r.status}`);
+    const rd = r.body.pipeThrough(new DecompressionStream('gzip')).getReader(); const start = n;
+    for (;;) { const { done, value } = await rd.read(); if (done) break; if (n + value.length > start + f.bytes) throw new Error('data longer than expected'); out.set(value, n); n += value.length;
+      $('stats').textContent = `loading ${label}: ${(n / 2**20).toFixed(0)} / ${(total / 2**20).toFixed(0)} MB`; }
+    if (n - start !== f.bytes) throw new Error(`${f.name}: ${n - start} bytes, expected ${f.bytes}`);
+  }
+  log(`${label}: ${(total / 2**20).toFixed(0)} MB in ${((performance.now() - t0) / 1000).toFixed(1)} s`); return out;
+}
+function upload(unit, dims, data) {
+  const t = gl.createTexture(); gl.activeTexture(gl.TEXTURE0 + unit); gl.bindTexture(gl.TEXTURE_3D, t);
+  gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+  gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  for (const w of [gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_T, gl.TEXTURE_WRAP_R]) gl.texParameteri(gl.TEXTURE_3D, w, gl.CLAMP_TO_EDGE);
+  const t0 = performance.now();
+  gl.texImage3D(gl.TEXTURE_3D, 0, gl.RGBA8, dims[0], dims[1], dims[2], 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
+  const err = gl.getError(); if (err) throw new Error('texImage3D error ' + err);
+  log(`texture ${dims.join('x')} uploaded in ${(performance.now() - t0).toFixed(0)} ms`); return t;
+}
+async function loadVolume(tag) {
+  if (texCol) { gl.deleteTexture(texCol); texCol = null; }
+  const v = meta.volumes[tag]; vol = v; vol.tag = tag;
+  const data = await fetchGz(v.files, `colour ${tag}`);
+  texCol = upload(0, v.dims, data);
+  const size = v.dims.map((d, i) => d * v.spacing_mm[i]), min = v.origin_mm.map((o, i) => o - v.spacing_mm[i] / 2);
+  gl.uniform3fv(U.uBoxMin, min); gl.uniform3fv(U.uBoxSize, size);
+  center = min.map((m, i) => m + size[i] / 2); radius = Math.hypot(...size) / 2; if (dist === 0) dist = radius * 3.0;
+  gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_3D, texCol);
+}
+async function loadNormals() {
+  const n = meta.normal; nvol = n; const data = await fetchGz(n.files, 'normals');
+  texNrm = upload(1, n.dims, data);
+  gl.uniform3fv(U.uNMin, n.origin_mm.map((o, i) => o - n.spacing_mm[i] / 2)); gl.uniform3fv(U.uNSize, n.dims.map((d, i) => d * n.spacing_mm[i]));
+}
+
+// ---------- camera and drawing ----------
+let center = [20, 20, 26], radius = 40, dist = 0, yaw = 0.6, pitch = 0.35;
+function resize() {
+  const s = Number($('scale').value), dpr = Math.min(devicePixelRatio || 1, 2) * s;
+  const w = Math.max(64, Math.round(canvas.clientWidth * dpr)), h = Math.max(64, Math.round(canvas.clientHeight * dpr));
+  if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+}
+function draw() {
+  resize(); gl.viewport(0, 0, canvas.width, canvas.height);
+  const eye = [center[0] + dist * Math.cos(pitch) * Math.sin(yaw), center[1] - dist * Math.cos(pitch) * Math.cos(yaw), center[2] + dist * Math.sin(pitch)];
+  const P = perspective(35 * Math.PI / 180, canvas.width / canvas.height, 1, 400), V = lookAt(eye, center, [0, 0, 1]);
+  gl.uniformMatrix4fv(U.uInvVP, false, invert(mul(P, V))); gl.uniform3fv(U.uCam, eye); gl.uniform2f(U.uRes, canvas.width, canvas.height);
+  gl.uniform1f(U.uStep, Math.min(...vol.spacing_mm) * Number($('stepmul').value)); gl.uniform1f(U.uMode, Number($('mode').value)); gl.uniform1f(U.uCut, Number($('cut').value));
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+}
+// pointer: one finger or mouse rotates, two fingers pinch, wheel zooms
+const ptrs = new Map(); let pinch0 = 0;
+canvas.addEventListener('pointerdown', (e) => { canvas.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, [e.clientX, e.clientY]); if (ptrs.size === 2) pinch0 = pdist(); });
+canvas.addEventListener('pointerup', (e) => ptrs.delete(e.pointerId)); canvas.addEventListener('pointercancel', (e) => ptrs.delete(e.pointerId));
+const pdist = () => { const [a, b] = [...ptrs.values()]; return Math.hypot(a[0] - b[0], a[1] - b[1]); };
+canvas.addEventListener('pointermove', (e) => {
+  if (!ptrs.has(e.pointerId)) return; const p = ptrs.get(e.pointerId);
+  if (ptrs.size === 1) { yaw -= (e.clientX - p[0]) * 0.008; pitch = Math.max(-1.4, Math.min(1.4, pitch + (e.clientY - p[1]) * 0.008)); }
+  ptrs.set(e.pointerId, [e.clientX, e.clientY]);
+  if (ptrs.size === 2) { const d = pdist(); dist = Math.max(radius * 0.4, Math.min(radius * 6, dist * pinch0 / d)); pinch0 = d; }
+});
+canvas.addEventListener('wheel', (e) => { e.preventDefault(); dist = Math.max(radius * 0.4, Math.min(radius * 6, dist * Math.exp(e.deltaY * 0.001))); }, { passive: false });
+
+// ---------- live loop with FPS ----------
+let last = performance.now(), frames = 0, acc = 0, worst = 0, benchRunning = false;
+function loop(now) {
+  if (!benchRunning && vol && texNrm) {
+    if ($('orbit').checked) yaw += 0.004 * Math.min(4, (now - last) / 16.7);
+    draw();
+    const dt = now - last; frames++; acc += dt; worst = Math.max(worst, dt);
+    if (acc >= 1000) {
+      $('stats').textContent = `${(frames * 1000 / acc).toFixed(1)} fps · ${(acc / frames).toFixed(1)} ms/frame (worst ${worst.toFixed(0)} ms)\ncanvas ${canvas.width}x${canvas.height} · ${vol.tag} mm volume ${vol.dims.join('x')}`;
+      frames = 0; acc = 0; worst = 0;
+    }
+  }
+  last = now; requestAnimationFrame(loop);
+}
+// ---------- benchmark: frames drawn back to back, each followed by a 1-pixel readback so the GPU time is measured ----------
+const px = new Uint8Array(4); const tick = () => new Promise((r) => setTimeout(r, 0));
+async function measure(n = 60) {
+  for (let i = 0; i < 6; i++) { draw(); gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px); }
+  const ts = [];
+  for (let i = 0; i < n; i++) { yaw += 0.02; const t = performance.now(); draw(); gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px); ts.push(performance.now() - t); if (i % 10 === 9) await tick(); }
+  ts.sort((a, b) => a - b); return { median: ts[n >> 1], p95: ts[Math.floor(n * 0.95)], worst: ts[n - 1] };
+}
+$('bench').onclick = async () => {
+  if (benchRunning) return; benchRunning = true; $('busy').textContent = ' running…'; const keep = { res: $('res').value, mode: $('mode').value, scale: $('scale').value, cut: $('cut').value };
+  try {
+    for (const tag of ['0p20', '0p15', '0p10']) {
+      if (!meta.volumes[tag]) continue; $('res').value = tag; await loadVolume(tag);
+      for (const cut of ['0', '0.4']) for (const mode of ['0', '1']) for (const scale of ['0.5', '1']) {
+        $('cut').value = cut; $('mode').value = mode; $('scale').value = scale; $('busy').textContent = ` ${tag} cut ${cut} mode ${mode} scale ${scale}`; await tick();
+        const m = await measure(); resize();
+        const line = `${tag.replace('p', '.')} mm | ${mode === '0' ? 'opaque' : 'translucent'} | cut ${cut} | ${canvas.width}x${canvas.height} | median ${m.median.toFixed(1)} ms = ${(1000 / m.median).toFixed(0)} fps | p95 ${m.p95.toFixed(1)} ms | worst ${m.worst.toFixed(0)} ms`;
+        results.push(line); log(line);
+      }
+    }
+  } catch (e) { log('benchmark failed: ' + e.message); }
+  $('res').value = keep.res; $('mode').value = keep.mode; $('scale').value = keep.scale; $('cut').value = keep.cut; await loadVolume(keep.res);
+  benchRunning = false; $('busy').textContent = ' done';
+};
+$('copy').onclick = async () => { const t = `OtoAtlas ray-march test\nGPU: ${gpu}\nDPR ${devicePixelRatio}\n${results.join('\n')}`; try { await navigator.clipboard.writeText(t); $('busy').textContent = ' copied'; } catch { $('busy').textContent = ' copy failed, select the log text'; } };
+$('res').onchange = () => loadVolume($('res').value).catch((e) => log('load failed: ' + e.message));
+
+(async () => {
+  try {
+    meta = await (await fetch(base + 'zeta_meta.json', { cache: 'no-cache' })).json();
+    for (const k of ['0p20', '0p15', '0p10']) if (!meta.volumes[k]) [...$('res').options].find((o) => o.value === k)?.remove();
+    await loadNormals(); await loadVolume($('res').value); requestAnimationFrame(loop);
+  } catch (e) { $('stats').textContent = 'load failed: ' + e.message; log(String(e.stack || e)); }
+})();
+window.__ray = { get ready() { return !!(vol && texNrm); }, measure, setView(y, p, d) { yaw = y; pitch = p; if (d) dist = d; } };
+</script>
+</body>
+</html>

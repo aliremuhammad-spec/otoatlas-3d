@@ -1,0 +1,38 @@
+name: dev-colour-web
+# Development only: browser-ready colour volumes for the ray-march test page (app/public/dev/raymarch.html),
+# built from the `dev-data-colour-products` and `dev-data-mastoid` branches and pushed to `dev-data-colour-web`.
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: repo
+      - uses: actions/checkout@v4
+        with:
+          ref: dev-data-colour-products
+          path: products
+      - uses: actions/checkout@v4
+        with:
+          ref: dev-data-mastoid
+          path: mastoid
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: |
+          pip install numpy scipy
+          python -u repo/.github/scripts/build_colour_web.py products mastoid web 0p20,0p15,0p10
+          ls -la web
+      - run: |
+          cd web
+          git init -q -b dev-data-colour-web
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add -A
+          git commit -q -m "OpenEar ZETA colour volumes for the ray-march test (development)"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" dev-data-colour-web
