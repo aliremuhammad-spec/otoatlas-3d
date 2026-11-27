@@ -33,6 +33,12 @@ def main(specimen: str) -> None:
                     break
                 head += chunk
     print(head.split(b"\n\n")[0].decode("latin-1"))
+    with RemoteZip(meta["links"]["self"], timeout=180) as rz:
+        for suffix, n_lines in (("Layer_Positions_ZETA.csv", 12), ("Transformations_Zeta.CSV", 14), ("Target_ZETA_110_50.SVG", 14)):
+            member = fetch.find_member(rz.namelist(), suffix)
+            text = rz.read(member).decode("latin-1").splitlines()
+            print(f"--- {member}: {len(text)} lines")
+            print("\n".join(l[:240] for l in text[:n_lines]))
 
 
 if __name__ == "__main__":
