@@ -171,3 +171,39 @@ def test_normals_point_away_from_a_bright_ball():
     assert nrm.shape == (4, 20, 20, 20)
     # a point on the +x side of the ball, outside surface: the normal's x component is positive
     assert nrm[0, 15, 10, 10] > 140 and nrm[0, 5, 10, 10] < 115
+
+
+def test_sample_on_grid_matches_positions():
+    g = np.indices((30, 30, 30)).astype(np.float32)
+    vol = g[0] * 2 + g[2] * 0.5  # linear ramp: exact under linear interpolation
+    got = colour.sample_on_grid(vol, (0.2, 0.2, 0.3), (1.0, 1.0, 1.0), (1.4, 1.2, 1.9), 0.1, (10, 8, 40), chunk=7)
+    x = (1.4 + np.arange(10) * 0.1 - 1.0) / 0.2
+    z = (1.9 + np.arange(40) * 0.1 - 1.0) / 0.3
+    assert np.allclose(got[:, 3, 5], x * 2 + z[5] * 0.5, atol=1e-3)
+
+
+def test_two_class_threshold_splits_unbalanced_modes():
+    rng = np.random.default_rng(0)
+    v = np.concatenate([rng.normal(60, 5, 9000), rng.normal(200, 10, 1000)])
+    assert 100 < colour.two_class_threshold(v) < 160
+
+
+def test_cbct_alpha_lifts_pale_bone_but_not_epoxy():
+    rng = np.random.default_rng(2)
+    shape = (40, 40, 20)
+    cb = rng.normal(60, 4, shape).astype(np.float32)
+    cb[10:20, 10:20, :] = rng.normal(210, 8, (10, 10, 20))  # dense, pale bone
+    alpha = np.zeros(shape, np.uint8)  # the colour alone makes everything transparent
+    rgba = np.zeros((4,) + shape, np.uint8)
+    inside = np.ones(shape[:2], bool)
+    lv = colour.cbct_alpha_levels(cb, alpha, inside)
+    assert lv["usable"] and 60 < lv["threshold"] < 210
+    gained = colour.apply_bone_alpha(rgba, cb, lv["ramp"], np.ones(shape[:2], np.float32))
+    assert rgba[3, 15, 15, 5] == 255 and rgba[3, 30, 30, 5] == 0
+    assert 0.04 < gained < 0.08
+
+
+def test_cbct_alpha_unusable_without_two_classes():
+    cb = np.random.default_rng(3).normal(60, 4, (40, 40, 20)).astype(np.float32)
+    lv = colour.cbct_alpha_levels(cb, np.zeros(cb.shape, np.uint8), np.ones(cb.shape[:2], bool))
+    assert not lv["usable"]

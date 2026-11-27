@@ -314,3 +314,61 @@ def orientation_check(positions, colour_vals, reference_at, bins_ref: int, range
     others = max(v for k, v in out.items() if k != "identity")
     out["identity_wins"] = bool(out["identity"] > 1.2 * others)
     return out
+
+# --------------------------------------------------------------------------- CBCT density for alpha
+def sample_on_grid(vol, spacing, origin, grid_origin, step: float, shape, chunk: int = 32) -> np.ndarray:
+    """Linear sampling of `vol` (indexed [x, y, z], with its own spacing and origin) on a regular grid of
+    `shape` voxels at `step` mm starting at `grid_origin`; outside the volume the nearest voxel is used.
+    Worked in chunks of z planes so that the coordinate arrays stay small."""
+    sp, org, go = np.asarray(spacing, float), np.asarray(origin, float), np.asarray(grid_origin, float)
+    qx = (go[0] + np.arange(shape[0]) * step - org[0]) / sp[0]
+    qy = (go[1] + np.arange(shape[1]) * step - org[1]) / sp[1]
+    out = np.empty(shape, np.float32)
+    for z0 in range(0, shape[2], chunk):
+        qz = (go[2] + np.arange(z0, min(z0 + chunk, shape[2])) * step - org[2]) / sp[2]
+        coords = np.stack(np.meshgrid(qx, qy, qz, indexing="ij")).reshape(3, -1)
+        out[:, :, z0 : z0 + len(qz)] = ndimage.map_coordinates(vol, coords, order=1, mode="nearest").reshape(shape[0], shape[1], len(qz))
+    return out
+
+
+def two_class_threshold(values: np.ndarray, iterations: int = 50) -> float:
+    """Isodata threshold: the midpoint between the means of the two classes it separates. Unlike Otsu it is not
+    pulled towards the larger class, which matters here (epoxy is most of the pale voxels, cortex a minority)."""
+    v = np.asarray(values, np.float64)
+    t = float(np.median(v))
+    for _ in range(iterations):
+        lo, hi = v[v <= t], v[v > t]
+        if len(lo) == 0 or len(hi) == 0:
+            break
+        nt = (lo.mean() + hi.mean()) / 2
+        if abs(nt - t) < 0.05:
+            break
+        t = float(nt)
+    return t
+
+
+def cbct_alpha_levels(cbct_on_grid: np.ndarray, colour_alpha_u8: np.ndarray, inside_xy: np.ndarray) -> dict:
+    """Epoxy and bone CBCT levels from the pale voxels (colour alpha under half) inside the cylinder:
+    epoxy dominates them, cortex is the bright minority, so a two-class threshold splits the two.
+    Returns epoxy level, threshold, ramp (lo, hi) and how many voxels the sample held; `usable` False when
+    the two classes are not clearly apart."""
+    amb = (colour_alpha_u8 < 128) & inside_xy[:, :, None]
+    vals = cbct_on_grid[amb]
+    if len(vals) < 5000:
+        return {"usable": False, "reason": "too few pale voxels"}
+    e = float(np.median(vals))
+    t = two_class_threshold(vals)
+    d = max(6.0, 0.25 * (t - e))
+    ok = t > e + 8.0
+    return {"usable": bool(ok), "epoxy_level": round(e, 1), "threshold": round(t, 1), "ramp": [round(t - d, 1), round(t + d, 1)],
+            "sample_voxels": int(len(vals)), "pale_above_threshold_pct": round(float((vals > t).mean() * 100), 1)}
+
+
+def apply_bone_alpha(rgba: np.ndarray, cbct_on_grid: np.ndarray, ramp, cap_xy: np.ndarray) -> float:
+    """Raise alpha where the CBCT says bone (ramp from ramp[0] to ramp[1]), inside the cylinder cap.
+    In place; returns the share of voxels that became opaque only because of the CBCT."""
+    ba = np.clip((cbct_on_grid - ramp[0]) / (ramp[1] - ramp[0]), 0.0, 1.0) * cap_xy[:, :, None]
+    new = np.rint(ba * 255).astype(np.uint8)
+    gained = float(((new > 127) & (rgba[3] <= 127)).mean())
+    rgba[3] = np.maximum(rgba[3], new)
+    return gained
