@@ -2,8 +2,10 @@
  * Ray-marched true-colour volume view (WebGL 2), the renderer of the surgical view.
  * Ported from the Gate 0 speed test (public/dev/raymarch.html) into the app: one fragment shader marches
  * each pixel's ray through a 3D colour texture, lit by a headlight using normals made from the CBCT.
- * No structure labels yet: show, hide and tint by structure come with the label volume.
+ * An optional label volume (one structure value per voxel) lets the shader hide and tint structures through a
+ * small style table (`lut.ts`).
  */
+import { LUT_ROWS, LUT_WIDTH, buildLut } from './lut';
 
 export class NoWebGL2Error extends Error {
   constructor() {
@@ -13,6 +15,14 @@ export class NoWebGL2Error extends Error {
 }
 
 type V3 = readonly [number, number, number];
+
+export interface LabelVolumeData {
+  dims: V3;
+  spacingMm: number;
+  originMm: V3;
+  /** uint8 [z][y][x]: the structure value of each voxel, 0 for none. */
+  data: Uint8Array;
+}
 
 export interface VolumeData {
   dims: V3;
@@ -36,8 +46,8 @@ void main() { vec2 p = vec2(float((gl_VertexID << 1) & 2), float(gl_VertexID & 2
 
 const FS = `#version 300 es
 precision highp float; precision highp sampler3D;
-uniform sampler3D uCol; uniform sampler3D uNrm; uniform sampler3D uOcc;
-uniform vec3 uBoxMin, uBoxSize, uNMin, uNSize, uCam;
+uniform sampler3D uCol; uniform sampler3D uNrm; uniform sampler3D uOcc; uniform sampler3D uLab; uniform sampler2D uLut;
+uniform vec3 uBoxMin, uBoxSize, uNMin, uNSize, uCam, uLMin, uLSize; uniform float uHasLab;
 uniform mat4 uInvVP; uniform vec2 uRes; uniform float uStep, uMode, uCut;
 out vec4 o;
 float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
@@ -59,6 +69,15 @@ void main() {
     if (texture(uOcc, uvw).r < 0.5) { t += uStep * 3.0; continue; }
     vec4 c = texture(uCol, uvw);
     if (c.a > 0.04) {
+      if (uHasLab > 0.5) {
+        vec3 lw = (p - uLMin) / uLSize;
+        if (all(greaterThanEqual(lw, vec3(0.0))) && all(lessThan(lw, vec3(1.0)))) {
+          int lab = int(texture(uLab, lw).r * 255.0 + 0.5);
+          vec4 st = texelFetch(uLut, ivec2(lab, 0), 0);
+          if (st.r < 0.5) { t += uStep; continue; }
+          if (st.g > 0.0) c.rgb = mix(c.rgb, texelFetch(uLut, ivec2(lab, 1), 0).rgb, st.g);
+        }
+      }
       vec4 n = texture(uNrm, (p - uNMin) / uNSize);
       vec3 N = normalize(n.xyz * 2.0 - 1.0);
       float lit = 0.35 + 0.65 * abs(dot(N, d));
@@ -169,18 +188,22 @@ export function buildOccupancy(dims: V3, rgba: Uint8Array): { dims: V3; data: Ui
 
 type UniformName =
   | 'uCol' | 'uNrm' | 'uOcc' | 'uBoxMin' | 'uBoxSize' | 'uNMin' | 'uNSize' | 'uCam'
-  | 'uInvVP' | 'uRes' | 'uStep' | 'uMode' | 'uCut';
+  | 'uInvVP' | 'uRes' | 'uStep' | 'uMode' | 'uCut' | 'uLab' | 'uLut' | 'uLMin' | 'uLSize' | 'uHasLab';
 const UNIFORMS: readonly UniformName[] = [
   'uCol', 'uNrm', 'uOcc', 'uBoxMin', 'uBoxSize', 'uNMin', 'uNSize', 'uCam', 'uInvVP', 'uRes', 'uStep', 'uMode', 'uCut',
+  'uLab', 'uLut', 'uLMin', 'uLSize', 'uHasLab',
 ];
 
 export class VolumeRenderer {
   private gl: WebGL2RenderingContext;
   private prog!: WebGLProgram;
   private u = {} as Record<UniformName, WebGLUniformLocation | null>;
-  private tex: { col: WebGLTexture | null; nrm: WebGLTexture | null; occ: WebGLTexture | null } = {
-    col: null, nrm: null, occ: null,
-  };
+  private tex: {
+    col: WebGLTexture | null; nrm: WebGLTexture | null; occ: WebGLTexture | null;
+    lab: WebGLTexture | null; lut: WebGLTexture | null;
+  } = { col: null, nrm: null, occ: null, lab: null, lut: null };
+  private labels: LabelVolumeData | null = null;
+  private lut: Uint8Array = buildLut([]);
   private colour: VolumeData | null = null;
   private normals: VolumeData | null = null;
   private occupancy: { dims: V3; data: Uint8Array } | null = null;
@@ -216,9 +239,10 @@ export class VolumeRenderer {
 
   private handleRestored = (): void => {
     this.buildProgram();
-    this.tex = { col: null, nrm: null, occ: null };
+    this.tex = { col: null, nrm: null, occ: null, lab: null, lut: null };
     if (this.colour) this.uploadColour();
     if (this.normals) this.uploadNormals();
+    this.uploadLabels();
     this.lost = false;
     this.onContextChange?.(false);
   };
@@ -248,6 +272,8 @@ export class VolumeRenderer {
     gl.uniform1i(this.u.uCol, 0);
     gl.uniform1i(this.u.uNrm, 1);
     gl.uniform1i(this.u.uOcc, 2);
+    gl.uniform1i(this.u.uLab, 3);
+    gl.uniform1i(this.u.uLut, 4);
   }
 
   /** Largest texture side this device allows, to check a tier before uploading it. */
@@ -314,6 +340,57 @@ export class VolumeRenderer {
       v.originMm[2] - v.spacingMm / 2,
     ]);
     gl.uniform3fv(this.u.uNSize, [v.dims[0] * v.spacingMm, v.dims[1] * v.spacingMm, v.dims[2] * v.spacingMm]);
+  }
+
+  private uploadLabels(): void {
+    const gl = this.gl;
+    gl.useProgram(this.prog);
+    if (this.tex.lab) gl.deleteTexture(this.tex.lab);
+    this.tex.lab = null;
+    const v = this.labels;
+    gl.uniform1f(this.u.uHasLab, v ? 1 : 0);
+    if (v) {
+      this.tex.lab = this.makeTexture(3, v.dims, v.data, false, false);
+      gl.uniform3fv(this.u.uLMin, [
+        v.originMm[0] - v.spacingMm / 2,
+        v.originMm[1] - v.spacingMm / 2,
+        v.originMm[2] - v.spacingMm / 2,
+      ]);
+      gl.uniform3fv(this.u.uLSize, [v.dims[0] * v.spacingMm, v.dims[1] * v.spacingMm, v.dims[2] * v.spacingMm]);
+    }
+    this.uploadLut();
+  }
+
+  private uploadLut(): void {
+    const gl = this.gl;
+    if (this.tex.lut) gl.deleteTexture(this.tex.lut);
+    const t = gl.createTexture();
+    if (!t) throw new Error('could not create a texture');
+    gl.activeTexture(gl.TEXTURE0 + 4);
+    gl.bindTexture(gl.TEXTURE_2D, t);
+    gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, LUT_WIDTH, LUT_ROWS, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.lut);
+    this.tex.lut = t;
+  }
+
+  /** The structure label of each voxel (uint8, 0 = none), on its own grid; null removes the labels. */
+  setLabels(v: LabelVolumeData | null): void {
+    this.labels = v;
+    this.uploadLabels();
+  }
+
+  /** Which label values are hidden or tinted; takes effect at the next `render`. */
+  setStyles(lut: Uint8Array): void {
+    this.lut = lut;
+    this.uploadLut();
+  }
+
+  get hasLabels(): boolean {
+    return this.labels !== null;
   }
 
   setNormals(v: VolumeData): void {
@@ -391,10 +468,12 @@ export class VolumeRenderer {
     gl.uniform1f(this.u.uStep, this.colour.spacingMm);
     gl.uniform1f(this.u.uMode, opts.translucent ? 1 : 0);
     gl.uniform1f(this.u.uCut, Math.max(0, Math.min(0.8, opts.cut)));
-    for (const [unit, t] of [[0, this.tex.col], [1, this.tex.nrm], [2, this.tex.occ]] as const) {
+    for (const [unit, t] of [[0, this.tex.col], [1, this.tex.nrm], [2, this.tex.occ], [3, this.tex.lab]] as const) {
       gl.activeTexture(gl.TEXTURE0 + unit);
       gl.bindTexture(gl.TEXTURE_3D, t);
     }
+    gl.activeTexture(gl.TEXTURE0 + 4);
+    gl.bindTexture(gl.TEXTURE_2D, this.tex.lut);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
 
@@ -402,8 +481,8 @@ export class VolumeRenderer {
     this.canvas.removeEventListener('webglcontextlost', this.handleLost);
     this.canvas.removeEventListener('webglcontextrestored', this.handleRestored);
     const gl = this.gl;
-    for (const t of [this.tex.col, this.tex.nrm, this.tex.occ]) if (t) gl.deleteTexture(t);
-    this.tex = { col: null, nrm: null, occ: null };
+    for (const t of [this.tex.col, this.tex.nrm, this.tex.occ, this.tex.lab, this.tex.lut]) if (t) gl.deleteTexture(t);
+    this.tex = { col: null, nrm: null, occ: null, lab: null, lut: null };
     gl.deleteProgram(this.prog);
     gl.getExtension('WEBGL_lose_context')?.loseContext();
   }

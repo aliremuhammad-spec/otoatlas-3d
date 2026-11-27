@@ -102,6 +102,52 @@ test.describe('surgical view', () => {
     await expect(stage).toHaveAttribute('data-phase', 'ready', { timeout: 30_000 });
   });
 
+  test('hides, isolates and tints structures with the label volume, on its own list', async ({ page }) => {
+    await serve(page, 'content-colour');
+    await page.goto('/');
+    await page.getByTestId('open-surgical').click({ timeout: 8000 });
+    await expect(page.getByTestId('surgical-stage')).toHaveAttribute('data-phase', 'ready', { timeout: 30_000 });
+    const list = page.getByTestId('surgical-structures');
+    await expect(list).toContainText('Structures (2 of 2 shown)');
+    const canvas = page.getByTestId('surgical-canvas');
+    await page.waitForTimeout(400);
+    const all = await canvas.screenshot();
+
+    // Hiding the outer shell shows what is inside it.
+    await page.getByTestId('surgical-structure-malleus').uncheck();
+    await expect(list).toContainText('1 of 2 shown');
+    await page.waitForTimeout(400);
+    const inner = await canvas.screenshot();
+    expect(Buffer.compare(all, inner)).not.toBe(0);
+    const [r0, g0, b0] = await pixelAt(page, all, 0.5, 0.5);
+    const [r1, g1, b1] = await pixelAt(page, inner, 0.5, 0.5);
+    expect(Math.abs(r0 - r1) + Math.abs(g0 - g1) + Math.abs(b0 - b1)).toBeGreaterThan(30);
+
+    // "Show all" brings the first picture back exactly.
+    await page.getByTestId('surgical-show-all').click();
+    await expect(list).toContainText('2 of 2 shown');
+    await page.waitForTimeout(400);
+    const back = await canvas.screenshot();
+    expect(Buffer.compare(all, back)).toBe(0);
+
+    // Keeping only one structure hides the other.
+    await page.getByTestId('surgical-isolate-scala_tympani').click();
+    await expect(page.getByTestId('surgical-structure-malleus')).not.toBeChecked();
+    await expect(page.getByTestId('surgical-structure-scala_tympani')).toBeChecked();
+
+    // Tinting changes the colours.
+    await page.getByTestId('surgical-show-all').click();
+    await page.getByTestId('surgical-tint').check();
+    await page.waitForTimeout(400);
+    const tinted = await canvas.screenshot();
+    expect(Buffer.compare(all, tinted)).not.toBe(0);
+
+    // The anatomical viewer has none of this.
+    await page.getByRole('button', { name: 'Back' }).click();
+    await page.getByRole('button', { name: 'Open the viewer' }).click();
+    await expect(page.getByTestId('surgical-structures')).toHaveCount(0);
+  });
+
   test('is in Arabic, with the credit and the disclaimer', async ({ browser }) => {
     const context = await browser.newContext({ locale: 'ar-SY' });
     const page = await context.newPage();

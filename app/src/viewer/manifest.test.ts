@@ -246,3 +246,41 @@ describe('specimen index', () => {
     expect(() => parseSpecimenIndex({ specimens: [{ id: 'x', path: '../x' }] })).toThrow(/plain folder name/);
   });
 });
+
+function labelBlock(): Record<string, unknown> {
+  return {
+    file: 'labels.u8.gz',
+    bytes: 1234,
+    dims: [320, 300, 400],
+    spacing_mm: 0.125,
+    origin_mm: [-10.5, 4.25, 8],
+    structures: [{ id: 'malleus', value: 1 }],
+    excluded_schematic: ['tensor_tympani'],
+  };
+}
+
+describe('label volume block', () => {
+  it('is absent for a specimen without one', () => {
+    expect(parseManifest(validManifest()).labelVolume).toBeNull();
+  });
+
+  it('is read with its structure values', () => {
+    const l = parseManifest({ ...validManifest(), label_volume: labelBlock() }).labelVolume;
+    expect(l?.file).toBe('labels.u8.gz');
+    expect(l?.dims).toEqual([320, 300, 400]);
+    expect(l?.structures).toEqual([{ id: 'malleus', value: 1 }]);
+    expect(l?.excludedSchematic).toEqual(['tensor_tympani']);
+  });
+
+  it('refuses what would draw wrongly', () => {
+    const bad = (patch: Record<string, unknown>) => parseManifest({ ...validManifest(), label_volume: { ...labelBlock(), ...patch } });
+    expect(() => bad({ file: '../labels.u8.gz' })).toThrow(/plain/);
+    expect(() => bad({ dims: [320.5, 300, 400] })).toThrow(/whole/);
+    expect(() => bad({ spacing_mm: 0 })).toThrow(/positive/);
+    expect(() => bad({ structures: [] })).toThrow(/empty/);
+    expect(() => bad({ structures: [{ id: 'malleus', value: 0 }] })).toThrow(/1 to 255/);
+    expect(() => bad({ structures: [{ id: 'malleus', value: 256 }] })).toThrow(/1 to 255/);
+    expect(() => bad({ structures: [{ id: 'stapes', value: 1 }] })).toThrow(/not a structure/);
+    expect(() => bad({ structures: [{ id: 'malleus', value: 1 }, { id: 'malleus', value: 2 }] })).toThrow(/repeats/);
+  });
+});

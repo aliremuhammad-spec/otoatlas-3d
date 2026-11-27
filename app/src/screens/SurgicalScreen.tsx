@@ -3,6 +3,8 @@ import { Disclaimer } from '../components/Disclaimer';
 import { SupervisionCredit } from '../components/SupervisionCredit';
 import { useI18n } from '../i18n/I18nProvider';
 import { listColourSpecimens, type ColourSpecimen } from '../surgical/loadColour';
+import type { StructureState } from '../surgical/lut';
+import { SurgicalStructures } from '../surgical/SurgicalStructures';
 import { SurgicalView } from '../surgical/SurgicalView';
 import type { Quality } from '../surgical/tier';
 
@@ -21,6 +23,8 @@ export function SurgicalScreen({ onBack }: Props) {
   const [quality, setQuality] = useState<Quality>('auto');
   const [translucent, setTranslucent] = useState(false);
   const [cut, setCut] = useState(0);
+  const [structureState, setStructureState] = useState<StructureState>({ hidden: new Set(), tinted: false });
+  const [labelsReady, setLabelsReady] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -49,7 +53,11 @@ export function SurgicalScreen({ onBack }: Props) {
         {specimens && specimens.length > 0 && (
           <label className="specimen-select">
             <span>{t('surgical.specimenSelect')}</span>
-            <select value={selected} onChange={(e) => setSelected(e.target.value)} data-testid="surgical-specimen-select">
+            <select value={selected} onChange={(e) => {
+                setSelected(e.target.value);
+                setStructureState({ hidden: new Set(), tinted: false });
+                setLabelsReady(false);
+              }} data-testid="surgical-specimen-select">
               {specimens.map((s) => (
                 <option key={s.path} value={s.path}>
                   {s.id} · {t(s.side ? `surgical.side.${s.side}` : 'surgical.side.unknown')}
@@ -107,7 +115,18 @@ export function SurgicalScreen({ onBack }: Props) {
               />
             </label>
           </div>
-          <SurgicalView key={specimen.path} specimen={specimen} quality={quality} translucent={translucent} cut={cut} />
+          <SurgicalView
+            key={specimen.path}
+            specimen={specimen}
+            quality={quality}
+            translucent={translucent}
+            cut={cut}
+            structures={structureState}
+            onLabels={setLabelsReady}
+          />
+          {labelsReady && specimen.structures.length > 0 && (
+            <SurgicalStructures structures={specimen.structures} state={structureState} onChange={setStructureState} />
+          )}
           {specimen.draft && <p className="note">{t('surgical.draft')}</p>}
         </>
       )}

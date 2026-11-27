@@ -81,6 +81,21 @@ export interface ManifestColour {
   normals: ManifestColourVolume | null;
 }
 
+/** Which structure each voxel belongs to, for the surgical view (DATA_PIPELINE/otopipe/labelvol.py). */
+export interface ManifestLabelVolume {
+  /** gzip of uint8 [z][y][x], x fastest, relative to the package folder. */
+  file: string;
+  bytes: number;
+  dims: readonly [number, number, number];
+  spacingMm: number;
+  /** Centre of the first voxel, specimen frame, mm. */
+  originMm: readonly [number, number, number];
+  /** Value in the volume for each structure id; 0 means no structure. */
+  structures: readonly { id: string; value: number }[];
+  /** Structures drawn from rules, not from the scan, which are not in the volume. */
+  excludedSchematic: readonly string[];
+}
+
 /** Measurements the pipeline makes on a specimen; ids the app does not know are skipped. */
 export const MEASUREMENT_IDS = [
   'cochlear_a_value',
@@ -120,6 +135,8 @@ export interface Manifest {
   scan: ManifestScan | null;
   /** The true-colour volume for the surgical view, when the specimen has one. */
   colour: ManifestColour | null;
+  /** Which structure each voxel is, so the surgical view can hide, show and tint structures. */
+  labelVolume: ManifestLabelVolume | null;
   specimenId: string;
   dataset: string;
   side: 'left' | 'right' | null;
@@ -282,6 +299,8 @@ export function parseManifest(value: unknown): Manifest {
   if (!Array.isArray(o.structures) || o.structures.length === 0) fail('structures is empty');
   if (typeof o.synthetic !== 'boolean') fail('synthetic is not a boolean');
   const side = o.side === null || o.side === undefined ? null : oneOf(o.side, ['left', 'right'] as const, 'side');
+  const structures = o.structures.map(parseStructure);
+  const structureIds = new Set(structures.map((x) => x.id));
   return {
     specimenId: str(o.specimen_id, 'specimen_id'),
     dataset: str(o.dataset, 'dataset'),
@@ -292,9 +311,10 @@ export function parseManifest(value: unknown): Manifest {
       paperDoi: str(attribution.paper_doi, 'attribution.paper_doi'),
       license: str(attribution.license, 'attribution.license'),
     },
-    structures: o.structures.map(parseStructure),
+    structures,
     scan: parseScan(o.scan),
     colour: parseColour(o.colour),
+    labelVolume: parseLabelVolume(o.label_volume, structureIds),
     measurements: parseMeasurements(o.measurements),
     anatomicalFrame: parseFrame(o.anatomical_frame),
   };
@@ -408,6 +428,44 @@ function parseColour(value: unknown): ManifestColour | null {
     brick,
     tiers,
     normals: o.normals === undefined || o.normals === null ? null : parseColourVolume(o.normals, 'colour.normals'),
+  };
+}
+
+function parseLabelVolume(value: unknown, known: ReadonlySet<string>): ManifestLabelVolume | null {
+  if (value === undefined || value === null) return null;
+  const o = obj(value, 'label_volume');
+  const file = str(o.file, 'label_volume.file');
+  if (!/^[A-Za-z0-9._-]+\.u8\.gz$/.test(file)) fail('label_volume.file is not a plain .u8.gz file');
+  const dims = triple(o.dims, 'label_volume.dims', true);
+  if (!dims.every((d) => Number.isInteger(d))) fail('label_volume.dims must be whole numbers');
+  const spacing = num(o.spacing_mm, 'label_volume.spacing_mm');
+  if (!(spacing > 0)) fail('label_volume.spacing_mm must be positive');
+  const bytes = num(o.bytes, 'label_volume.bytes');
+  if (!(bytes >= 0)) fail('label_volume.bytes must not be negative');
+  if (!Array.isArray(o.structures) || o.structures.length === 0) fail('label_volume.structures is empty');
+  const seenIds = new Set<string>();
+  const seenValues = new Set<number>();
+  const structures = o.structures.map((entry, i) => {
+    const e = obj(entry, `label_volume.structures[${i}]`);
+    const id = str(e.id, `label_volume.structures[${i}].id`);
+    const v = num(e.value, `label_volume.structures[${i}].value`);
+    if (!Number.isInteger(v) || v < 1 || v > 255) fail(`label_volume.structures[${i}].value must be 1 to 255`);
+    if (!known.has(id)) fail(`label_volume.structures[${i}] names ${id}, which is not a structure of the package`);
+    if (seenIds.has(id) || seenValues.has(v)) fail(`label_volume.structures[${i}] repeats an id or a value`);
+    seenIds.add(id);
+    seenValues.add(v);
+    return { id, value: v };
+  });
+  const excluded = o.excluded_schematic === undefined ? [] : o.excluded_schematic;
+  if (!Array.isArray(excluded)) fail('label_volume.excluded_schematic is not a list');
+  return {
+    file,
+    bytes,
+    dims,
+    spacingMm: spacing,
+    originMm: triple(o.origin_mm, 'label_volume.origin_mm', false),
+    structures,
+    excludedSchematic: excluded.map((x, i) => str(x, `label_volume.excluded_schematic[${i}]`)),
   };
 }
 

@@ -1,7 +1,18 @@
-import { CONTENT_BASE, fetchBytes, fetchJson, listSpecimens } from '../viewer/loadPackage';
-import { parseManifest, type Manifest, type ManifestColour, type ManifestColourVolume } from '../viewer/manifest';
+import { CONTENT_BASE, fetchBytes, fetchJson, gunzip, listSpecimens } from '../viewer/loadPackage';
+import type { StructureNames } from '../viewer/content';
+import { parseManifest, type Manifest, type ManifestColour, type ManifestColourVolume, type ManifestLabelVolume } from '../viewer/manifest';
 import { decodeBricks, parseBrickIndex } from './bricks';
 import type { VolumeData } from './VolumeRenderer';
+
+/** One structure the surgical view can show or hide: it has a value in the label volume. */
+export interface SurgicalStructure {
+  id: string;
+  value: number;
+  names: StructureNames;
+  /** 0xRRGGBB, the structure's colour in the atlas. */
+  color: number;
+  group: { id: string; names: StructureNames } | null;
+}
 
 /** A specimen that has true-colour data, with what the surgical view needs from its manifest. */
 export interface ColourSpecimen {
@@ -12,6 +23,9 @@ export interface ColourSpecimen {
   colour: ManifestColour;
   frame: Manifest['anatomicalFrame'];
   draft: boolean;
+  /** Where each structure is in the volume; null when the package has no label volume (colour only). */
+  labels: ManifestLabelVolume | null;
+  structures: readonly SurgicalStructure[];
 }
 
 /** Installed specimens that have a colour volume. A package whose manifest cannot be read is skipped. */
@@ -29,6 +43,11 @@ export async function listColourSpecimens(base = CONTENT_BASE): Promise<ColourSp
           side: e.side,
           colour: m.colour,
           frame: m.anatomicalFrame,
+          labels: m.labelVolume,
+          structures: (m.labelVolume?.structures ?? []).flatMap((lv): SurgicalStructure[] => {
+            const st = m.structures.find((x) => x.id === lv.id);
+            return st ? [{ id: st.id, value: lv.value, names: st.names, color: st.color, group: st.group }] : [];
+          }),
           draft: m.structures.some((s) => s.contentStatus === 'draft' || s.arStatus === 'unverified'),
         };
       } catch {
@@ -79,4 +98,30 @@ export async function loadColourVolume(
     }
   }
   throw new Error(failures.join('; '));
+}
+
+export interface LabelData {
+  dims: readonly [number, number, number];
+  spacingMm: number;
+  originMm: readonly [number, number, number];
+  /** uint8 [z][y][x]. */
+  data: Uint8Array;
+}
+
+/** Downloads the label volume of a package: this site's copy only (it is small and ships with the package). */
+export async function loadLabelVolume(
+  path: string,
+  block: ManifestLabelVolume,
+  onProgress?: (p: LoadProgress) => void,
+  base = CONTENT_BASE,
+): Promise<LabelData> {
+  const compressed = await fetchBytes(`${base}/${path}/${block.file}`, (received, total) => {
+    const expected = total ?? block.bytes;
+    onProgress?.({ fraction: 0.8 * Math.min(1, received / Math.max(1, expected)) });
+  });
+  const data = await gunzip(compressed);
+  const expected = block.dims[0] * block.dims[1] * block.dims[2];
+  if (data.length !== expected) throw new Error('label volume has the wrong size');
+  onProgress?.({ fraction: 1 });
+  return { dims: block.dims, spacingMm: block.spacingMm, originMm: block.originMm, data };
 }

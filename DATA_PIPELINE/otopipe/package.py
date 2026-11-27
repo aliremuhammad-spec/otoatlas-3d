@@ -14,6 +14,7 @@ from pathlib import Path
 
 import numpy as np
 
+from . import labelvol
 from . import mesh as M
 
 PIPELINE_VERSION = "0.1.0"
@@ -88,6 +89,7 @@ def build_package(
     keep_fractions: tuple[float, ...] = (1.0, 0.25, 0.1),
     samples: int = 20000,
     publish_shown_only: bool = False,
+    label_volume: bool = False,
 ) -> dict:
     """Mesh every label, measure it, write the files, and return the manifest.
 
@@ -95,10 +97,15 @@ def build_package(
     app shows is kept on disk; the others stay in the manifest with their measured
     error and `"published": false`. That keeps eight OpenEar specimens under the
     hosting size limit (a full-resolution temporal bone alone is about 130 MB).
+
+    With `label_volume`, one more file is written: which structure each voxel belongs to (otopipe/labelvol.py),
+    for the surgical view. Schematic structures are not in it.
     """
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     structures = []
+    volume_items: list[labelvol.Item] = []
+    schematic: list[str] = []
     for label in labels:
         entry = structure_for(ontology, dataset, label.source_label, label.part)
         limit = float(entry["mesh_error_limit_mm"])
@@ -125,6 +132,10 @@ def build_package(
             lod["published"] = not publish_shown_only or lod["level"] == shown
             if not lod["published"]:
                 (out / lod["file"]).unlink()
+        if entry["provenance_tier"] == "schematic":
+            schematic.append(entry["id"])
+        else:
+            volume_items.append(labelvol.Item(entry["id"], label.mask, label.spacing, label.origin))
         lod0 = build.lods[0].mesh
         structures.append(
             {
@@ -159,6 +170,17 @@ def build_package(
                 "lods": lods,
             }
         )
+    volume_block = None
+    if label_volume and volume_items:
+        try:
+            volume = labelvol.build(volume_items)
+        except ValueError as e:
+            # The meshes are still good; the surgical view just cannot hide structures for this specimen.
+            print(f"{specimen_id}: warning: no label volume: {e}")
+        else:
+            blob = labelvol.encode(volume)
+            (out / "labels.u8.gz").write_bytes(blob)
+            volume_block = labelvol.manifest_block(volume, blob, "labels.u8.gz", schematic)
     info = ontology["datasets"][dataset]
     manifest = {
         "schema": MANIFEST_SCHEMA,
@@ -170,6 +192,7 @@ def build_package(
         "attribution": {"data_doi": info["data_doi"], "paper_doi": info["paper_doi"], "license": info["license"]},
         "generated": {"pipeline_version": PIPELINE_VERSION, "date": date.today().isoformat()},
         "structures": structures,
+        **({"label_volume": volume_block} if volume_block else {}),
         **(extra or {}),
     }
     (out / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
