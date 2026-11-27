@@ -9,18 +9,12 @@ Educational software only. Not a medical device. Not for diagnosis or for planni
 
 ## Status
 
-Phase 1, in progress. What exists and is tested:
+End of Phase 2 (27 November 2026): eight specimens with computed and schematic anatomy, 70
+chapter topics in Arabic and English, measurements, CT slices, and a phone layout. Next is
+Phase 2B, the surgical view. `CLAUDE.md` holds the full state, the rules and the next step.
 
-- `app/`: installable web app (PWA). Arabic and English with right-to-left layout, the supervision
-  credit on the splash, home and About screens, a 3D viewer, and point-to-point and
-  surface-to-surface distance tools. The viewer opens the first installed specimen package and
-  falls back to a **synthetic phantom** when none is installed.
 - Live build: https://aliremuhammad-spec.github.io/otoatlas-3d/ (published by the `deploy` workflow).
   All specimen content is **draft** until the named reviewer signs it off.
-- `DATA_PIPELINE/`: label volume to surface mesh with the geometric error measured against the
-  label surface, plus scripts that describe the open datasets on Zenodo.
-- `ontology/`: the structure list, with English, Terminologia Anatomica and Arabic names and a
-  review status per Arabic term.
 
 ## Run it
 
