@@ -183,8 +183,13 @@ with colour went green (see "WP1 result"); if not, fix that before anything else
   transparent so they do not show in the rendered volume.
 - Alignment shifts (mm, subtracted from `origin_mm`) are listed above under session 1; all below the noise floor.
 - Tests at the end: 94 pipeline tests; app unit tests include the colour manifest parser; CI green.
-- Not yet verified when this was written: the first real `deploy.yml` run with the colour job (attach, HF upload of the 0.1 tier,
-  finish). Merging rebuilt all content, about 12 minutes plus the colour job.
+- Verified after merge (deploy run 46072719838, all green, about 30 min with the colour jobs): colour jobs for the six specimens
+  passed; the site holds `<pkg>/colour/` with tiers 0.2 and 0.15, normals and the 0.1 index but no 0.1 bricks; the HF mirror
+  (commit a368d3fb) holds all four brick files per specimen (ZETA: 67.4 / 21.6 / 9.5 / 3.5 MB); the Pages artifact is 514 MB
+  (limit 1 GB, watch it when adding specimens); the live manifests carry the `colour` block with pinned HF urls; the live app
+  (after the update banner) lists EPSILON and THETA and opens ETA and EPSILON with no errors. The app does not use the colour
+  data yet (that is WP2).
+- Trap: `deploy.yml` has `cancel-in-progress: true`, so a push to main while a deploy runs cancels it; wait for the deploy first.
 
 ## WP0 (feasibility on ZETA), finished 28 Nov, kept for reference
 
