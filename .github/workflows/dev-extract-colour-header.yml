@@ -1,0 +1,20 @@
+name: dev-extract-colour-header
+# Development only: prints the NRRD header of the micro-slicing colour volume (no data download).
+on:
+  workflow_dispatch:
+    inputs:
+      specimen:
+        description: OpenEar specimen name
+        default: ZETA
+jobs:
+  header:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: |
+          pip install -e DATA_PIPELINE
+          python -u .github/scripts/colour_header.py "${{ inputs.specimen }}"
