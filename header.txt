@@ -1,0 +1,13 @@
+type: unsigned char
+dimension: 4
+space: left-posterior-superior
+sizes: [  3 792 792 346]
+space directions: [[  nan   nan   nan]
+ [-0.05  0.    0.  ]
+ [ 0.   -0.05  0.  ]
+ [ 0.    0.    0.15]]
+kinds: ['vector', 'domain', 'domain', 'domain']
+encoding: gzip
+space origin: [0. 0. 0.]
+block_average_xy=4
+z_spacing_mm=0.19980694980694974
