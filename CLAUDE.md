@@ -171,6 +171,19 @@ in the plan document's "Phase 2B plan" tab.
 Fallbacks if Gate 0 fails: re-register colour to CBCT; colour only the bone and keep meshes for
 soft tissue; or bake colour onto mesh textures.
 
+**WP0 status, 27 Nov (stopped after step 1's header check, waiting for the reviewer's decision):**
+the micro-slicing volume is NOT in the segmentation/CBCT space. Its NRRD header (read with
+`.github/workflows/dev-extract-colour-header.yml`, no data download) says: LPS, 4D
+`3 x 792 x 792 x 346`, `kinds: vector domain domain domain`, uint8, gzip, steps 0.05 / 0.05 /
+0.15 mm, `space origin (0,0,0)`, no registration. `Transformations_Zeta.CSV` (221 rows) holds
+per-raw-photo 2D affines (pixels) used to stack the sections to a target outline, and
+`Layer_Positions_ZETA.csv` the z position in mm of each of the 221 sections (uneven spacing);
+neither maps the volume into the specimen frame. So "resample onto the segmentation grid" needs
+a new 3D registration of colour to CBCT/labels (the first fallback), which was not budgeted.
+The shell cannot reach Zenodo (agent proxy), so all extraction runs as dev workflows on GitHub
+Actions, dispatched with `gh api repos/.../actions/workflows/<file>/dispatches -f ref=main`
+(`gh workflow run` fails: GraphQL is blocked). Nothing else of WP0 is built yet.
+
 ## Later phases
 
 2B surgical view (16 to 18 sessions, nine work packages) → 3 drilling core and cochlear
