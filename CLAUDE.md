@@ -1,6 +1,6 @@
 # OtoAtlas 3D: handoff for the next session
 
-Last updated 27 November 2026, at the end of Phase 2 and before Phase 2B. Read this file first;
+Last updated 28 November 2026, WP0 finished, WP1 next (new session). Read this file first;
 it replaces re-reading the long earlier conversations. Update the "State" and "Next step"
 sections at the end of every session.
 
@@ -150,7 +150,25 @@ Use `DATA_PIPELINE/devtools/devdata.py` (docstring shows how). New extracts: cop
    surgeon position, microscope working distance and magnifications, landmarks per station,
    VES 3.5 installed on a Windows PC for the comparison, raters, stereo hardware.
 
-## Next step: Phase 2B, WP0 (feasibility on ZETA), one session
+## Next step: Phase 2B, WP1 (colour pipeline for six specimens), two sessions, start in a NEW session
+
+Gate 0 was accepted by the user on 28 Nov as «approved with caveats»: speed met on PC (60 fps at 0.2 and
+0.15 mm) and on a low-tier phone at half render scale (30 fps at 0.2 mm, 0.15 mm opaque); iPad unmeasured, to be
+confirmed later and not blocking; alignment borderline (4 of 5 landmarks by median, lateral canal 0.275 mm).
+Approved tier rule: phone 0.2 mm at half render scale, PC and tablet 0.15 mm (0.1 mm optional on strong GPUs),
+automatic render-scale drop under 30 fps.
+
+WP1 from the plan (tab "Phase 2B plan", table row 1): colour pipeline for six specimens (OpenEar candidates;
+ETA's CBCT has a known artefact; VES integrated six of eight): resample to the segmentation frame, crop to bone,
+epoxy removal, slice-wise colour levelling, three tiers, bricks, built in CI. Accepted when: a slice montage per
+specimen that he approves, sizes within the budget. Reuse `.github/scripts/build_colour_web.py` and
+`extract_colour_products.py` (ZETA only so far; apply the same global shift check per specimen with the MI
+scripts in `.github/scripts/wp0/`, do not assume ZETA's shift). Open items to fold in: tighten the specimen mask
+(cylinder-edge strip), better epoxy mask, normals from CBCT per specimen, which specimens are in the six.
+Plan document: not yet updated with the PC and phone benchmark numbers or this decision (the Arabic WP0 section
+there still says the iPad decides); update it at the end of WP1.
+
+## WP0 (feasibility on ZETA), finished 28 Nov, kept for reference
 
 Goal: prove or reject true-colour volume rendering before anything else is built (Gate 0:
 colour aligned within 0.25 mm of the labels at five landmarks, and at least 30 frames per second
