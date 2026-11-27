@@ -231,3 +231,13 @@ def test_radial_baseline_rescues_a_cupped_cbct():
     assert lv["usable"] and 10 < lv["threshold"] < 40
     # the same data without the baseline: not separable
     assert not colour.cbct_alpha_levels(cb, np.zeros(cb.shape, np.uint8), inside)["usable"]
+
+
+def test_cbct_alpha_ignores_real_air_among_the_pale_voxels():
+    rng = np.random.default_rng(11)
+    shape = (60, 60, 30)
+    cb = rng.normal(0, 4, shape).astype(np.float32)          # epoxy, residual about 0
+    cb[:, :18, :] = rng.normal(-60, 6, (60, 18, 30))         # air cells: a sixth of the pale voxels
+    cb[10:25, 30:45, :] = rng.normal(55, 6, (15, 15, 30))    # pale cortex
+    lv = colour.cbct_alpha_levels(cb, np.zeros(shape, np.uint8), np.ones(shape[:2], bool))
+    assert lv["usable"] and 10 < lv["threshold"] < 45, lv

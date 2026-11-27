@@ -356,6 +356,13 @@ def cbct_alpha_levels(cbct_on_grid: np.ndarray, colour_alpha_u8: np.ndarray, ins
     vals = cbct_on_grid[amb]
     if len(vals) < 5000:
         return {"usable": False, "reason": "too few pale voxels"}
+    # Pale voxels also include real air (cells that were never filled), far below the epoxy: leave those out, they
+    # would put the threshold between air and epoxy. Epoxy is the median; its spread is measured robustly.
+    m = float(np.median(vals))
+    sigma = max(1.4826 * float(np.median(np.abs(vals - m))), 3.0)
+    vals = vals[vals > m - 3 * sigma]
+    if len(vals) < 5000:
+        return {"usable": False, "reason": "too few pale voxels"}
     e = float(np.median(vals))
     t = two_class_threshold(vals)
     d = max(6.0, 0.25 * (t - e))
